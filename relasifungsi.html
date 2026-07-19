@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relasi dan Fungsi - Matematika Interaktif</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0F172A; --bg2:#1E293B; --bg3:#334155;
+  --card:rgba(255,255,255,.04); --card-h:rgba(255,255,255,.08);
+  --cyan:#06B6D4; --cyan-s:#22D3EE; --cyan-bg:rgba(6,182,212,.15);
+  --magenta:#EC4899; --magenta-s:#F472B6; --magenta-bg:rgba(236,72,153,.15);
+  --yellow:#FCD34D; --yellow-s:#FBBF24; --yellow-bg:rgba(252,211,77,.15);
+  --mint:#10B981; --mint-s:#34D399; --mint-bg:rgba(16,185,129,.15);
+  --cream:#F8FAFC; --dim:#94A3B8;
+  --border:rgba(148,163,184,.2);
+  --shadow:0 10px 30px rgba(0,0,0,.3);
+  --shadow-lg:0 20px 60px rgba(0,0,0,.5);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--cream);line-height:1.5}
+.display{font-family:'Outfit',sans-serif;font-weight:700;letter-spacing:-.02em}
+
+.bg-layer{position:fixed;inset:0;z-index:-2;overflow:hidden;
+  background:
+    radial-gradient(ellipse 80% 60% at 15% 20%,rgba(6,182,212,.15) 0%,transparent 60%),
+    radial-gradient(ellipse 70% 70% at 85% 80%,rgba(236,72,153,.15) 0%,transparent 60%),
+    var(--bg);
+}
+.bg-layer::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);background-size:40px 40px;}
+
+.top-nav{position:fixed;top:1rem;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:1rem;background:rgba(30,41,59,.8);backdrop-filter:blur(20px);padding:.55rem 1rem;border-radius:100px;border:1.5px solid var(--border);z-index:100;box-shadow:var(--shadow)}
+.nav-btn{background:var(--card);border:1px solid var(--border);color:var(--cream);width:32px;height:32px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;font-size:1.1rem;font-weight:700}
+.nav-btn:hover:not(:disabled){background:var(--cyan);color:var(--bg);transform:scale(1.1)}
+.nav-btn:disabled{opacity:.3;cursor:not-allowed}
+.progress-info{font-size:.8rem;color:var(--dim);font-weight:700;min-width:48px;text-align:center;font-family:'Outfit',sans-serif}
+.dots{display:flex;gap:.35rem}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--border);border:none;cursor:pointer;transition:all .3s;padding:0}
+.dot.active{background:var(--cyan);width:24px;border-radius:4px}
+.dot:hover:not(.active){background:var(--dim)}
+
+.slide{position:fixed;inset:0;padding:4.5rem 2.5rem 2rem;overflow-y:auto;display:none;flex-direction:column;animation:slideIn .5s ease}
+.slide.active{display:flex}
+@keyframes slideIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.slide::-webkit-scrollbar{width:8px}
+.slide::-webkit-scrollbar-track{background:transparent}
+.slide::-webkit-scrollbar-thumb{background:var(--bg3);border-radius:4px}
+
+.badge{display:inline-flex;align-items:center;gap:.4rem;padding:.4rem .9rem;background:var(--cyan-bg);color:var(--cyan-s);border-radius:100px;font-size:.75rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;border:1px solid rgba(6,182,212,.3);font-family:'Outfit',sans-serif}
+.btn{background:linear-gradient(135deg,var(--cyan) 0%,var(--cyan-s) 100%);color:var(--bg);border:none;padding:.85rem 1.8rem;font-size:1rem;font-weight:700;border-radius:100px;cursor:pointer;transition:all .3s;font-family:'Outfit',sans-serif;box-shadow:0 8px 20px rgba(6,182,212,.3)}
+.btn:hover:not(:disabled){transform:translateY(-3px);box-shadow:0 12px 28px rgba(6,182,212,.5)}
+.btn-magenta{background:linear-gradient(135deg,var(--magenta),var(--magenta-s));box-shadow:0 8px 20px rgba(236,72,153,.3)}
+.btn-magenta:hover:not(:disabled){box-shadow:0 12px 28px rgba(236,72,153,.5)}
+.btn-ghost{background:var(--card);color:var(--cream);border:1px solid var(--border);box-shadow:none}
+.btn-ghost:hover:not(:disabled){background:var(--card-h);border-color:var(--cyan)}
+.btn-sm{padding:.5rem 1rem;font-size:.85rem}
+
+.slide-header{max-width:1200px;margin:0 auto 2rem;width:100%}
+.slide-title{font-size:clamp(2rem,5vw,3.2rem);margin:.5rem 0}
+.slide-sub{color:var(--dim);font-size:1.1rem;max-width:700px}
+
+/* Slide 1 Cover */
+.cover-content{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;max-width:900px;margin:0 auto;width:100%}
+.cover-title{font-size:clamp(3rem,8vw,6rem);line-height:.95;margin:1rem 0 .5rem;background:linear-gradient(135deg,var(--cyan) 0%,var(--magenta) 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 8px 30px rgba(6,182,212,.2))}
+.cover-sub{font-size:1.2rem;color:var(--dim);margin-bottom:2rem;max-width:600px}
+.cover-card{background:var(--card);border:1.5px solid var(--border);border-radius:24px;padding:2rem;backdrop-filter:blur(10px);box-shadow:var(--shadow-lg);margin-bottom:2rem;width:100%;max-width:400px}
+
+/* Slide 2 Objectives */
+.objectives-grid{max-width:1000px;margin:0 auto;width:100%;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.2rem}
+.obj-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:1.5rem;transition:all .3s;position:relative;overflow:hidden}
+.obj-card:hover{transform:translateY(-5px);background:var(--card-h);border-color:var(--cyan)}
+.obj-num{font-family:'Outfit',sans-serif;font-size:2.5rem;font-weight:700;background:linear-gradient(135deg,var(--cyan),var(--magenta));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;line-height:1;margin-bottom:.5rem}
+.obj-title{font-size:1.2rem;font-weight:700;margin-bottom:.5rem;font-family:'Outfit',sans-serif}
+.obj-desc{color:var(--dim);font-size:.95rem}
+
+/* Slide 3 Terms */
+.terms-grid{max-width:1200px;margin:0 auto;width:100%;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.2rem}
+.term-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:1.8rem;backdrop-filter:blur(10px);transition:all .3s;position:relative;overflow:hidden}
+.term-card:hover{transform:translateY(-5px);border-color:var(--cyan);box-shadow:var(--shadow-lg)}
+.term-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--cyan),var(--magenta))}
+.term-card h3{font-family:'Outfit',sans-serif;font-size:1.4rem;color:var(--cyan-s);margin-bottom:.5rem}
+.term-card p{color:var(--dim);font-size:.95rem;line-height:1.6}
+.term-card .ex{margin-top:1rem;padding:.8rem;background:rgba(0,0,0,.2);border-radius:10px;font-size:.9rem;color:var(--yellow-s);border-left:3px solid var(--yellow)}
+
+/* Slide 4 Tabs */
+.tabs-container{max-width:1200px;margin:0 auto;width:100%;flex:1;display:flex;flex-direction:column}
+.tab-nav{display:flex;gap:.5rem;margin-bottom:1.5rem;overflow-x:auto;padding-bottom:.5rem}
+.tab-nav::-webkit-scrollbar{height:4px}
+.tab-nav::-webkit-scrollbar-thumb{background:var(--bg3);border-radius:2px}
+.tab-btn{background:var(--card);border:1px solid var(--border);color:var(--dim);padding:.7rem 1.2rem;border-radius:100px;cursor:pointer;font-family:'Outfit',sans-serif;font-weight:600;transition:all .2s;font-size:.9rem;white-space:nowrap}
+.tab-btn.active{background:linear-gradient(135deg,var(--cyan),var(--cyan-s));color:var(--bg);border-color:transparent;box-shadow:0 4px 12px rgba(6,182,212,.3)}
+.tab-btn:hover:not(.active){border-color:var(--cyan);color:var(--cyan-s)}
+
+.tab-content{display:none;animation:slideIn .4s ease}
+.tab-content.active{display:block}
+.material-box{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:1.8rem;margin-bottom:1.5rem;backdrop-filter:blur(10px)}
+.material-box h3{font-family:'Outfit',sans-serif;color:var(--magenta-s);margin-bottom:1rem;font-size:1.3rem;display:flex;align-items:center;gap:.5rem}
+.material-box p{color:var(--cream);margin-bottom:.8rem;line-height:1.7}
+.material-box ul{margin-left:1.5rem;margin-bottom:1rem;color:var(--dim)}
+.material-box li{margin-bottom:.5rem}
+.material-box strong{color:var(--cyan-s)}
+.material-box .note{background:var(--cyan-bg);border-left:4px solid var(--cyan);padding:1rem;border-radius:8px;margin-top:1rem;color:var(--cream)}
+
+.quiz-section{margin-top:1.5rem}
+.quiz-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:1rem}
+.quiz-title{font-family:'Outfit',sans-serif;font-size:1.4rem;color:var(--yellow-s)}
+.q-item{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.2rem;margin-bottom:1rem;transition:all .2s}
+.q-item:hover{border-color:var(--dim)}
+.q-num{font-family:'Outfit',sans-serif;font-weight:700;color:var(--cyan);margin-right:.5rem}
+.q-text{font-weight:600;margin-bottom:.8rem;display:inline}
+.q-input{background:var(--bg2);border:1.5px solid var(--border);color:var(--cream);padding:.5rem .8rem;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:.95rem;outline:none;transition:border-color .2s;width:100%;max-width:300px;margin-top:.5rem}
+.q-input:focus{border-color:var(--cyan)}
+.q-input.correct{border-color:var(--mint);background:var(--mint-bg);color:var(--mint-s)}
+.q-input.wrong{border-color:var(--magenta);background:var(--magenta-bg);color:var(--magenta-s)}
+.q-feedback{margin-top:.8rem;padding:.8rem;background:var(--bg2);border-radius:8px;font-size:.9rem;color:var(--dim);display:none;border-left:3px solid var(--dim)}
+.q-feedback.show{display:block}
+.q-feedback.correct{border-color:var(--mint);color:var(--mint-s);background:var(--mint-bg)}
+.q-feedback.wrong{border-color:var(--magenta);color:var(--magenta-s);background:var(--magenta-bg)}
+
+/* Slide 5 PR */
+.pr-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:1.8rem;margin-bottom:1.2rem;backdrop-filter:blur(10px)}
+.pr-card h3{font-family:'Outfit',sans-serif;color:var(--cyan-s);margin-bottom:1rem;font-size:1.2rem}
+.pr-step{background:var(--bg2);border-left:3px solid var(--magenta);padding:1rem;border-radius:8px;margin-top:.8rem;display:none;animation:slideIn .3s ease}
+.pr-step.show{display:block}
+.pr-step h4{color:var(--magenta-s);font-family:'Outfit',sans-serif;margin-bottom:.5rem}
+.pr-step p{color:var(--dim);font-size:.95rem}
+.pr-step .math{font-family:'Outfit',sans-serif;color:var(--cream);background:rgba(0,0,0,.2);padding:.5rem .8rem;border-radius:6px;display:inline-block;margin-top:.5rem;font-weight:600}
+
+/* Slide 6 Wayground */
+.wg-content{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;max-width:800px;margin:0 auto;width:100%}
+.wg-icon{font-size:6rem;margin-bottom:2rem}
+.wg-btn{font-size:1.2rem;padding:1.2rem 3rem;margin-top:1rem}
+
+/* Slide 7 Conclusion */
+.reflection-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;max-width:800px;width:100%;margin-top:1.5rem}
+.refl-input{display:flex;flex-direction:column;gap:.5rem;text-align:left}
+.refl-input label{font-size:.85rem;color:var(--cyan-s);font-weight:700;font-family:'Outfit',sans-serif;text-transform:uppercase;letter-spacing:.05em}
+.refl-input textarea{background:var(--card);border:1px solid var(--border);color:var(--cream);border-radius:12px;padding:1rem;font-family:inherit;font-size:1rem;resize:vertical;min-height:80px;outline:none;transition:border-color .2s}
+.refl-input textarea:focus{border-color:var(--cyan)}
+
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(120%);background:var(--bg2);border:1px solid var(--cyan);color:var(--cream);padding:.8rem 1.5rem;border-radius:100px;font-size:.9rem;font-weight:600;box-shadow:var(--shadow-lg);z-index:200;transition:transform .4s cubic-bezier(.34,1.56,.64,1);font-family:'Outfit',sans-serif}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+@media (max-width:768px){
+  .slide{padding:4rem 1rem 1.5rem}
+  .reflection-grid{grid-template-columns:1fr}
+  .quiz-header{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+<div class="bg-layer"></div>
+
+<nav class="top-nav">
+  <button class="nav-btn" id="prevBtn" onclick="navigate(-1)">‹</button>
+  <div class="dots" id="dots"></div>
+  <span class="progress-info" id="progress">1 / 7</span>
+  <button class="nav-btn" id="nextBtn" onclick="navigate(1)">›</button>
+</nav>
+
+<!-- SLIDE 1: COVER -->
+<section class="slide active" id="slide1">
+  <div class="cover-content">
+    <span class="badge">Matematika Wajib</span>
+    <h1 class="display cover-title">Relasi & Fungsi</h1>
+    <p class="cover-sub">Memahami hubungan antar himpunan dan keterkaitannya dalam dunia nyata melalui konsep relasi, fungsi, dan aljabarnya.</p>
+    <div class="cover-card">
+      <p style="color:var(--dim);margin-bottom:1rem">Selamat datang di sesi pembelajaran interaktif!</p>
+      <button class="btn" onclick="navigate(1)">Mulai Belajar →</button>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 2: TUJUAN PEMBELAJARAN -->
+<section class="slide" id="slide2">
+  <div class="slide-header">
+    <span class="badge">Tujuan Pembelajaran</span>
+    <h2 class="display slide-title">Apa yang Akan Kita Kuasai?</h2>
+    <p class="slide-sub">Setelah sesi ini, kamu diharapkan mampu memahami dan menerapkan konsep-konsep berikut.</p>
+  </div>
+  <div class="objectives-grid">
+    <div class="obj-card"><div class="obj-num">01</div><h3 class="obj-title">Istilah Dasar</h3><p class="obj-desc">Menjelaskan domain, kodomain, dan range pada relasi dan fungsi.</p></div>
+    <div class="obj-card"><div class="obj-num">02</div><h3 class="obj-title">Konsep Relasi</h3><p class="obj-desc">Menyatakan relasi dalam berbagai bentuk dan mengidentifikasi jenis-jenis relasi.</p></div>
+    <div class="obj-card"><div class="obj-num">03</div><h3 class="obj-title">Konsep Fungsi</h3><p class="obj-desc">Memahami syarat fungsi, jenis fungsi (injektif, surjektif, bijektif), dan notasinya.</p></div>
+    <div class="obj-card"><div class="obj-num">04</div><h3 class="obj-title">Fungsi Khusus</h3><p class="obj-desc">Mengenal fungsi identitas, genap, ganjil, dan fungsi piecewise.</p></div>
+    <div class="obj-card"><div class="obj-num">05</div><h3 class="obj-title">Aljabar Fungsi</h3><p class="obj-desc">Melakukan operasi hitung penjumlahan, selisih, kali, dan bagi fungsi.</p></div>
+    <div class="obj-card"><div class="obj-num">06</div><h3 class="obj-title">Pembahasan PR</h3><p class="obj-desc">Menganalisis dan menyelesaikan soal pekerjaan rumah secara interaktif.</p></div>
+  </div>
+</section>
+
+<!-- SLIDE 3: ISTILAH -->
+<section class="slide" id="slide3">
+  <div class="slide-header">
+    <span class="badge">Istilah Penting</span>
+    <h2 class="display slide-title">Istilah dalam Relasi & Fungsi</h2>
+    <p class="slide-sub">Empat istilah dasar yang wajib dipahami sebelum mendalami materi lebih jauh.</p>
+  </div>
+  <div class="terms-grid">
+    <div class="term-card">
+      <h3>Himpunan (Set)</h3>
+      <p>Kumpulan benda atau objek yang memiliki sifat yang sama dan didefinisikan dengan jelas. Objek dalam himpunan disebut anggota atau elemen.</p>
+      <div class="ex">Contoh: A = {1, 2, 3, 4}</div>
+    </div>
+    <div class="term-card">
+      <h3>Domain (Daerah Asal)</h3>
+      <p>Himpunan semua elemen pertama dari pasangan berurutan (anggota himpunan asal yang terhubung). Biasanya disimbolkan dengan D.</p>
+      <div class="ex">Pada relasi (1,a), (2,b), Domain = {1, 2}</div>
+    </div>
+    <div class="term-card">
+      <h3>Kodomain (Daerah Kawan)</h3>
+      <p>Himpunan semua elemen kedua yang MUNGKIN terhubung. Kodomain adalah himpunan tujuan secara keseluruhan.</p>
+      <div class="ex">Jika A ke B, dan B = {a, b, c}, maka B adalah kodomain.</div>
+    </div>
+    <div class="term-card">
+      <h3>Range (Daerah Hasil)</h3>
+      <p>Himpunan semua elemen kedua dari pasangan berurutan yang BENAR-BENAR terhubung. Range adalah bagian dari kodomain.</p>
+      <div class="ex">Pada relasi (1,a), (2,b), Range = {a, b}</div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 4: MATERI -->
+<section class="slide" id="slide4">
+  <div class="slide-header">
+    <span class="badge">Materi Inti</span>
+    <h2 class="display slide-title">Relasi & Fungsi</h2>
+    <p class="slide-sub">Klik tab di bawah untuk berpindah antar sub-materi. Setiap materi memiliki 10 soal latihan interaktif!</p>
+  </div>
+  <div class="tabs-container">
+    <div class="tab-nav">
+      <button class="tab-btn active" onclick="switchTab('tab1', this)">1. Relasi</button>
+      <button class="tab-btn" onclick="switchTab('tab2', this)">2. Jenis Relasi</button>
+      <button class="tab-btn" onclick="switchTab('tab3', this)">3. Fungsi</button>
+      <button class="tab-btn" onclick="switchTab('tab4', this)">4. Fungsi Khusus</button>
+      <button class="tab-btn" onclick="switchTab('tab5', this)">5. Fungsi Piecewise</button>
+      <button class="tab-btn" onclick="switchTab('tab6', this)">6. Aljabar Fungsi</button>
+    </div>
+
+    <!-- TAB 1: RELASI -->
+    <div class="tab-content active" id="tab1">
+      <div class="material-box">
+        <h3>1. Apa itu Relasi?</h3>
+        <p>Relasi adalah aturan yang menghubungkan setiap anggota suatu himpunan dengan anggota himpunan lain.</p>
+        <p><strong>Cara Menyatakan Relasi:</strong></p>
+        <ul>
+          <li><strong>Diagram Panah:</strong> Menggunakan tanda panah dari himpunan asal ke himpunan tujuan.</li>
+          <li><strong>Himpunan Pasangan Berurutan:</strong> Ditulis dalam bentuk {(a, b), (c, d), ...}.</li>
+          <li><strong>Diagram Kartesius:</strong> Anggota himpunan pertama di sumbu-X, anggota himpunan kedua di sumbu-Y.</li>
+        </ul>
+      </div>
+      <div class="quiz-section">
+        <div class="quiz-header">
+          <div class="quiz-title">Latihan Soal Relasi</div>
+          <button class="btn btn-sm" onclick="checkAnswers('relasi')">Cek Jawaban</button>
+        </div>
+        <div id="quiz-relasi"></div>
+      </div>
+    </div>
+
+    <!-- TAB 2: JENIS RELASI -->
+    <div class="tab-content" id="tab2">
+      <div class="material-box">
+        <h3>2. Jenis-Jenis Relasi</h3>
+        <ul>
+          <li><strong>Refleksif:</strong> Setiap elemen berhubungan dengan dirinya sendiri. (a, a) ∈ R.</li>
+          <li><strong>Simetris:</strong> Jika (a, b) ∈ R, maka (b, a) ∈ R.</li>
+          <li><strong>Antisimetris:</strong> Jika (a, b) ∈ R dan (b, a) ∈ R, maka a = b.</li>
+          <li><strong>Asimetris:</strong> Jika (a, b) ∈ R, maka (b, a) tidak boleh ∈ R.</li>
+          <li><strong>Transitif:</strong> Jika (a, b) ∈ R dan (b, c) ∈ R, maka (a, c) ∈ R.</li>
+          <li><strong>Ekuivalensi:</strong> Relasi yang bersifat refleksif, simetris, dan transitif sekaligus.</li>
+        </ul>
+      </div>
+      <div class="quiz-section">
+        <div class="quiz-header">
+          <div class="quiz-title">Latihan Soal Jenis Relasi</div>
+          <button class="btn btn-sm" onclick="checkAnswers('jenis')">Cek Jawaban</button>
+        </div>
+        <div id="quiz-jenis"></div>
+      </div>
+    </div>
+
+    <!-- TAB 3: FUNGSI -->
+    <div class="tab-content" id="tab3">
+      <div class="material-box">
+        <h3>3. Fungsi (Pemetaan)</h3>
+        <p>Fungsi adalah relasi khusus di mana setiap elemen domain (himpunan asal) berpasangan dengan tepat satu elemen kodomain (himpunan tujuan).</p>
+        <p><strong>Syarat suatu relasi dikatakan fungsi:</strong> Tidak ada elemen domain yang memiliki lebih dari satu pasangan (tidak ada panah yang bercabang).</p>
+        <p><strong>Jenis Fungsi:</strong></p>
+        <ul>
+          <li><strong>Injektif (Into):</strong> Fungsi yang memetakan elemen domain berbeda ke kodomain berbeda. Tidak ada dua domain yang memetakan ke kodomain yang sama.</li>
+          <li><strong>Surjektif (Onto):</strong> Semua elemen kodomain merupakan range (memiliki pasangan di domain).</li>
+          <li><strong>Bijektif (Korespondensi 1-1):</strong> Fungsi yang injektif dan surjektif sekaligus.</li>
+        </ul>
+        <p><strong>Notasi Fungsi:</strong> f: x → y atau f(x) = y. (Dibaca: f dari x sama dengan y).</p>
+      </div>
+      <div class="quiz-section">
+        <div class="quiz-header">
+          <div class="quiz-title">Latihan Soal Fungsi</div>
+          <button class="btn btn-sm" onclick="checkAnswers('fungsi')">Cek Jawaban</button>
+        </div>
+        <div id="quiz-fungsi"></div>
+      </div>
+    </div>
+
+    <!-- TAB 4: FUNGSI KHUSUS -->
+    <div class="tab-content" id="tab4">
+      <div class="material-box">
+        <h3>4. Fungsi Identitas, Genap, & Ganjil</h3>
+        <ul>
+          <li><strong>Fungsi Identitas:</strong> Memetakan setiap elemen ke dirinya sendiri. f(x) = x.</li>
+          <li><strong>Fungsi Genap:</strong> Jika f(-x) = f(x). Grafiknya simetris terhadap sumbu-Y. Contoh: f(x) = x².</li>
+          <li><strong>Fungsi Ganjil:</strong> Jika f(-x) = -f(x). Grafiknya simetris terhadap titik asal (0,0). Contoh: f(x) = x³.</li>
+        </ul>
+      </div>
+      <div class="quiz-section">
+        <div class="quiz-header">
+          <div class="quiz-title">Latihan Soal Fungsi Khusus</div>
+          <button class="btn btn-sm" onclick="checkAnswers('khusus')">Cek Jawaban</button>
+        </div>
+        <div id="quiz-khusus"></div>
+      </div>
+    </div>
+
+    <!-- TAB 5: PIECEWISE -->
+    <div class="tab-content" id="tab5">
+      <div class="material-box">
+        <h3>5. Fungsi Piecewise (Fungsi Sepenggal)</h3>
+        <p>Fungsi piecewise adalah fungsi yang definisinya berbeda untuk interval nilai x yang berbeda. Ditulis dengan kurung kurawal yang menunjukkan syarat domain untuk masing-masing bagian fungsi.</p>
+        <p><strong>Contoh:</strong> f(x) = { 2x + 1, jika x < 0; x², jika x ≥ 0 }</p>
+        <p>Untuk menghitung nilai f(x), kita harus melihat dulu di interval mana nilai x tersebut berada, lalu menggunakan rumus yang sesuai.</p>
+      </div>
+      <div class="quiz-section">
+        <div class="quiz-header">
+          <div class="quiz-title">Latihan Soal Fungsi Piecewise</div>
+          <button class="btn btn-sm" onclick="checkAnswers('piece')">Cek Jawaban</button>
+        </div>
+        <div id="quiz-piece"></div>
+      </div>
+    </div>
+
+    <!-- TAB 6: ALJABAR FUNGSI -->
+    <div class="tab-content" id="tab6">
+      <div class="material-box">
+        <h3>6. Aljabar Fungsi</h3>
+        <p>Operasi pada dua fungsi f(x) dan g(x) menghasilkan fungsi baru.</p>
+        <ul>
+          <li><strong>Penjumlahan:</strong> (f + g)(x) = f(x) + g(x)</li>
+          <li><strong>Selisih:</strong> (f - g)(x) = f(x) - g(x)</li>
+          <li><strong>Hasil Kali:</strong> (f × g)(x) = f(x) × g(x)</li>
+          <li><strong>Hasil Bagi:</strong> (f / g)(x) = f(x) / g(x), dengan syarat g(x) ≠ 0</li>
+          <li><strong>Pembagian Sintetik (Horner):</strong> Metode pembagian polinomial yang lebih cepat untuk membagi fungsi polinomial dengan bentuk (x - k).</li>
+        </ul>
+      </div>
+      <div class="quiz-section">
+        <div class="quiz-header">
+          <div class="quiz-title">Latihan Soal Aljabar Fungsi</div>
+          <button class="btn btn-sm" onclick="checkAnswers('aljabar')">Cek Jawaban</button>
+        </div>
+        <div id="quiz-aljabar"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 5: PEMBAHASAN PR -->
+<section class="slide" id="slide5">
+  <div class="slide-header">
+    <span class="badge">Pembahasan PR</span>
+    <h2 class="display slide-title">Koreksi Pekerjaan Rumah</h2>
+    <p class="slide-sub">Berikut adalah pembahasan interaktif untuk soal PR minggu lalu. Klik tombol untuk melihat langkah penyelesaian!</p>
+  </div>
+  <div style="max-width:900px;margin:0 auto;width:100%">
+    <div class="pr-card">
+      <h3>Soal 1: Tentukan Domain dan Range</h3>
+      <p>Diketahui relasi R = {(1, a), (2, b), (3, a), (4, c)} dari himpunan A = {1, 2, 3, 4} ke B = {a, b, c, d}. Tentukan Domain, Kodomain, dan Range!</p>
+      <button class="btn btn-sm" onclick="toggleStep('pr1')">Lihat Pembahasan</button>
+      <div class="pr-step" id="pr1">
+        <h4>Langkah Penyelesaian:</h4>
+        <p>1. <strong>Domain</strong> adalah himpunan elemen pertama: <span class="math">D = {1, 2, 3, 4}</span></p>
+        <p>2. <strong>Kodomain</strong> adalah himpunan tujuan secara keseluruhan: <span class="math">K = {a, b, c, d}</span></p>
+        <p>3. <strong>Range</strong> adalah elemen kedua yang benar-benar terhubung: <span class="math">R = {a, b, c}</span></p>
+      </div>
+    </div>
+
+    <div class="pr-card">
+      <h3>Soal 2: Notasi Fungsi</h3>
+      <p>Diketahui f(x) = 2x² - 3x + 1. Tentukan nilai f(2)!</p>
+      <button class="btn btn-sm" onclick="toggleStep('pr2')">Lihat Pembahasan</button>
+      <div class="pr-step" id="pr2">
+        <h4>Langkah Penyelesaian:</h4>
+        <p>Substitusikan x = 2 ke dalam fungsi f(x):</p>
+        <p><span class="math">f(2) = 2(2)² - 3(2) + 1</span></p>
+        <p><span class="math">f(2) = 2(4) - 6 + 1</span></p>
+        <p><span class="math">f(2) = 8 - 6 + 1 = 3</span></p>
+      </div>
+    </div>
+
+    <div class="pr-card">
+      <h3>Soal 3: Fungsi Piecewise</h3>
+      <p>Diketahui f(x) = { 3x - 1, jika x ≤ 2; x² + 1, jika x > 2 }. Tentukan f(3)!</p>
+      <button class="btn btn-sm" onclick="toggleStep('pr3')">Lihat Pembahasan</button>
+      <div class="pr-step" id="pr3">
+        <h4>Langkah Penyelesaian:</h4>
+        <p>1. Cek dulu nilai x = 3. Karena 3 > 2, maka kita gunakan rumus bagian kedua, yaitu f(x) = x² + 1.</p>
+        <p>2. Substitusikan x = 3:</p>
+        <p><span class="math">f(3) = (3)² + 1 = 9 + 1 = 10</span></p>
+      </div>
+    </div>
+
+    <div class="pr-card">
+      <h3>Soal 4: Aljabar Fungsi</h3>
+      <p>Diketahui f(x) = x + 2 dan g(x) = x² - 1. Tentukan (f + g)(3)!</p>
+      <button class="btn btn-sm" onclick="toggleStep('pr4')">Lihat Pembahasan</button>
+      <div class="pr-step" id="pr4">
+        <h4>Langkah Penyelesaian:</h4>
+        <p>1. Rumus penjumlahan fungsi: <span class="math">(f + g)(x) = f(x) + g(x) = (x + 2) + (x² - 1) = x² + x + 1</span></p>
+        <p>2. Substitusikan x = 3:</p>
+        <p><span class="math">(f + g)(3) = (3)² + 3 + 1 = 9 + 3 + 1 = 13</span></p>
+        <p><em>Cara alternatif:</em> Hitung f(3) = 5, g(3) = 8. Lalu 5 + 8 = 13.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 6: WAYGROUND -->
+<section class="slide" id="slide6">
+  <div class="wg-content">
+    <div class="wg-icon">🎯</div>
+    <span class="badge">Latihan Mandiri</span>
+    <h2 class="display slide-title" style="margin:1rem 0">Waktunya Berlatih!</h2>
+    <p class="slide-sub">Untuk menguasai materi ini lebih dalam, ayo kerjakan latihan soal interaktif di platform Wayground. Klik tombol di bawah untuk mulai!</p>
+    <a href="https://www.wayground.com" target="_blank" class="btn btn-magenta wg-btn">Kunjungi Wayground.com →</a>
+  </div>
+</section>
+
+<!-- SLIDE 7: KESIMPULAN -->
+<section class="slide" id="slide7">
+  <div class="cover-content">
+    <span class="badge">Kesimpulan</span>
+    <h1 class="display cover-title" style="font-size:clamp(2rem,5vw,3.5rem);background:linear-gradient(135deg,var(--mint),var(--cyan));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">Sampai Jumpa!</h1>
+    <p class="cover-sub">Hari ini kita telah mempelajari konsep relasi, fungsi, dan aljabarnya. Teruslah berlatih agar makin mahir!</p>
+    
+    <div class="reflection-grid">
+      <div class="refl-input">
+        <label>Hal baru yang kamu pelajari hari ini:</label>
+        <textarea placeholder="Tuliskan di sini..."></textarea>
+      </div>
+      <div class="refl-input">
+        <label>Bagian mana yang masih membingungkan?</label>
+        <textarea placeholder="Tuliskan di sini..."></textarea>
+      </div>
+    </div>
+    
+    <button class="btn" style="margin-top:2rem" onclick="showToast('Terima kasih untuk hari ini! Tetap semangat belajar! ♥')">Finish Lesson</button>
+  </div>
+</section>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============ NAVIGATION ============
+const TOTAL_SLIDES = 7;
+let currentSlide = 1;
+function buildDots(){
+  const d = document.getElementById('dots');
+  d.innerHTML='';
+  for(let i=1;i<=TOTAL_SLIDES;i++){
+    const b=document.createElement('button');
+    b.className='dot'+(i===1?' active':'');
+    b.onclick=()=>goToSlide(i);
+    d.appendChild(b);
+  }
+}
+function goToSlide(n){
+  if(n<1||n>TOTAL_SLIDES) return;
+  document.querySelectorAll('.slide').forEach(s=>s.classList.remove('active'));
+  document.getElementById('slide'+n).classList.add('active');
+  currentSlide=n;
+  document.getElementById('progress').textContent=`${n} / ${TOTAL_SLIDES}`;
+  document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i+1===n));
+  document.getElementById('prevBtn').disabled = n===1;
+  document.getElementById('nextBtn').disabled = n===TOTAL_SLIDES;
+  if(n===4) initQuizzes();
+  window.scrollTo(0,0);
+}
+function navigate(dir){ goToSlide(currentSlide+dir); }
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show';
+  clearTimeout(t._tm);
+  t._tm = setTimeout(()=>t.classList.remove('show'), 3000);
+}
+
+function switchTab(tabId, btn){
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  btn.classList.add('active');
+}
+
+function toggleStep(id){
+  document.getElementById(id).classList.toggle('show');
+}
+
+// ============ QUIZ DATA ============
+const quizzes = {
+  relasi: [
+    {q: "Diketahui A={1,2,3} ke B={a,b}. Relasi R={(1,a),(2,b),(3,a)}. Sebutkan Domain R!", a: "{1,2,3}"},
+    {q: "Dari soal no 1, apa Range dari R?", a: "{a,b}"},
+    {q: "Relasi 'faktor dari' dari A={1,2,3,6} ke A sendiri. Pasangan (2, ...) adalah?", a: "6"},
+    {q: "Jika himpunan asal = {a,b,c} dan tujuan = {1,2}, berapa maksimal pasangan berurutan yang mungkin?", a: "6"},
+    {q: "Diketahui R={(2,5),(3,7),(4,9)}. Apa Domainnya?", a: "{2,3,4}"},
+    {q: "Dari R di soal 5, berapakah range-nya?", a: "{5,7,9}"},
+    {q: "Relasi 'setengah dari' menghubungkan 10 dengan angka berapa?", a: "5"},
+    {q: "Pasangan berurutan (x,y) memiliki x sebagai elemen dari...", a: "domain"},
+    {q: "Kodomain juga disebut sebagai himpunan...", a: "tujuan"},
+    {q: "Range merupakan bagian dari...", a: "kodomain"}
+  ],
+  jenis: [
+    {q: "Relasi R pada himpunan A={(1,1),(2,2)} bersifat... (refleksif/simetris)", a: "refleksif"},
+    {q: "Jika (1,2) ∈ R dan (2,1) ∈ R, maka R bersifat...", a: "simetris"},
+    {q: "Jika (1,2) ∈ R tapi (2,1) ∉ R, maka R bersifat... (asimetris/antisimetris)", a: "asimetris"},
+    {q: "Relasi 'habis membagi' pada bilangan asli bersifat... (transitif/refleksif)", a: "transitif"},
+    {q: "Relasi yang bersifat refleksif, simetris, dan transitif disebut relasi...", a: "ekuivalensi"},
+    {q: "Apakah relasi {(1,2),(2,3),(1,3)} transitif? (ya/tidak)", a: "ya"},
+    {q: "Simetri total pada diagonal matriks menunjukkan sifat...", a: "refleksif"},
+    {q: "Relasi '>' pada bilangan real bersifat... (transitif/tidak)", a: "transitif"},
+    {q: "Jika a=b maka b=a, ini adalah sifat dari relasi...", a: "simetris"},
+    {q: "Relasi kosong pada himpunan {1,2} bersifat... (simetris/refleksif)", a: "simetris"}
+  ],
+  fungsi: [
+    {q: "f(x) = 2x + 1. Berapakah f(3)?", a: "7"},
+    {q: "f(x) = x^2 - 4. Berapakah f(-2)?", a: "0"},
+    {q: "Apakah relasi {(1,a),(2,a),(3,b)} merupakan fungsi? (ya/tidak)", a: "ya"},
+    {q: "Apakah {(1,a),(1,b),(2,c)} fungsi? (ya/tidak)", a: "tidak"},
+    {q: "Fungsi yang setiap anggota kodomainnya memiliki pasangan di domain disebut...", a: "surjektif"},
+    {q: "Fungsi yang memetakan domain berbeda ke kodomain berbeda disebut...", a: "injektif"},
+    {q: "Fungsi yang injektif dan surjektif disebut...", a: "bijektif"},
+    {q: "f(x) = 5x. Tentukan f(4)!", a: "20"},
+    {q: "Notasi f: x → y artinya f memetakan x ke...", a: "y"},
+    {q: "Syarat relasi disebut fungsi adalah tidak ada domain yang memiliki panah...", a: "bercabang"}
+  ],
+  khusus: [
+    {q: "Fungsi f(x) = x disebut fungsi...", a: "identitas"},
+    {q: "f(x) = x^2. Apakah f(-x) = f(x)? (ya/tidak)", a: "ya"},
+    {q: "Fungsi f(x) = x^2 termasuk fungsi... (genap/ganjil)", a: "genap"},
+    {q: "f(x) = x^3. Apakah f(-x) = -f(x)? (ya/tidak)", a: "ya"},
+    {q: "Fungsi f(x) = x^3 termasuk fungsi... (genap/ganjil)", a: "ganjil"},
+    {q: "Grafik fungsi genap simetris terhadap sumbu...", a: "y"},
+    {q: "Grafik fungsi ganjil simetris terhadap titik...", a: "(0,0)"},
+    {q: "f(x) = 5. Tentukan f(10)!", a: "5"},
+    {q: "Apakah f(x) = 2x + 1 fungsi genap atau ganjil? (genap/ganjil/tidak keduanya)", a: "tidak keduanya"},
+    {q: "f(x) = -x. Tentukan f(-5)!", a: "5"}
+  ],
+  piece: [
+    {q: "f(x) = {2x, jika x<0; x+1, jika x>=0}. Tentukan f(-2)!", a: "-4"},
+    {q: "Dari fungsi di atas, tentukan f(0)!", a: "1"},
+    {q: "Dari fungsi di atas, tentukan f(3)!", a: "4"},
+    {q: "f(x) = {x^2, jika x<=1; 3x, jika x>1}. Tentukan f(-1)!", a: "1"},
+    {q: "Dari fungsi di atas, tentukan f(1)!", a: "1"},
+    {q: "Dari fungsi di atas, tentukan f(2)!", a: "6"},
+    {q: "Apa syarat interval untuk menggunakan rumus x^2 pada fungsi di atas?", a: "x<=1"},
+    {q: "f(x) = {5, jika x<3; 10, jika x>=3}. Tentukan f(2)!", a: "5"},
+    {q: "Dari fungsi di atas, tentukan f(5)!", a: "10"},
+    {q: "Dari fungsi di atas, tentukan f(3)!", a: "10"}
+  ],
+  aljabar: [
+    {q: "f(x)=x+1, g(x)=x-1. Berapakah (f+g)(2)?", a: "4"},
+    {q: "Dari fungsi di atas, berapakah (f-g)(2)?", a: "2"},
+    {q: "Dari fungsi di atas, berapakah (f*g)(2)?", a: "3"},
+    {q: "Dari fungsi di atas, berapakah (f/g)(2)?", a: "3"},
+    {q: "f(x)=2x, g(x)=x^2. Berapakah (f+g)(3)?", a: "15"},
+    {q: "Dari fungsi di atas, berapakah (f*g)(3)?", a: "54"},
+    {q: "f(x)=x+2, g(x)=3x. Berapakah (f-g)(1)?", a: "0"},
+    {q: "Dari fungsi di atas, berapakah (f/g)(1)?", a: "1"},
+    {q: "Pembagian polinomial (x^2-1) dengan (x-1) menghasilkan...", a: "x+1"},
+    {q: "Hasil bagi 2x^2+3x+1 dengan x+1 adalah...", a: "2x+1"}
+  ]
+};
+
+function initQuizzes(){
+  for(const key in quizzes){
+    const container = document.getElementById('quiz-'+key);
+    if(!container || container.childNodes.length > 0) continue; // skip if already rendered
+    let html = '';
+    quizzes[key].forEach((item, i) => {
+      html += `
+        <div class="q-item">
+          <div><span class="q-num">${i+1}.</span><span class="q-text">${item.q}</span></div>
+          <input type="text" class="q-input" id="${key}-${i}" data-ans="${item.a.toLowerCase()}" placeholder="Jawaban...">
+          <div class="q-feedback" id="fb-${key}-${i}"></div>
+        </div>
+      `;
+    });
+    container.innerHTML = html;
+  }
+}
+
+function normalizeStr(str) {
+  return str.toLowerCase().replace(/\s/g, '').replace(/[.,{}()]/g, '').replace(/²/g, '2').replace(/³/g, '3');
+}
+
+function checkAnswers(category){
+  const items = quizzes[category];
+  items.forEach((item, i) => {
+    const input = document.getElementById(`${category}-${i}`);
+    const fb = document.getElementById(`fb-${category}-${i}`);
+    const userAns = input.value.trim();
+    
+    if(!userAns){
+      fb.className = 'q-feedback wrong';
+      fb.innerHTML = `<strong>Belum diisi.</strong> Jawaban yang benar: <strong>${item.a}</strong>`;
+    } else if (normalizeStr(userAns) === normalizeStr(item.a)) {
+      input.classList.remove('wrong');
+      input.classList.add('correct');
+      fb.className = 'q-feedback correct show';
+      fb.innerHTML = `<strong>Benar!</strong> Jawabanmu tepat.`;
+    } else {
+      input.classList.remove('correct');
+      input.classList.add('wrong');
+      fb.className = 'q-feedback wrong show';
+      fb.innerHTML = `<strong>Belum tepat.</strong> Jawaban yang benar: <strong>${item.a}</strong>. Pembahasan: Pastikan kamu memahami konsep di materi atas.`;
+    }
+  });
+  showToast('Jawaban telah dicek! Lihat feedback di bawah setiap soal.');
+}
+
+// INIT
+buildDots();
+</script>
+</body>
+</html>
