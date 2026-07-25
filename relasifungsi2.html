@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relasi & Fungsi ✨ Kelas 11</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root {
+  --primary: #5B21B6;
+  --primary-light: #8B5CF6;
+  --primary-dark: #4C1D95;
+  --accent: #EC4899;
+  --accent-light: #F472B6;
+  --bg-main: #F5F3FF;
+  --bg-card: #FFFFFF;
+  --text-dark: #1F2937;
+  --text-mid: #4B5563;
+  --text-light: #9CA3AF;
+  --success: #10B981;
+  --danger: #EF4444;
+  --warning: #F59E0B;
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; margin: 0; overflow: hidden; }
+body { font-family: 'Poppins', sans-serif; background: var(--bg-main); color: var(--text-dark); }
+.font-cute { font-family: 'Fredoka', sans-serif; }
+
+/* Math Equation Styling */
+.math { font-family: 'Times New Roman', serif; font-style: italic; font-size: 1.05em; }
+.math-block { background: #F8F7FC; border-left: 4px solid var(--primary-light); padding: 1rem 1.5rem; border-radius: 8px; margin: 1rem 0; overflow-x: auto; }
+.frac { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; margin: 0 4px; line-height: 1.1; position: relative; top: -2px; }
+.frac .num, .frac .den { padding: 0 4px; font-size: 0.95em; }
+.frac .num { border-bottom: 1.5px solid currentColor; }
+.sqrt { border-top: 1.5px solid currentColor; padding-top: 1px; margin-top: 2px; display: inline-block; }
+.sqrt::before { content: '√'; margin-right: -2px; font-size: 0.9em; position: relative; top: 2px; }
+
+/* Decorations */
+.bg-decor { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+.bg-decor span { position: absolute; color: var(--primary-light); opacity: 0.08; font-size: 2.5rem; animation: floatUp linear infinite; }
+@keyframes floatUp { 0% { transform: translateY(110vh) rotate(0deg); } 100% { transform: translateY(-20vh) rotate(360deg); } }
+@keyframes pop { 0% { transform: scale(.5); opacity: 0; } 60% { transform: scale(1.1); } 100% { transform: scale(1); } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
+
+/* Layout */
+.app-shell { position: relative; width: 100vw; height: 100vh; z-index: 1; }
+.slide { position: absolute; inset: 0; display: none; flex-direction: column; overflow-y: auto; padding: 2rem 4rem 6rem; }
+.slide.active { display: flex; animation: slideUp .5s ease-out; }
+.slide::-webkit-scrollbar { width: 6px; }
+.slide::-webkit-scrollbar-thumb { background: var(--primary-light); border-radius: 3px; }
+.slide-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-shrink: 0; flex-wrap: wrap; gap: 1rem; }
+.slide-tag { display: inline-flex; align-items: center; gap: .5rem; background: var(--primary); color: white; padding: .4rem 1.2rem; border-radius: 999px; font-weight: 600; font-size: .85rem; box-shadow: 0 4px 12px rgba(91,33,182,.2); }
+.slide-num { background: rgba(255,255,255,.3); width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: .75rem; }
+
+/* Navigation */
+.nav-bar { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 1.5rem; background: white; padding: .5rem 1.5rem; border-radius: 999px; box-shadow: 0 10px 30px rgba(0,0,0,.1); z-index: 50; }
+.nav-btn { background: var(--primary); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; transition: all .3s; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+.nav-btn:hover { background: var(--accent); transform: scale(1.1); }
+.nav-btn:disabled { background: #E5E7EB; color: #9CA3AF; cursor: not-allowed; transform: none; }
+.dots { display: flex; gap: .4rem; max-width: 300px; overflow-x: auto; }
+.dot { width: 10px; height: 10px; border-radius: 50%; background: #E5E7EB; cursor: pointer; transition: all .3s; flex-shrink: 0; }
+.dot.active { background: var(--primary); width: 30px; border-radius: 5px; }
+.dot.completed { background: var(--success); }
+
+/* Cards & Buttons */
+.card { background: white; border-radius: 16px; padding: 1.5rem; box-shadow: 0 4px 20px rgba(91,33,182,.05); border: 1px solid #F3F4F6; }
+.btn { background: var(--primary); color: white; border: none; padding: .7rem 1.5rem; border-radius: 10px; font-family: 'Poppins',sans-serif; font-weight: 500; cursor: pointer; transition: all .3s; display: inline-flex; align-items: center; gap: .5rem; font-size: .9rem; }
+.btn:hover { background: var(--primary-dark); transform: translateY(-2px); box-shadow: 0 6px 14px rgba(91,33,182,.2); }
+.btn.accent { background: var(--accent); }
+.btn.accent:hover { background: var(--accent-light); }
+.btn.outline { background: white; color: var(--primary); border: 2px solid var(--primary-light); }
+.btn.outline:hover { background: var(--bg-main); }
+.btn.success { background: var(--success); }
+.btn.danger { background: var(--danger); }
+.input-cute { background: white; border: 2px solid #E5E7EB; border-radius: 12px; padding: .8rem 1.2rem; font-size: 1rem; width: 100%; transition: all .3s; }
+.input-cute:focus { outline: none; border-color: var(--primary-light); box-shadow: 0 0 0 4px rgba(139,92,246,.2); }
+
+/* Options */
+.opt-btn { background: white; border: 2px solid #E5E7EB; color: var(--text-dark); padding: .8rem 1.2rem; border-radius: 12px; cursor: pointer; transition: all .2s; text-align: left; width: 100%; display: flex; align-items: center; gap: .8rem; font-weight: 500; }
+.opt-btn:hover { border-color: var(--primary-light); background: #FAFAFF; }
+.opt-btn.selected { border-color: var(--primary); background: #F5F3FF; color: var(--primary); }
+.opt-btn.correct { border-color: var(--success); background: #ECFDF5; color: #065F46; }
+.opt-btn.wrong { border-color: var(--danger); background: #FEF2F2; color: #991B1B; }
+.opt-letter { background: #F3F4F6; color: var(--text-mid); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; font-size: .85rem; }
+.opt-btn.selected .opt-letter { background: var(--primary); color: white; }
+.opt-btn.correct .opt-letter { background: var(--success); color: white; }
+.opt-btn.wrong .opt-letter { background: var(--danger); color: white; }
+
+/* Diagram Panah */
+.diagram-box { background: white; border: 2px solid #E5E7EB; border-radius: 16px; padding: 1rem; text-align: center; transition: all .3s; position: relative; display: flex; flex-direction: column; align-items: center; }
+.diagram-box.selected { border-color: var(--primary); background: #F5F3FF; }
+.diagram-box.correct { border-color: var(--success); background: #ECFDF5; }
+.diagram-box.wrong { border-color: var(--danger); background: #FEF2F2; }
+.diagram-check { position: absolute; top: 10px; right: 10px; width: 28px; height: 28px; border-radius: 50%; background: #E5E7EB; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all .2s; border: none; color: white; font-size: .8rem; }
+.diagram-check.checked { background: var(--primary); }
+svg.diagram-svg { max-width: 100%; height: auto; }
+
+/* Tabs */
+.tab-btn { background: white; border: 2px solid #E5E7EB; color: var(--text-mid); padding: .6rem 1.2rem; border-radius: 12px; cursor: pointer; transition: all .3s; font-weight: 500; font-size: .9rem; }
+.tab-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+/* Toast */
+.toast { position: fixed; top: 2rem; left: 50%; transform: translateX(-50%) translateY(-150px); background: white; padding: 1rem 2rem; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,.15); z-index: 100; transition: transform .4s; display: flex; align-items: center; gap: .8rem; font-weight: 500; }
+.toast.show { transform: translateX(-50%) translateY(0); }
+.toast.success { border-left: 5px solid var(--success); }
+.toast.error { border-left: 5px solid var(--danger); }
+
+/* Misc */
+.gradient-text { background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.q-card { border: 2px solid #E5E7EB; border-radius: 12px; padding: 1rem; margin-bottom: 1rem; transition: all .3s; }
+.q-card.correct { border-color: var(--success); background: #ECFDF5; }
+.q-card.wrong { border-color: var(--danger); background: #FEF2F2; }
+.disc-box { background: #F0F9FF; border-left: 4px solid #0EA5E9; padding: .8rem 1rem; border-radius: 8px; margin-top: .8rem; font-size: .9rem; color: var(--text-mid); display: none; }
+.disc-box.show { display: block; animation: slideUp .3s; }
+.sparkle { position: absolute; color: var(--accent); font-size: 1.5rem; animation: pop 2s infinite; pointer-events: none; }
+@media (max-width: 768px) { .slide { padding: 1.5rem 1.5rem 6rem; } }
+</style>
+</head>
+<body>
+
+<div class="bg-decor" id="bgDecor"></div>
+
+<div class="app-shell">
+
+<!-- SLIDE 1: COVER -->
+<section class="slide active" data-slide="1">
+  <div class="flex-1 flex flex-col items-center justify-center text-center relative">
+    <div class="sparkle" style="top:10%; left:15%;">✨</div>
+    <div class="sparkle" style="top:20%; right:15%; animation-delay:.5s;">📐</div>
+    <div class="sparkle" style="bottom:20%; left:10%; animation-delay:1s;">🚀</div>
+    <div class="sparkle" style="bottom:15%; right:12%; animation-delay:1.5s;">✨</div>
+    
+    <div class="text-sm font-cute tracking-[.3em] text-purple-500 mb-3">MATEMATIKA KELAS 11</div>
+    <h1 class="text-5xl md:text-7xl font-bold mb-4 gradient-text" style="line-height:1.1;">Relasi & Fungsi</h1>
+    <div class="text-gray-500 text-lg md:text-xl mb-8">Memahami Hubungan Matematis antar Himpunan 🚀</div>
+    
+    <div class="card max-w-md w-full">
+      <div class="text-purple-600 font-semibold mb-4 flex items-center justify-center gap-2 text-lg">
+        <i class="fas fa-user-circle"></i> Selamat Datang!
+      </div>
+      <input type="text" id="studentName" class="input-cute text-center" placeholder="Masukkan namamu di sini..." maxlength="30">
+      <button id="startBtn" class="btn mt-4 mx-auto block" style="font-size:1.05rem; padding:.8rem 2.5rem;">
+        <i class="fas fa-arrow-right"></i> Mulai Belajar
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 2: TUJUAN PEMBELAJARAN -->
+<section class="slide" data-slide="2">
+  <div class="slide-header">
+    <div class="slide-tag"><span class="slide-num">2</span> Tujuan Pembelajaran</div>
+    <div class="text-gray-400 text-sm">🎯 Apa yang akan kamu kuasai?</div>
+  </div>
+  <div class="flex-1 flex flex-col items-center justify-center">
+    <h2 class="text-3xl md:text-4xl font-bold text-center mb-8 gradient-text">Tujuan Pembelajaran</h2>
+    <div class="grid md:grid-cols-2 gap-4 max-w-4xl w-full">
+      <div class="card border-l-4 border-purple-500">
+        <div class="text-3xl mb-2">1️⃣</div>
+        <h3 class="font-bold text-purple-700 text-lg mb-1">Memahami Konsep</h3>
+        <p class="text-sm text-gray-600">Siswa mampu mendefinisikan relasi, fungsi, domain, kodomain, dan range dengan benar.</p>
+      </div>
+      <div class="card border-l-4 border-pink-500">
+        <div class="text-3xl mb-2">2️⃣</div>
+        <h3 class="font-bold text-pink-700 text-lg mb-1">Menentukan Domain</h3>
+        <p class="text-sm text-gray-600">Siswa mampu menentukan daerah asal (domain) suatu fungsi aljabar.</p>
+      </div>
+      <div class="card border-l-4 border-purple-500">
+        <div class="text-3xl mb-2">3️⃣</div>
+        <h3 class="font-bold text-purple-700 text-lg mb-1">Operasi Fungsi</h3>
+        <p class="text-sm text-gray-600">Siswa mampu melakukan operasi aljabar pada fungsi (penjumlahan, perkalian, dll).</p>
+      </div>
+      <div class="card border-l-4 border-pink-500">
+        <div class="text-3xl mb-2">4️⃣</div>
+        <h3 class="font-bold text-pink-700 text-lg mb-1">Jenis-jenis Fungsi</h3>
+        <p class="text-sm text-gray-600">Siswa mampu mengidentifikasi fungsi ganjil, genap, injektif, surjektif, dan bijektif.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 3: INGAT-INGAT -->
+<section class="slide" data-slide="3">
+  <div class="slide-header">
+    <div class="slide-tag"><span class="slide-num">3</span> Ingat-Ingat</div>
+    <div class="flex gap-2 flex-wrap">
+      <button class="tab-btn active" onclick="switchRecallTab('def')">Definisi</button>
+      <button class="tab-btn" onclick="switchRecallTab('diag')">Cek 10 Diagram</button>
+      <button class="tab-btn" onclick="switchRecallTab('pair')">Cek 10 Pasangan</button>
+    </div>
+  </div>
+  
+  <!-- Tab Definisi -->
+  <div id="recallDef" class="recall-tab">
+    <div class="grid md:grid-cols-2 gap-4 mb-4">
+      <div class="card bg-purple-50 border-purple-200">
+        <h3 class="font-bold text-purple-700 text-lg mb-2">🔗 Definisi Relasi</h3>
+        <p class="text-sm text-gray-700 mb-2"><b>Relasi</b> adalah aturan yang menghubungkan setiap anggota himpunan A (domain) dengan anggota himpunan B (kodomain). Satu anggota A boleh berelasi dengan banyak anggota B.</p>
+      </div>
+      <div class="card bg-pink-50 border-pink-200">
+        <h3 class="font-bold text-pink-700 text-lg mb-2">🔗 Definisi Fungsi</h3>
+        <p class="text-sm text-gray-700 mb-2"><b>Fungsi</b> adalah relasi khusus di mana <b>setiap anggota A TEPAT memiliki satu pasangan</b> di B. Tidak boleh ada anggota A yang punya dua pasangan di B.</p>
+      </div>
+    </div>
+    <div class="grid md:grid-cols-3 gap-4 mb-4">
+      <div class="card text-center">
+        <div class="text-xs text-gray-500 mb-1">DOMAIN (Df)</div>
+        <div class="font-bold text-purple-600">Daerah Asal</div>
+        <p class="text-xs text-gray-500 mt-1">Anggota himpunan A yang dipetakan</p>
+      </div>
+      <div class="card text-center">
+        <div class="text-xs text-gray-500 mb-1">KODOMAIN (K)</div>
+        <div class="font-bold text-pink-600">Daerah Kawan</div>
+        <p class="text-xs text-gray-500 mt-1">Anggota himpunan B tempat pemetaan</p>
+      </div>
+      <div class="card text-center">
+        <div class="text-xs text-gray-500 mb-1">RANGE (Rf)</div>
+        <div class="font-bold text-purple-600">Daerah Hasil</div>
+        <p class="text-xs text-gray-500 mt-1">Anggota B yang menjadi pasangan A</p>
+      </div>
+    </div>
+    <div class="card bg-gray-50">
+      <h4 class="font-bold text-gray-700 mb-2">Cara Menyatakan Fungsi:</h4>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm text-gray-600">
+        <div>1️⃣ Diagram Panah</div>
+        <div>2️⃣ Diagram Cartesius</div>
+        <div>3️⃣ Himpunan Pasangan Berurutan</div>
+        <div>4️⃣ Rumus / Persamaan <span class="math">f(x) = ...</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab Diagram -->
+  <div id="recallDiag" class="recall-tab" style="display:none;">
+    <h3 class="text-xl font-bold text-center mb-4 text-purple-600">Centang kotak jika diagram menunjukkan <span class="text-pink-600">FUNGSI</span>!</h3>
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-4" id="diagramGrid"></div>
+    <div class="text-center mt-4">
+      <button class="btn accent" onclick="checkDiagrams()"><i class="fas fa-check-double"></i> Cek Jawaban</button>
+    </div>
+  </div>
+
+  <!-- Tab Pasangan -->
+  <div id="recallPair" class="recall-tab" style="display:none;">
+    <h3 class="text-xl font-bold text-center mb-4 text-purple-600">Pilih himpunan pasangan berurutan yang merupakan <span class="text-pink-600">FUNGSI</span>!</h3>
+    <div class="grid md:grid-cols-2 gap-3 max-w-3xl mx-auto" id="pairGrid"></div>
+    <div class="text-center mt-4">
+      <button class="btn accent" onclick="checkPairs()"><i class="fas fa-check-double"></i> Cek Jawaban</button>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 4: CARA MENCARI DOMAIN -->
+<section class="slide" data-slide="4">
+  <div class="slide-header">
+    <div class="slide-tag"><span class="slide-num">4</span> Domain Suatu Fungsi</div>
+    <div class="text-gray-400 text-sm">🎯 Cara menentukan daerah asal</div>
+  </div>
+  <div class="flex-1">
+    <h2 class="text-2xl font-bold text-purple-600 mb-3">Cara Mencari Domain Suatu Fungsi</h2>
+    <p class="text-gray-600 mb-4">Domain (Daerah Asal) adalah himpunan semua nilai <span class="math">x</span> yang membuat fungsi terdefinisi (tidak menghasilkan pembagian nol atau akar kuadrat negatif).</p>
+    
+    <div class="grid md:grid-cols-2 gap-3 mb-4">
+      <div class="card bg-purple-50">
+        <div class="font-bold text-purple-700 mb-2">1. Fungsi Aljabar / Polinom</div>
+        <p class="text-sm text-gray-600 mb-2">Bentuk: <span class="math">y = f(x)</span></p>
+        <div class="math-block text-sm">Domain: <span class="math">x ∈ ℝ</span><br>Contoh: <span class="math">f(x) = 2x + 1</span> atau <span class="math">f(x) = x² - 3</span></div>
+      </div>
+      <div class="card bg-pink-50">
+        <div class="font-bold text-pink-700 mb-2">2. Fungsi Pecahan (Rasional)</div>
+        <p class="text-sm text-gray-600 mb-2">Bentuk: <span class="math">y = f(x) / g(x)</span></p>
+        <div class="math-block text-sm">Syarat: <span class="math">g(x) ≠ 0</span><br>Contoh: <span class="math">f(x) = 1 / (x - 3)</span> ⇒ <span class="math">x - 3 ≠ 0</span> ⇒ <span class="math">x ≠ 3</span></div>
+      </div>
+      <div class="card bg-purple-50">
+        <div class="font-bold text-purple-700 mb-2">3. Fungsi Akar</div>
+        <p class="text-sm text-gray-600 mb-2">Bentuk: <span class="math">y = √f(x)</span></p>
+        <div class="math-block text-sm">Syarat: <span class="math">f(x) ≥ 0</span><br>Contoh: <span class="math">f(x) = √(2x + 6)</span> ⇒ <span class="math">2x + 6 ≥ 0</span> ⇒ <span class="math">x ≥ -3</span></div>
+      </div>
+      <div class="card bg-pink-50">
+        <div class="font-bold text-pink-700 mb-2">4. Pecahan dengan Akar Penyebut</div>
+        <p class="text-sm text-gray-600 mb-2">Bentuk: <span class="math">y = f(x) / √g(x)</span></p>
+        <div class="math-block text-sm">Syarat: <span class="math">g(x) > 0</span><br>Contoh: <span class="math">f(x) = 1 / √(x - 2)</span> ⇒ <span class="math">x - 2 > 0</span> ⇒ <span class="math">x > 2</span></div>
+      </div>
+      <div class="card bg-purple-50">
+        <div class="font-bold text-purple-700 mb-2">5. Akar di Pembilang Pecahan</div>
+        <p class="text-sm text-gray-600 mb-2">Bentuk: <span class="math">y = √f(x) / g(x)</span></p>
+        <div class="math-block text-sm">Syarat: <span class="math">f(x) ≥ 0</span> dan <span class="math">g(x) ≠ 0</span><br>Contoh: <span class="math">f(x) = √x / (x - 1)</span> ⇒ <span class="math">x ≥ 0</span> dan <span class="math">x ≠ 1</span></div>
+      </div>
+      <div class="card bg-pink-50">
+        <div class="font-bold text-pink-700 mb-2">6. Penjumlahan Akar</div>
+        <p class="text-sm text-gray-600 mb-2">Bentuk: <span class="math">y = √f(x) ± √g(x)</span></p>
+        <div class="math-block text-sm">Syarat: <span class="math">f(x) ≥ 0</span> dan <span class="math">g(x) ≥ 0</span><br>Contoh: <span class="math">f(x) = √(x-2) + √(4-x)</span> ⇒ <span class="math">x ≥ 2</span> dan <span class="math">x ≤ 4</span></div>
+      </div>
+    </div>
+
+    <div class="card bg-gray-50">
+      <h3 class="font-bold text-purple-600 mb-3">📝 Latihan: Tentukan Domain!</h3>
+      <div id="domainExGrid" class="space-y-3"></div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 5: KODOMAIN & RANGE -->
+<section class="slide" data-slide="5">
+  <div class="slide-header">
+    <div class="slide-tag"><span class="slide-num">5</span> Kodomain & Range</div>
+    <div class="text-gray-400 text-sm">🎯 Daerah Kawan & Hasil</div>
+  </div>
+  <div class="flex-1">
+    <h2 class="text-2xl font-bold text-purple-600 mb-3">Cara Mencari Kodomain dan Range</h2>
+    <div class="grid md:grid-cols-2 gap-4 mb-4">
+      <div class="card bg-purple-50">
+        <h3 class="font-bold text-purple-700 mb-2">1. Dari Diagram Panah</h3>
+        <ul class="text-sm text-gray-600 list-disc pl-5 space-y-1">
+          <li><b>Kodomain</b>: Semua anggota himpunan B (kanan).</li>
+          <li><b>Range</b>: Anggota himpunan B yang menjadi tujuan panah.</li>
+        </ul>
+      </div>
+      <div class="card bg-pink-50">
+        <h3 class="font-bold text-pink-700 mb-2">2. Dari Persamaan</h3>
+        <ul class="text-sm text-gray-600 list-disc pl-5 space-y-1">
+          <li><b>Range</b>: Substitusi nilai domain ke <span class="math">f(x)</span>.</li>
+          <li>Jika <span class="math">y = f(x)</span>, maka range adalah himpunan semua <span class="math">y</span> yang terbentuk.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card bg-gray-50">
+      <h3 class="font-bold text-purple-600 mb-2">💡 Contoh:</h3>
+      <p class="text-sm text-gray-700">Diketahui <span class="math">f(x) = x²</span> dengan domain <span class="math">{ -1, 0, 1, 2 }</span>.</p>
+      <div class="math-block text-sm">
+        f(-1) = (-1)² = 1<br>
+        f(0) = 0² = 0<br>
+        f(1) = 1² = 1<br>
+        f(2) = 2² = 4<br>
+        <b>Range = { 0, 1, 4 }</b>
+      </div>
+      <p class="text-xs text-gray-500 mt-2">*Jika domainnya semua bilangan real <span class="math">ℝ</span> dan <span class="math">f(x) = x²</span>, maka range-nya adalah <span class="math">{ y | y ≥ 0 }</span>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 6: OPERASI ALJABAR FUNGSI -->
+<section class="slide" data-slide="6">
+  <div class="slide-header">
+    <div class="slide-tag"><span class="slide-num">6</span> Operasi Aljabar Fungsi</div>
+    <div id="opTabs" class="flex gap-2 flex-wrap">
+      <button class="tab-btn active" onclick="switchOpTab('add')">(f+g)(x)</button>
+      <button class="tab-btn" onclick="switchOpTab('sub')">(f-g)(x)</button>
+      <button class="tab-btn" onclick="switchOpTab('mul')">(f×g)(x)</button>
+      <button class="tab-btn" onclick="switchOpTab('div')">(f/g)(x)</button>
+      <button class="tab-btn" onclick="switchOpTab('comp')">(f∘g)(x)</button>
+      <button class="tab-btn" onclick="switchOpTab('kf')">(kf)(x)</button>
+    </div>
+  </div>
+  
+  <div id="opContent" class="flex-1">
+    <!-- Content injected by JS -->
+  </div>
+</section>
+
+<!-- SLIDE 7: JENIS FUNGSI -->
+<section class="slide" data-slide="7">
+  <div class="slide-header">
+    <div class="slide-tag"><span class="slide-num">7</span> Jenis-jenis Fungsi</div>
+    <div class="text-gray-400 text-sm">🚀 Keluarga Besar Fungsi</div>
+  </div>
+  <div class="flex-1">
+    <div class="grid md:grid-cols-2 gap-4">
+      
+      <div class="card bg-purple-50">
+        <div class="text-3xl mb-2">1️⃣</div>
+        <h3 class="font-bold text-purple-700 text-lg mb-1">Fungsi Ganjil</h3>
+        <div class="math-block text-sm"><span class="math">f(-x) = -f(x)</span></div>
+        <p class="text-xs text-gray-600 mt-2">Contoh: <span class="math">f(x) = x³</span> atau <span class="math">f(x) = sin(x)</span>.<br>Grafik simetris terhadap titik origin (0,0).</p>
+      </div>
+      
+      <div class="card bg-pink-50">
+        <div class="text-3xl mb-2">2️⃣</div>
+        <h3 class="font-bold text-pink-700 text-lg mb-1">Fungsi Genap</h3>
+        <div class="math-block text-sm"><span class="math">f(-x) = f(x)</span></div>
+        <p class="text-xs text-gray-600 mt-2">Contoh: <span class="math">f(x) = x²</span> atau <span class="math">f(x) = cos(x)</span>.<br>Grafik simetris terhadap sumbu Y.</p>
+      </div>
+      
+      <div class="card bg-purple-50">
+        <div class="flex justify-between items-start">
+          <div class="flex-1 pr-2">
+            <div class="text-3xl mb-2">3️⃣</div>
+            <h3 class="font-bold text-purple-700 text-lg mb-1">Fungsi Injektif (Satu-satu)</h3>
+            <div class="text-sm text-gray-600 mt-1">Trik: <span class="bg-purple-200 px-2 py-0.5 rounded font-bold text-purple-800">Kodomain tidak boleh selingkuh!</span></div>
+            <p class="text-xs text-gray-600 mt-2">Tidak ada dua anggota domain yang memetakan ke anggota kodomain yang sama.</p>
+          </div>
+          <svg width="120" height="100" viewBox="0 0 120 100">
+            <text x="20" y="15" font-size="10" fill="#6B7280" text-anchor="middle">A</text>
+            <text x="100" y="15" font-size="10" fill="#6B7280" text-anchor="middle">B</text>
+            <rect x="5" y="20" width="30" height="20" rx="4" fill="#EDE9FE" /><text x="20" y="34" font-size="12" fill="#5B21B6" text-anchor="middle" font-weight="600">1</text>
+            <rect x="5" y="45" width="30" height="20" rx="4" fill="#EDE9FE" /><text x="20" y="59" font-size="12" fill="#5B21B6" text-anchor="middle" font-weight="600">2</text>
+            <rect x="5" y="70" width="30" height="20" rx="4" fill="#EDE9FE" /><text x="20" y="84" font-size="12" fill="#5B21B6" text-anchor="middle" font-weight="600">3</text>
+            <rect x="85" y="20" width="30" height="20" rx="4" fill="#FCE7F3" /><text x="100" y="34" font-size="12" fill="#BE185D" text-anchor="middle" font-weight="600">a</text>
+            <rect x="85" y="45" width="30" height="20" rx="4" fill="#FCE7F3" /><text x="100" y="59" font-size="12" fill="#BE185D" text-anchor="middle" font-weight="600">b</text>
+            <rect x="85" y="70" width="30" height="20" rx="4" fill="#FCE7F3" /><text x="100" y="84" font-size="12" fill="#BE185D" text-anchor="middle" font-weight="600">c</text>
+            <path d="M35 30 C 60 30 60 30 85 30" stroke="#8B5CF6" stroke-width="1.5" fill="none" marker-end="url(#arr)" />
+            <path d="M35 55 C 60 55 60 55 85 55" stroke="#8B5CF6" stroke-width="1.5" fill="none" marker-end="url(#arr)" />
+            <path d="M35 80 C 60 80 60 80 85 80" stroke="#8B5CF6" stroke-width="1.5" fill="none" marker-end="url(#arr)" />
+            <defs><marker id="arr" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><polygon points="0 0, 6 3, 0 6" fill="#8B5CF6" /></marker></defs>
+          </svg>
+        </div>
+      </div>
+      
+      <div class="card bg-pink-50">
+        <div class="flex justify-between items-start">
+          <div class="flex-1 pr-2">
+            <div class="text-3xl mb-2">4️⃣</div>
+            <h3 class="font-bold text-pink-700 text-lg mb-1">Fungsi Surjektif (Onto)</h3>
+            <div class="text-sm text-gray-600 mt-1">Trik: <span class="bg-pink-200 px-2 py-0.5 rounded font-bold text-pink-800">Kodomain tidak ada jomblo!</span></div>
+            <p class="text-xs text-gray-600 mt-2">Semua anggota kodomain menjadi pasangan dari domain (range = kodomain).</p>
+          </div>
+          <svg width="120" height="100" viewBox="0 0 120 100">
+            <text x="20" y="15" font-size="10" fill="#6B7280" text-anchor="middle">A</text>
+            <text x="100" y="15" font-size="10" fill="#6B7280" text-anchor="middle">B</text>
+            <rect x="5" y="20" width="30" height="20" rx="4" fill="#EDE9FE" /><text x="20" y="34" font-size="12" fill="#5B21B6" text-anchor="middle" font-weight="600">1</text>
+            <rect x="5" y="45" width="30" height="20" rx="4" fill="#EDE9FE" /><text x="20" y="59" font-size="12" fill="#5B21B6" text-anchor="middle" font-weight="600">2</text>
+            <rect x="5" y="70" width="30" height="20" rx="4" fill="#EDE9FE" /><text x="20" y="84" font-size="12" fill="#5B21B6" text-anchor="middle" font-weight="600">3</text>
+            <rect x="85" y="32" width="30" height="20" rx="4" fill="#FCE7F3" /><text x="100" y="46" font-size="12" fill="#BE185D" text-anchor="middle" font-weight="600">a</text>
+            <rect x="85" y="62" width="30" height="20" rx="4" fill="#FCE7F3" /><text x="100" y="76" font-size="12" fill="#BE185D" text-anchor="middle" font-weight="600">b</text>
+            <path d="M35 30 C 60 30 60 42 85 42" stroke="#EC4899" stroke-width="1.5" fill="none" marker-end="url(#arr2)" />
+            <path d="M35 55 C 60 55 60 72 85 72" stroke="#EC4899" stroke-width="1.5" fill="none" marker-end="url(#arr2)" />
+            <path d="M35 80 C 60 80 60 46 85 46" stroke="#EC4899" stroke-width="1.5" fill="none" marker-end="url(#arr2)" />
+            <defs><marker id="arr2" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><polygon points="0 0, 6 3, 0 6" fill="#EC4899" /></marker></defs>
+          </svg>
+        </div>
+      </div>
+      
+      <div class="card md:col-span-2 bg-gradient-to-r from-purple-100 to-pink-100">
+        <div class="flex justify-between items-start">
+          <div class="flex-1 pr-2">
+            <div class="text-3xl mb-2">5️⃣</div>
+            <h3 class="font-bold text-purple-700 text-lg mb-1">Fungsi Bijektif</h3>
+            <div class="text-sm text-gray-600 mt-1">Trik: <span class="bg-white px-2 py-0.5 rounded font-bold text-purple-800">Tidak selingkuh dan tidak jomblo!</span></div>
+            <p class="text-xs text-gray-600 mt-2">Fungsi yang <b>injektif sekaligus surjektif</b>. Memiliki pasangan invers (kebalikan).</p>
+          </div>
+          <svg width="120" height="100" viewBox="0 0 120 100">
+            <text x="20" y="15" font-size="10" fill="#6B7280" text-anchor="middle">A</text>
+            <text x="100" y="15" font-size="10" fill="#6B7280" text-anchor="middle">B</text>
+            <rect x="5" y="20" width="30" height="20" rx="4" fill="#EDE9FE" /><text x="20" y="34" font-size="12" fill="#5B21B6" text-anchor="middle" font-weight="600">1</text>
+            <rect x="5" y="45" width="30" height="20" rx="4" fill="#EDE9FE" /><text x="20" y="59" font-size="12" fill="#5B21B6" text-anchor="middle" font-weight="600">2</text>
+            <rect x="5" y="70" width="30" height="20" rx="4" fill="#EDE9FE" /><text x="20" y="84" font-size="12" fill="#5B21B6" text-anchor="middle" font-weight="600">3</text>
+            <rect x="85" y="20" width="30" height="20" rx="4" fill="#FCE7F3" /><text x="100" y="34" font-size="12" fill="#BE185D" text-anchor="middle" font-weight="600">a</text>
+            <rect x="85" y="45" width="30" height="20" rx="4" fill="#FCE7F3" /><text x="100" y="59" font-size="12" fill="#BE185D" text-anchor="middle" font-weight="600">b</text>
+            <rect x="85" y="70" width="30" height="20" rx="4" fill="#FCE7F3" /><text x="100" y="84" font-size="12" fill="#BE185D" text-anchor="middle" font-weight="600">c</text>
+            <path d="M35 30 C 60 30 60 30 85 30" stroke="#5B21B6" stroke-width="1.5" fill="none" marker-end="url(#arr3)" />
+            <path d="M35 55 C 60 55 60 55 85 55" stroke="#5B21B6" stroke-width="1.5" fill="none" marker-end="url(#arr3)" />
+            <path d="M35 80 C 60 80 60 80 85 80" stroke="#5B21B6" stroke-width="1.5" fill="none" marker-end="url(#arr3)" />
+            <defs><marker id="arr3" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><polygon points="0 0, 6 3, 0 6" fill="#5B21B6" /></marker></defs>
+          </svg>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 8: LATIHAN SOAL -->
+<section class="slide" data-slide="8">
+  <div class="slide-header">
+    <div class="slide-tag"><span class="slide-num">8</span> Latihan Soal</div>
+    <div class="text-gray-400 text-sm">📝 30 Soal Pilihan Ganda</div>
+  </div>
+  <div class="flex-1">
+    <div class="flex justify-between items-center mb-3">
+      <h2 class="text-xl font-bold text-purple-600">🏆 Uji Pemahamanmu!</h2>
+      <div class="text-sm text-gray-500">Skor: <span id="quizScore" class="font-bold text-purple-600">0</span>/30</div>
+    </div>
+    <div id="quizGrid" class="space-y-4"></div>
+    <div class="text-center mt-4 mb-4">
+      <button class="btn accent" onclick="checkAllQuiz()"><i class="fas fa-check-double"></i> Cek Semua Jawaban</button>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 9: PEMBAHASAN PR -->
+<section class="slide" data-slide="9">
+  <div class="slide-header">
+    <div class="slide-tag"><span class="slide-num">9</span> Pembahasan PR</div>
+    <div class="text-gray-400 text-sm">📚 Mari koreksi bersama</div>
+  </div>
+  <div class="flex-1">
+    <h2 class="text-2xl font-bold text-purple-600 mb-4">📖 Pembahasan PR Rumah</h2>
+    <div class="grid md:grid-cols-2 gap-4">
+      <div class="card bg-gray-50">
+        <h3 class="font-bold text-purple-700 mb-2">Soal 1: Domain</h3>
+        <p class="text-sm text-gray-600 mb-2">Tentukan domain dari <span class="math">f(x) = √(x - 5)</span></p>
+        <div class="math-block text-sm">
+          Syarat: Upari ≥ 0<br>
+          x - 5 ≥ 0<br>
+          <b>x ≥ 5</b>
+        </div>
+      </div>
+      <div class="card bg-gray-50">
+        <h3 class="font-bold text-purple-700 mb-2">Soal 2: Operasi</h3>
+        <p class="text-sm text-gray-600 mb-2">Diketahui <span class="math">f(x) = 2x</span> dan <span class="math">g(x) = x + 3</span>. Tentukan <span class="math">(f∘g)(x)</span></p>
+        <div class="math-block text-sm">
+          (f∘g)(x) = f(g(x))<br>
+          = f(x + 3)<br>
+          = 2(x + 3)<br>
+          <b>= 2x + 6</b>
+        </div>
+      </div>
+      <div class="card bg-gray-50">
+        <h3 class="font-bold text-purple-700 mb-2">Soal 3: Jenis Fungsi</h3>
+        <p class="text-sm text-gray-600 mb-2">Apakah <span class="math">f(x) = x³ + x</span> fungsi ganjil atau genap?</p>
+        <div class="math-block text-sm">
+          f(-x) = (-x)³ + (-x)<br>
+          = -x³ - x<br>
+          = -(x³ + x)<br>
+          = -f(x)<br>
+          <b>Karena f(-x) = -f(x), maka ini Fungsi Ganjil</b>
+        </div>
+      </div>
+      <div class="card bg-gray-50">
+        <h3 class="font-bold text-purple-700 mb-2">Soal 4: Range</h3>
+        <p class="text-sm text-gray-600 mb-2">Diketahui <span class="math">f(x) = 2x + 1</span> dengan domain <span class="math">{0, 1, 2}</span>. Range?</p>
+        <div class="math-block text-sm">
+          f(0) = 2(0) + 1 = 1<br>
+          f(1) = 2(1) + 1 = 3<br>
+          f(2) = 2(2) + 1 = 5<br>
+          <b>Range = {1, 3, 5}</b>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 10: KESIMPULAN -->
+<section class="slide" data-slide="10">
+  <div class="slide-header">
+    <div class="slide-tag"><span class="slide-num">10</span> Penutup</div>
+    <div class="text-gray-400 text-sm">💖 Terima kasih</div>
+  </div>
+  <div class="flex-1 flex flex-col items-center justify-center text-center">
+    <div class="sparkle" style="top:10%; left:10%;">✨</div>
+    <div class="sparkle" style="top:15%; right:12%; animation-delay:.7s;">💖</div>
+    <div class="sparkle" style="bottom:20%; left:8%; animation-delay:1.4s;">🌸</div>
+    <div class="sparkle" style="bottom:25%; right:10%; animation-delay:2.1s;">⭐</div>
+
+    <h2 class="text-3xl md:text-4xl mb-4 gradient-text font-bold">Kesimpulan Materi 🌟</h2>
+    <div class="grid md:grid-cols-2 gap-4 max-w-3xl w-full mb-6">
+      <div class="card bg-purple-50">
+        <div class="text-2xl mb-1">🔗</div>
+        <h3 class="font-bold text-purple-600">Relasi vs Fungsi</h3>
+        <p class="text-xs mt-1">Fungsi adalah relasi khusus, tiang A tidak boleh punya dua panah.</p>
+      </div>
+      <div class="card bg-pink-50">
+        <div class="text-2xl mb-1">🎯</div>
+        <h3 class="font-bold text-pink-600">Domain, Kodomain, Range</h3>
+        <p class="text-xs mt-1">Domain: Asal. Kodomain: Kawan. Range: Hasil.</p>
+      </div>
+      <div class="card bg-purple-50">
+        <div class="text-2xl mb-1">⚙️</div>
+        <h3 class="font-bold text-purple-600">Operasi Fungsi</h3>
+        <p class="text-xs mt-1">Bisa dijumlah, dikurang, dikali, dibagi, disusun, dan dikali skalar.</p>
+      </div>
+      <div class="card bg-pink-50">
+        <div class="text-2xl mb-1">🚦</div>
+        <h3 class="font-bold text-pink-600">Jenis Fungsi</h3>
+        <p class="text-xs mt-1">Ganjil/Genap, Injektif (tak selingkuh), Surjektif (tak jomblo), Bijektif.</p>
+      </div>
+    </div>
+
+    <div class="card max-w-md w-full mb-4">
+      <h3 class="font-bold text-purple-600 mb-3">💭 Refleksi: Bagaimana perasaanmu hari ini?</h3>
+      <div class="flex justify-center gap-1 mb-3 text-2xl cursor-pointer" id="refleksiStars">
+        <span class="star" data-r="1" style="color:#FFD700;">★</span>
+        <span class="star" data-r="2" style="color:#ccc;">★</span>
+        <span class="star" data-r="3" style="color:#ccc;">★</span>
+        <span class="star" data-r="4" style="color:#ccc;">★</span>
+        <span class="star" data-r="5" style="color:#ccc;">★</span>
+      </div>
+      <textarea class="input-cute" rows="2" placeholder="Tulis kesan dan pesanmu..." style="font-size:.9rem;"></textarea>
+    </div>
+
+    <div class="text-center">
+      <h3 class="text-2xl md:text-3xl gradient-text font-bold mb-2">Thank You For Today! 💕</h3>
+      <p class="text-purple-500 mb-3">Kerja bagus, <span id="tyName" class="font-bold">Adik</span>!</p>
+      <button class="btn accent" onclick="restart()"><i class="fas fa-rotate-left"></i> Mulai Lagi</button>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<div class="nav-bar" id="navBar" style="display:none;">
+  <button class="nav-btn" id="prevBtn"><i class="fas fa-chevron-left"></i></button>
+  <div class="dots" id="dots"></div>
+  <button class="nav-btn" id="nextBtn"><i class="fas fa-chevron-right"></i></button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============ DATA ============
+// 10 Diagrams Data
+const diagrams = [
+  { id: 1, isFunc: true, left: ['1', '2', '3'], right: ['a', 'b', 'c'], arrows: [['1','a'], ['2','b'], ['3','c']] },
+  { id: 2, isFunc: false, left: ['1', '2', '3'], right: ['a', 'b', 'c'], arrows: [['1','a'], ['1','b'], ['2','c'], ['3','a']] },
+  { id: 3, isFunc: true, left: ['1', '2'], right: ['a', 'b', 'c'], arrows: [['1','a'], ['2','c']] },
+  { id: 4, isFunc: false, left: ['1', '2', '3'], right: ['a', 'b'], arrows: [['1','a'], ['2','a'], ['2','b'], ['3','b']] },
+  { id: 5, isFunc: true, left: ['1', '2', '3', '4'], right: ['a', 'b'], arrows: [['1','a'], ['2','b'], ['3','a'], ['4','b']] },
+  { id: 6, isFunc: true, left: ['1', '2'], right: ['a', 'b'], arrows: [['1','a'], ['2','b']] },
+  { id: 7, isFunc: false, left: ['1', '2', '3'], right: ['a', 'b', 'c'], arrows: [['1','a'], ['2','a'], ['2','b'], ['3','c']] },
+  { id: 8, isFunc: true, left: ['1', '2', '3'], right: ['a', 'b'], arrows: [['1','a'], ['2','b'], ['3','a']] },
+  { id: 9, isFunc: false, left: ['1', '2', '3'], right: ['a', 'b', 'c', 'd'], arrows: [['1','a'], ['1','b'], ['2','c'], ['3','d']] },
+  { id: 10, isFunc: true, left: ['1', '2', '3'], right: ['a', 'b', 'c'], arrows: [['1','a'], ['2','a'], ['3','a']] }
+];
+
+// 10 Pairs Data
+const pairs = [
+  { text: "{(1, a), (2, b), (3, c)}", isFunc: true },
+  { text: "{(1, a), (1, b), (2, c)}", isFunc: false },
+  { text: "{(1, a), (2, a), (3, b)}", isFunc: true },
+  { text: "{(1, a), (2, b), (2, c), (3, a)}", isFunc: false },
+  { text: "{(1, 5), (2, 5), (3, 5)}", isFunc: true },
+  { text: "{(2, x), (2, y), (3, z)}", isFunc: false },
+  { text: "{(a, 1), (b, 2), (c, 3)}", isFunc: true },
+  { text: "{(a, 1), (b, 1), (b, 2)}", isFunc: false },
+  { text: "{(1, p), (2, q), (3, r), (4, s)}", isFunc: true },
+  { text: "{(1, p), (1, q), (2, r)}", isFunc: false }
+];
+
+const domainExercises = [
+  { q: "f(x) = x³ - 2x + 1", ans: "x ∈ ℝ", e: "Polinom, tidak ada pembatasan." },
+  { q: "f(x) = 1 / (x - 4)", ans: "x ≠ 4", e: "Penyebut tidak boleh nol." },
+  { q: "f(x) = √(2x + 6)", ans: "x ≥ -3", e: "2x+6 ≥ 0 → 2x ≥ -6 → x ≥ -3" },
+  { q: "f(x) = 1 / √(x - 5)", ans: "x > 5", e: "Upari > 0 (bukan ≥0 karena di penyebut)." },
+  { q: "f(x) = √(x + 2) / (x - 1)", ans: "x ≥ -2, x ≠ 1", e: "x+2 ≥ 0 dan x-1 ≠ 0" }
+];
+
+const opsData = {
+  add: { title: "1. Penjumlahan Fungsi (f+g)(x)", formula: "(f+g)(x) = f(x) + g(x)", ex_q: "Jika f(x) = 2x+1 dan g(x) = x²-3. Tentukan (f+g)(x)!", ex_a: "(f+g)(x) = (2x+1) + (x²-3) = x² + 2x - 2" },
+  sub: { title: "2. Pengurangan Fungsi (f-g)(x)", formula: "(f-g)(x) = f(x) - g(x)", ex_q: "Jika f(x) = 3x dan g(x) = x+2. Tentukan (f-g)(x)!", ex_a: "(f-g)(x) = 3x - (x+2) = 3x - x - 2 = 2x - 2" },
+  mul: { title: "3. Perkalian Fungsi (f×g)(x)", formula: "(f×g)(x) = f(x) × g(x)", ex_q: "Jika f(x) = x+2 dan g(x) = x-3. Tentukan (f×g)(x)!", ex_a: "(f×g)(x) = (x+2)(x-3) = x² - 3x + 2x - 6 = x² - x - 6" },
+  div: { title: "4. Pembagian Fungsi (f/g)(x)", formula: "(f/g)(x) = f(x) / g(x)", ex_q: "Jika f(x) = x²-4 dan g(x) = x-2. Tentukan (f/g)(x)!", ex_a: "(f/g)(x) = (x²-4) / (x-2) = (x+2)(x-2) / (x-2) = x+2, (x≠2)" },
+  comp: { title: "5. Komposisi Fungsi (f∘g)(x)", formula: "(f∘g)(x) = f(g(x))", ex_q: "Jika f(x) = 2x+1 dan g(x) = x². Tentukan (f∘g)(x)!", ex_a: "(f∘g)(x) = f(g(x)) = f(x²) = 2(x²) + 1 = 2x² + 1" },
+  kf: { title: "6. Perkalian Skalar (kf)(x)", formula: "(kf)(x) = k · f(x)", ex_q: "Jika f(x) = 2x+1 dan k = 3. Tentukan (3f)(x)!", ex_a: "(3f)(x) = 3 · f(x) = 3(2x+1) = 6x + 3" }
+};
+
+const quizQuestions = [
+  { q: "Manakah dari berikut yang BUKAN syarat suatu relasi disebut fungsi?", opts: ["Setiap anggota domain memiliki pasangan", "Satu anggota domain boleh memiliki banyak pasangan di kodomain", "Tidak ada anggota domain yang tak berpasangan", "Himpunan pasangan berurutan tidak boleh ada domain yang berulang"], correct: 1, e: "Pada fungsi, satu anggota domain TEPAT punya satu pasangan, tidak boleh lebih." },
+  { q: "Diketahui f(x) = √(x - 5). Berapa domain fungsinya?", opts: ["x ≥ 5", "x > 5", "x ≤ 5", "x ≠ 5"], correct: 0, e: "Akar genap: upari ≥ 0. x-5 ≥ 0 → x ≥ 5." },
+  { q: "Diketahui f(x) = 1 / (x+2). Berapa domain fungsinya?", opts: ["x ≥ -2", "x > -2", "x ≠ -2", "x ∈ ℝ"], correct: 2, e: "Penyebut ≠ 0. x+2 ≠ 0 → x ≠ -2." },
+  { q: "Diketahui f(x) = 1 / √(3-x). Berapa domain fungsinya?", opts: ["x < 3", "x ≤ 3", "x > 3", "x ≠ 3"], correct: 0, e: "Upari > 0. 3-x > 0 → 3 > x → x < 3." },
+  { q: "Jika f(x) = 2x-1 dan g(x) = 3x+2, maka (f+g)(x) = ...", opts: ["5x+1", "6x²-3x-2", "6x+1", "5x-3"], correct: 0, e: "(f+g)(x) = (2x-1)+(3x+2) = 5x + 1." },
+  { q: "Jika f(x) = x+3 dan g(x) = x², maka (f∘g)(x) = ...", opts: ["x²+3", "(x+3)²", "x²+9", "x³+3x²"], correct: 0, e: "(f∘g)(x) = f(g(x)) = f(x²) = x² + 3." },
+  { q: "Jika f(x) = x-2 dan g(x) = x+1, maka (f×g)(x) = ...", opts: ["x²-1", "x²-x-2", "x²+1", "2x-1"], correct: 1, e: "(f×g)(x) = (x-2)(x+1) = x² + x - 2x - 2 = x² - x - 2." },
+  { q: "Jika f(x) = 3x dan g(x) = x+1, maka (f-g)(x) = ...", opts: ["2x-1", "2x+1", "3x-1", "4x+1"], correct: 0, e: "(f-g)(x) = 3x - (x+1) = 2x - 1." },
+  { q: "Jika f(x) = x²-1 dan g(x) = x-1, maka (f/g)(x) = ...", opts: ["x-1", "x+1", "x", "x²-1"], correct: 1, e: "(f/g)(x) = (x²-1)/(x-1) = (x+1)(x-1)/(x-1) = x+1, (x≠1)." },
+  { q: "Fungsi f(x) = x² + 1 termasuk fungsi...", opts: ["Ganjil", "Genap", "Bijektif", "Injektif"], correct: 1, e: "f(-x) = (-x)²+1 = x²+1 = f(x). Maka fungsi genap." },
+  { q: "Fungsi f(x) = x³ - x termasuk fungsi...", opts: ["Ganjil", "Genap", "Surjektif", "Genap dan Ganjil"], correct: 0, e: "f(-x) = (-x)³ - (-x) = -x³ + x = -(x³ - x) = -f(x). Maka ganjil." },
+  { q: "Trik mengingat fungsi injektif adalah...", opts: ["Kodomain tidak boleh selingkuh", "Kodomain tidak ada jomblo", "Tidak selingkuh dan tidak jomblo", "Domain tidak boleh selingkuh"], correct: 0, e: "Injektif = satu-satu. Kodomain tidak boleh dilamar oleh dua domain (tidak selingkuh)." },
+  { q: "Fungsi yang memenuhi syarat injektif dan surjektif disebut...", opts: ["Fungsi Genap", "Fungsi Ganjil", "Fungsi Bijektif", "Fungsi Komposisi"], correct: 2, e: "Bijektif = Injektif (tak selingkuh) + Surjektif (tak jomblo)." },
+  { q: "Diketahui himpunan pasangan berurutan {(1,a), (2,b), (3,c), (4,c)}. Apakah ini fungsi?", opts: ["Ya, fungsi", "Bukan fungsi", "Fungsi jika a=b", "Tidak bisa ditentukan"], correct: 0, e: "Tidak ada anggota domain (1,2,3,4) yang berpasangan ganda. Kodomain boleh ditempati >1 domain." },
+  { q: "Diketahui f(x) = 2x+1 dengan domain {0, 1, 2}. Range dari fungsi tersebut adalah...", opts: ["{1, 3, 5}", "{0, 1, 2}", "{1, 2, 3}", "{0, 2, 4}"], correct: 0, e: "f(0)=1, f(1)=3, f(2)=5. Maka Range = {1, 3, 5}." },
+  { q: "Diketahui f(x) = √(4-x²). Berapa domain fungsinya?", opts: ["-2 ≤ x ≤ 2", "x ≤ 2", "x ≥ 2", "x ≠ 2"], correct: 0, e: "4-x² ≥ 0 → x² ≤ 4 → -2 ≤ x ≤ 2." },
+  { q: "Jika f(x) = 4x-2 dan g(x) = 2x+1, maka (f∘g)(x) = ...", opts: ["8x+2", "8x-1", "8x", "4x+1"], correct: 0, e: "f(g(x)) = f(2x+1) = 4(2x+1) - 2 = 8x + 4 - 2 = 8x + 2." },
+  { q: "Jika g(x) = x+5 dan f(x) = x², maka (g∘f)(x) = ...", opts: ["x²+5", "(x+5)²", "x²-5", "x²+25"], correct: 0, e: "(g∘f)(x) = g(f(x)) = g(x²) = x² + 5." },
+  { q: "Fungsi f(x) = sin(x) termasuk jenis...", opts: ["Fungsi Ganjil", "Fungsi Genap", "Fungsi Bijektif", "Bukan Fungsi"], correct: 0, e: "sin(-x) = -sin(x). Maka f(-x) = -f(x), ini fungsi ganjil." },
+  { q: "Dari diagram panah, manakah ciri khas fungsi injektif?", opts: ["Semua anggota B kena panah", "Tidak ada anggota B yang kena 2 panah", "Tidak ada anggota B yang tidak kena panah", "Semua anggota A kena panah"], correct: 1, e: "Injektif (satu-satu) berarti anggota kodomain tidak boleh dipanah oleh 2 domain." },
+  { q: "Diketahui f(x) = x / (x² - 9). Domain fungsinya adalah...", opts: ["x ≠ 3", "x ≠ -3", "x ≠ 3 dan x ≠ -3", "x ∈ ℝ"], correct: 2, e: "Penyebut ≠ 0. x²-9 ≠ 0 → (x-3)(x+3) ≠ 0 → x ≠ 3 dan x ≠ -3." },
+  { q: "Jika f(x) = 3x dan k = 2, maka (kf)(x) = ...", opts: ["5x", "6x", "x", "x²"], correct: 1, e: "(kf)(x) = k · f(x) = 2(3x) = 6x." },
+  { q: "Diketahui f(x) = x+1. Jika domain = {1,2,3}, kodomain = {a,b,c}, dan range = {2,3,4}. Maka...", opts: ["Kodomain dan range tidak harus sama", "Kodomain harus sama dengan range", "Domain harus sama dengan range", "Kodomain harus sama dengan domain"], correct: 0, e: "Range adalah himpunan bagian dari kodomain. Mereka tidak harus sama persis kecuali fungsi surjektif." },
+  { q: "Fungsi f(x) = |x| termasuk...", opts: ["Fungsi Ganjil", "Fungsi Genap", "Fungsi Injektif", "Fungsi Bijektif"], correct: 1, e: "f(-x) = |-x| = |x| = f(x). Maka fungsi genap." },
+  { q: "Diketahui f(x) = 3x + 2. Berapa (f∘f)(x)?", opts: ["9x+8", "9x+6", "3x+2", "6x+4"], correct: 0, e: "f(f(x)) = f(3x+2) = 3(3x+2) + 2 = 9x + 6 + 2 = 9x + 8." },
+  { q: "Diketahui f(x) = x-3 dan g(x) = 5/x. Maka (f/g)(x) = ...", opts: ["x(x-3)/5", "(x-3)/5x", "5 / x(x-3)", "5(x-3) / x"], correct: 1, e: "(f/g)(x) = f(x)/g(x) = (x-3) / (5/x) = x(x-3)/5." },
+  { q: "Jika (f∘g)(x) = 4x² - 1 dan g(x) = 2x, maka f(x) = ...", opts: ["x² - 1", "4x - 1", "2x² - 1", "4x² - 1"], correct: 0, e: "f(g(x)) = f(2x) = 4x² - 1. Misal 2x = y, maka f(y) = 4(y/2)² - 1 = y² - 1. Jadi f(x) = x² - 1." },
+  { q: "Trik mengingat fungsi surjektif (onto) adalah...", opts: ["Tidak selingkuh", "Tidak jomblo", "Tidak korupsi", "Tidak marah"], correct: 1, e: "Surjektif: Semua kodomain kena panah. Tidak ada jomblo di kodomain." },
+  { q: "Diketahui f(x) = x² + 2x - 3. Domain dari f(x) adalah...", opts: ["x ≠ -3 dan x ≠ 1", "x ≥ -3", "x ≤ 1", "x ∈ ℝ"], correct: 3, e: "Polinom (bentuk kuadrat), domainnya semua bilangan real." }
+];
+
+// ============ STATE ============
+let currentSlide = 1;
+const totalSlides = 10;
+let studentName = '';
+let selectedDiagrams = new Set();
+let selectedPairs = new Set();
+let quizAnswers = {};
+let quizChecked = false;
+let refleksiRating = 0;
+
+// ============ UTILS ============
+function $(s) { return document.querySelector(s); }
+function $$(s) { return document.querySelectorAll(s); }
+function randInt(min,max) { return Math.floor(Math.random()*(max-min+1))+min; }
+
+function showToast(msg, type='info', duration=2500) {
+  const t = $('#toast');
+  t.className = 'toast ' + (type==='success'?'success':'error');
+  t.innerHTML = `<i class="fas ${type==='success'?'fa-check-circle':'fa-exclamation-circle'}"></i> <span>${msg}</span>`;
+  t.classList.add('show');
+  clearTimeout(t._timeout);
+  t._timeout = setTimeout(()=>t.classList.remove('show'), duration);
+}
+
+function initBgDecor() {
+  const decor = $('#bgDecor');
+  const chars = ['✨','⭐','💫','🚀','📐','✏️','💖'];
+  for(let i=0; i<12; i++) {
+    const s = document.createElement('span');
+    s.textContent = chars[randInt(0, chars.length-1)];
+    s.style.left = randInt(0, 100) + 'vw';
+    s.style.fontSize = (1.5 + Math.random() * 1.5) + 'rem';
+    s.style.animationDuration = (15 + Math.random() * 15) + 's';
+    s.style.animationDelay = (-Math.random() * 15) + 's';
+    decor.appendChild(s);
+  }
+}
+
+// ============ NAVIGATION ============
+function initDots() {
+  const dots = $('#dots');
+  dots.innerHTML = '';
+  for(let i=1; i<=totalSlides; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i===1 ? ' active' : '');
+    d.onclick = () => goToSlide(i);
+    dots.appendChild(d);
+  }
+}
+
+function goToSlide(n) {
+  if(n<1 || n>totalSlides) return;
+  $$('.slide').forEach(s => s.classList.remove('active'));
+  document.querySelector(`.slide[data-slide="${n}"]`).classList.add('active');
+  $$('.dot').forEach((d,i) => {
+    d.classList.toggle('active', i === n-1);
+    d.classList.toggle('completed', i < n-1);
+  });
+  currentSlide = n;
+  $('#prevBtn').disabled = (n === 1);
+  $('#nextBtn').disabled = (n === totalSlides);
+  $('#navBar').style.display = (n === 1) ? 'none' : 'flex';
+  
+  if(n === 2) $('#tyName').textContent = studentName || 'Adik';
+  if(n === 3) initDiagrams(); // ensure diagrams are drawn
+}
+
+function nextSlide() { if(currentSlide < totalSlides) goToSlide(currentSlide + 1); }
+function prevSlide() { if(currentSlide > 1) goToSlide(currentSlide - 1); }
+
+// ============ SLIDE 1: COVER ============
+function initSlide1() {
+  $('#startBtn').onclick = () => {
+    const name = $('#studentName').value.trim();
+    if(!name) {
+      showToast('Isi nama dulu yuk!', 'error');
+      $('#studentName').focus();
+      return;
+    }
+    studentName = name;
+    showToast(`Selamat datang, ${name}! 🌸`, 'success');
+    goToSlide(2);
+  };
+}
+
+// ============ SLIDE 3: RECALL ============
+function switchRecallTab(tab) {
+  $$('.recall-tab').forEach(t => t.style.display = 'none');
+  $$('.tab-btn').forEach(b => b.classList.remove('active'));
+  if(tab === 'def') { $('#recallDef').style.display = 'block'; $$('.slide-header .tab-btn')[0].classList.add('active'); }
+  if(tab === 'diag') { $('#recallDiag').style.display = 'block'; $$('.slide-header .tab-btn')[1].classList.add('active'); initDiagrams(); }
+  if(tab === 'pair') { $('#recallPair').style.display = 'block'; $$('.slide-header .tab-btn')[2].classList.add('active'); initPairs(); }
+}
+
+function initDiagrams() {
+  const grid = $('#diagramGrid');
+  if(grid.children.length > 0) return;
+  
+  diagrams.forEach(d => {
+    const box = document.createElement('div');
+    box.className = 'diagram-box';
+    box.id = `diag-${d.id}`;
+    
+    const svgHeight = Math.max(d.left.length, d.right.length) * 40 + 20;
+    
+    box.innerHTML = `
+      <button class="diagram-check" onclick="event.stopPropagation(); toggleDiagram(${d.id})"><i class="fas fa-check"></i></button>
+      <svg width="160" height="${svgHeight}" viewBox="0 0 160 ${svgHeight}" class="diagram-svg">
+        <defs>
+          <marker id="arrowhead-${d.id}" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+            <polygon points="0 0, 6 3, 0 6" fill="#8B5CF6" />
+          </marker>
+        </defs>
+        <text x="20" y="15" font-size="10" font-family="Poppins" fill="#9CA3AF" text-anchor="middle">A</text>
+        <text x="140" y="15" font-size="10" font-family="Poppins" fill="#9CA3AF" text-anchor="middle">B</text>
+        ${d.left.map((l,i) => `<rect x="0" y="${20+i*40}" width="40" height="30" rx="4" fill="#EDE9FE" /><text x="20" y="${40+i*40}" font-size="14" font-family="Poppins" fill="#5B21B6" text-anchor="middle" font-weight="600">${l}</text>`).join('')}
+        ${d.right.map((r,i) => `<rect x="120" y="${20+i*40}" width="40" height="30" rx="4" fill="#FCE7F3" /><text x="140" y="${40+i*40}" font-size="14" font-family="Poppins" fill="#BE185D" text-anchor="middle" font-weight="600">${r}</text>`).join('')}
+        ${d.arrows.map(arr => {
+          const li = d.left.indexOf(arr[0]);
+          const ri = d.right.indexOf(arr[1]);
+          const x1 = 40, y1 = 35 + (li * 40);
+          const x2 = 120, y2 = 35 + (ri * 40);
+          return `<path d="M${x1},${y1} C ${80},${y1} ${80},${y2} ${x2},${y2}" stroke="#8B5CF6" stroke-width="1.5" fill="none" marker-end="url(#arrowhead-${d.id})" />`;
+        }).join('')}
+      </svg>
+    `;
+    box.onclick = () => toggleDiagram(d.id);
+    grid.appendChild(box);
+  });
+}
+
+function toggleDiagram(id) {
+  const box = $(`#diag-${id}`);
+  const btn = box.querySelector('.diagram-check');
+  if(selectedDiagrams.has(id)) {
+    selectedDiagrams.delete(id);
+    box.classList.remove('selected');
+    btn.classList.remove('checked');
+  } else {
+    selectedDiagrams.add(id);
+    box.classList.add('selected');
+    btn.classList.add('checked');
+  }
+}
+
+function checkDiagrams() {
+  let correctCount = 0;
+  diagrams.forEach(d => {
+    const box = $(`#diag-${d.id}`);
+    const btn = box.querySelector('.diagram-check');
+    box.classList.remove('selected', 'correct', 'wrong');
+    btn.style.display = 'none';
+    
+    if(d.isFunc) {
+      box.classList.add('correct'); // Green for Function
+      correctCount++;
+    } else {
+      box.classList.add('wrong'); // Red for Non-Function
+    }
+  });
+  showToast(`Waktu mengecek! Hijau = Fungsi, Merah = Bukan Fungsi. (${correctCount} fungsi ditemukan)`, 'success', 3500);
+}
+
+function initPairs() {
+  const grid = $('#pairGrid');
+  if(grid.children.length > 0) return;
+  
+  pairs.forEach((p, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.innerHTML = `<span class="opt-letter">${String.fromCharCode(65+i)}</span> <span class="math">${p.text}</span>`;
+    btn.onclick = () => togglePair(i, btn);
+    grid.appendChild(btn);
+  });
+}
+
+function togglePair(idx, btn) {
+  if(selectedPairs.has(idx)) {
+    selectedPairs.delete(idx);
+    btn.classList.remove('selected');
+  } else {
+    selectedPairs.add(idx);
+    btn.classList.add('selected');
+  }
+}
+
+function checkPairs() {
+  let correctCount = 0;
+  $$('#pairGrid .opt-btn').forEach((btn, i) => {
+    btn.classList.remove('selected', 'correct', 'wrong');
+    if(pairs[i].isFunc) {
+      btn.classList.add('correct'); // Green for Function
+      correctCount++;
+    } else {
+      btn.classList.add('wrong'); // Red for Non-Function
+    }
+  });
+  showToast(`Waktu mengecek! Hijau = Fungsi, Merah = Bukan Fungsi. (${correctCount} fungsi ditemukan)`, 'success', 3500);
+}
+
+// ============ SLIDE 4: DOMAIN ============
+function initSlide4() {
+  const grid = $('#domainExGrid');
+  if(grid.children.length > 0) return;
+  
+  domainExercises.forEach((ex, i) => {
+    const div = document.createElement('div');
+    div.className = 'card bg-gray-50';
+    div.innerHTML = `
+      <div class="flex justify-between items-start gap-2 mb-2">
+        <div class="font-bold text-purple-600">Soal ${i+1}</div>
+        <button class="btn outline text-xs" onclick="toggleDomainAns(${i})">Lihat Jawaban</button>
+      </div>
+      <p class="text-sm text-gray-700 mb-2">Tentukan domain dari: <span class="math font-bold text-pink-600">${ex.q}</span></p>
+      <div id="domAns-${i}" style="display:none;" class="math-block text-sm">
+        <b>Jawaban:</b> <span class="math">${ex.ans}</span><br><br>
+        <b>Pembahasan:</b> ${ex.e}
+      </div>
+    `;
+    grid.appendChild(div);
+  });
+}
+
+function toggleDomainAns(i) {
+  const el = $(`#domAns-${i}`);
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+
+// ============ SLIDE 6: OPERASI ============
+let currentOp = 'add';
+function switchOpTab(op) {
+  currentOp = op;
+  $$('.tab-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  
+  const data = opsData[op];
+  const content = $('#opContent');
+  content.innerHTML = `
+    <div class="card bg-gradient-to-r from-purple-50 to-pink-50 mb-4">
+      <h2 class="text-2xl font-bold text-purple-600 mb-2">${data.title}</h2>
+      <div class="math-block text-lg"><span class="math">${data.formula}</span></div>
+    </div>
+    <div class="card bg-white mb-4">
+      <h3 class="font-bold text-pink-600 mb-2">💡 Contoh Soal:</h3>
+      <p class="text-gray-700 mb-2">${data.ex_q}</p>
+      <div class="math-block text-sm"><span class="math">${data.ex_a}</span></div>
+    </div>
+    <div class="card bg-gray-50">
+      <h3 class="font-bold text-purple-600 mb-2">📝 Latihan Soal (10 Soal):</h3>
+      <div id="opExercises" class="space-y-3"></div>
+    </div>
+  `;
+  initOpExercises();
+}
+
+function initOpExercises() {
+  const grid = $('#opExercises');
+  const questions = generateOpQuestions(currentOp, 10);
+  grid.innerHTML = questions.map((q,i) => `
+    <div class="q-card bg-white">
+      <div class="flex justify-between items-start gap-2 mb-2">
+        <div class="font-bold text-purple-600 text-sm">Soal ${i+1}</div>
+        <button class="btn outline text-xs" onclick="toggleOpAns('op-${i}')">Lihat Jawaban</button>
+      </div>
+      <p class="text-sm text-gray-700 mb-2">${q.q}</p>
+      <div id="op-${i}" style="display:none;" class="math-block text-sm">
+        <b>Jawaban:</b> <span class="math">${q.a}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function generateOpQuestions(op, count) {
+  const qs = [];
+  for(let i=0; i<count; i++) {
+    if(op === 'add') qs.push({q: `Jika f(x) = ${i+1}x + ${i+2} dan g(x) = ${i+2}x - ${i+1}. Tentukan (f+g)(x)!`, a: `(f+g)(x) = (${i+1}x + ${i+2}) + (${i+2}x - ${i+1}) = ${2*i+3}x + 1`});
+    if(op === 'sub') qs.push({q: `Jika f(x) = ${i+3}x dan g(x) = x + ${i+1}. Tentukan (f-g)(x)!`, a: `(f-g)(x) = ${i+3}x - (x + ${i+1}) = ${i+2}x - ${i+1}`});
+    if(op === 'mul') qs.push({q: `Jika f(x) = x + ${i+1} dan g(x) = x - ${i+2}. Tentukan (f×g)(x)!`, a: `(f×g)(x) = (x+${i+1})(x-${i+2}) = x² - ${(i+2)-(i+1)}x - ${(i+1)*(i+2)} = x² - 1x - ${(i+1)*(i+2)}`});
+    if(op === 'div') qs.push({q: `Jika f(x) = x² - 9 dan g(x) = x - 3. Tentukan (f/g)(x)!`, a: `(f/g)(x) = (x²-9)/(x-3) = (x+3)(x-3)/(x-3) = x + 3, (x ≠ 3)`});
+    if(op === 'comp') qs.push({q: `Jika f(x) = 2x + 1 dan g(x) = ${i+1}x. Tentukan (f∘g)(x)!`, a: `(f∘g)(x) = f(g(x)) = f(${i+1}x) = 2(${i+1}x) + 1 = ${2*(i+1)}x + 1`});
+    if(op === 'kf') qs.push({q: `Jika f(x) = ${i+2}x - ${i+1} dan k = ${i+1}. Tentukan ((${i+1})f)(x)!`, a: `(${i+1}f)(x) = ${i+1} · f(x) = ${i+1}(${i+2}x - ${i+1}) = ${(i+1)*(i+2)}x - ${(i+1)*(i+1)}`});
+  }
+  return qs;
+}
+
+function toggleOpAns(id) {
+  const el = $(`#${id}`);
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+
+// ============ SLIDE 8: QUIZ ============
+function initSlide8() {
+  const grid = $('#quizGrid');
+  if(grid.children.length > 0) return;
+  
+  quizQuestions.forEach((q,i) => {
+    const card = document.createElement('div');
+    card.className = 'q-card';
+    card.id = `quizQ-${i}`;
+    
+    let optsHtml = q.opts.map((opt,oi) => `
+      <button class="opt-btn" onclick="selectQuiz(${i}, ${oi})" data-q="${i}" data-o="${oi}">
+        <span class="opt-letter">${String.fromCharCode(65+oi)}</span> <span>${opt}</span>
+      </button>
+    `).join('');
+    
+    card.innerHTML = `
+      <div class="flex justify-between items-start gap-2 mb-2">
+        <div class="font-bold text-purple-600">Soal ${i+1}</div>
+        <button class="btn outline text-xs" onclick="toggleQuizDisc(${i})">Pembahasan</button>
+      </div>
+      <p class="text-gray-700 mb-3">${q.q}</p>
+      <div class="space-y-2">${optsHtml}</div>
+      <div class="disc-box" id="disc-${i}"><b>Pembahasan:</b> ${q.e}</div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function selectQuiz(qIdx, oIdx) {
+  if(quizChecked) return;
+  quizAnswers[qIdx] = oIdx;
+  $$(`#quizQ-${qIdx} .opt-btn`).forEach(b => b.classList.remove('selected'));
+  document.querySelector(`#quizQ-${qIdx} .opt-btn[data-o="${oIdx}"]`).classList.add('selected');
+}
+
+function checkAllQuiz() {
+  quizChecked = true;
+  let score = 0;
+  quizQuestions.forEach((q,i) => {
+    const card = $(`#quizQ-${i}`);
+    const userAns = quizAnswers[i];
+    
+    card.classList.remove('correct', 'wrong');
+    $$(`#quizQ-${i} .opt-btn`).forEach(b => b.classList.remove('selected'));
+    
+    if(userAns === q.correct) {
+      card.classList.add('correct');
+      score++;
+      document.querySelector(`#quizQ-${i} .opt-btn[data-o="${q.correct}"]`).classList.add('correct');
+    } else {
+      card.classList.add('wrong');
+      if(userAns !== undefined) {
+        document.querySelector(`#quizQ-${i} .opt-btn[data-o="${userAns}"]`).classList.add('wrong');
+      }
+      document.querySelector(`#quizQ-${i} .opt-btn[data-o="${q.correct}"]`).classList.add('correct');
+    }
+  });
+  $('#quizScore').textContent = score;
+  showToast(`Skor kamu: ${score}/30! ${score >= 25 ? 'Hebat! 🌟' : score >= 15 ? 'Bagus! 👍' : 'Tetap semangat! 💪'}`, 'success', 3000);
+}
+
+function toggleQuizDisc(i) {
+  $(`#disc-${i}`).classList.toggle('show');
+}
+
+// ============ SLIDE 10: REFLECTION ============
+function initRefleksi() {
+  $$('#refleksiStars .star').forEach(s => {
+    s.onclick = () => {
+      refleksiRating = parseInt(s.dataset.r);
+      $$('#refleksiStars .star').forEach(x => {
+        x.style.color = parseInt(x.dataset.r) <= refleksiRating ? '#FFD700' : '#ccc';
+      });
+    };
+  });
+}
+
+function restart() {
+  currentSlide = 1;
+  selectedDiagrams.clear();
+  selectedPairs.clear();
+  quizAnswers = {};
+  quizChecked = false;
+  $('#quizScore').textContent = '0';
+  $$('.q-card').forEach(c => c.classList.remove('correct', 'wrong'));
+  $$('.opt-btn').forEach(b => b.classList.remove('selected', 'correct', 'wrong'));
+  $$('.disc-box').forEach(b => b.classList.remove('show'));
+  $$('#refleksiStars .star').forEach(x => x.style.color = '#ccc');
+  goToSlide(1);
+}
+
+// ============ INIT ============
+window.addEventListener('DOMContentLoaded', () => {
+  initBgDecor();
+  initDots();
+  initSlide1();
+  initSlide4();
+  initSlide8();
+  initRefleksi();
+  switchOpTab('add'); // Init Slide 6
+  
+  // Explicit Listeners for Nav Buttons (Fix)
+  document.getElementById('prevBtn').addEventListener('click', prevSlide);
+  document.getElementById('nextBtn').addEventListener('click', nextSlide);
+  
+  document.addEventListener('keydown', e => {
+    if(e.key === 'ArrowRight' && currentSlide > 0) nextSlide();
+    if(e.key === 'ArrowLeft' && currentSlide > 1) prevSlide();
+  });
+});
+</script>
+</body>
+</html>
