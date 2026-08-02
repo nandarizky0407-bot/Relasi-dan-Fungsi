@@ -1,0 +1,2336 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relasi & Fungsi — Presentasi Interaktif</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,700;9..144,900&family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-0: #0a0e1a;
+  --bg-1: #0f1525;
+  --bg-2: #161e33;
+  --fg: #f1f5f9;
+  --fg-dim: #94a3b8;
+  --fg-muted: #64748b;
+  --accent: #fbbf24;
+  --accent-2: #f97316;
+  --accent-3: #ec4899;
+  --accent-right: #22c55e;
+  --accent-wrong: #ef4444;
+  --border: rgba(251, 191, 36, 0.18);
+  --border-soft: rgba(255, 255, 255, 0.08);
+  --card: rgba(255, 255, 255, 0.03);
+  --card-hover: rgba(255, 255, 255, 0.06);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  font-family: 'Manrope', sans-serif;
+  color: var(--fg);
+  background: var(--bg-0);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  background: 
+    radial-gradient(ellipse 80% 60% at 15% 10%, rgba(251, 191, 36, 0.10), transparent 60%),
+    radial-gradient(ellipse 60% 50% at 85% 90%, rgba(236, 72, 153, 0.06), transparent 60%),
+    radial-gradient(ellipse 70% 50% at 50% 50%, rgba(249, 115, 22, 0.04), transparent 60%),
+    linear-gradient(135deg, var(--bg-0), var(--bg-1));
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(251, 191, 36, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(251, 191, 36, 0.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+  z-index: 0;
+  animation: gridShift 40s linear infinite;
+}
+
+@keyframes gridShift {
+  from { background-position: 0 0, 0 0; }
+  to { background-position: 48px 48px, 48px 48px; }
+}
+
+.bg-symbols {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.bg-symbols span {
+  position: absolute;
+  font-family: 'Fraunces', serif;
+  font-size: 90px;
+  font-weight: 300;
+  color: rgba(251, 191, 36, 0.04);
+  animation: floatSym 20s infinite ease-in-out;
+}
+
+@keyframes floatSym {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  50% { transform: translate(20px, -30px) rotate(8deg); }
+}
+
+.presentation {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.04);
+  z-index: 100;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 14px var(--accent);
+  width: 0%;
+}
+
+.slides {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  padding: 50px 70px 90px;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  transform: translateX(40px);
+  transition: opacity 0.5s, transform 0.5s;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.slide.active {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+.slide.prev {
+  transform: translateX(-40px);
+}
+
+.slide-header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--border);
+  gap: 24px;
+}
+
+.slide-meta { flex: 1; }
+
+.slide-number {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  color: var(--accent);
+  text-transform: uppercase;
+  display: inline-block;
+  margin-bottom: 8px;
+}
+
+.slide-title {
+  font-family: 'Fraunces', serif;
+  font-size: 44px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  color: var(--fg);
+}
+
+.slide-subtitle {
+  font-size: 14px;
+  color: var(--fg-dim);
+  margin-top: 8px;
+  letter-spacing: 0.02em;
+}
+
+.slide-badge {
+  font-family: 'Fraunces', serif;
+  font-size: 84px;
+  font-weight: 300;
+  color: rgba(251, 191, 36, 0.15);
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.slide-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  overflow-y: auto;
+  padding-right: 14px;
+}
+
+.slide-content::-webkit-scrollbar { width: 6px; }
+.slide-content::-webkit-scrollbar-track { background: transparent; }
+.slide-content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.slide-content::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border-soft);
+  border-radius: 14px;
+  padding: 22px 26px;
+  backdrop-filter: blur(8px);
+}
+
+.card.glow {
+  border-color: var(--border);
+  background: linear-gradient(135deg, rgba(251,191,36,0.04), rgba(255,255,255,0.02));
+}
+
+.card-title {
+  font-family: 'Fraunces', serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.card-title::before {
+  content: '';
+  width: 4px;
+  height: 18px;
+  background: linear-gradient(180deg, var(--accent), var(--accent-2));
+  border-radius: 2px;
+}
+
+.lead {
+  font-size: 17px;
+  line-height: 1.65;
+  color: var(--fg);
+}
+
+.lead strong { color: var(--accent); font-weight: 700; }
+
+.bullets {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.bullets li {
+  padding-left: 26px;
+  position: relative;
+  line-height: 1.6;
+  color: var(--fg);
+  font-size: 15px;
+}
+
+.bullets li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 9px;
+  width: 8px;
+  height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(251, 191, 36, 0.6);
+}
+
+.bullets li strong { color: var(--accent); font-weight: 700; }
+
+.equation {
+  background: linear-gradient(135deg, rgba(251,191,36,0.06), rgba(249,115,22,0.03));
+  border-left: 3px solid var(--accent);
+  padding: 14px 20px;
+  border-radius: 8px;
+  margin: 10px 0;
+  font-size: 1.05em;
+  overflow-x: auto;
+}
+
+.equation .katex { font-size: 1.05em; }
+.equation .katex-display { margin: 0; }
+
+.three-col {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-top: 8px;
+}
+
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.method-card {
+  background: rgba(255,255,255,0.025);
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+  padding: 18px;
+  transition: all 0.3s;
+}
+
+.method-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(251,191,36,0.1);
+}
+
+.method-icon {
+  font-family: 'Fraunces', serif;
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+
+.method-card h4 {
+  font-family: 'Fraunces', serif;
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--fg);
+}
+
+.method-card p {
+  font-size: 13px;
+  color: var(--fg-dim);
+  line-height: 1.5;
+}
+
+/* Cover slide */
+.slide.cover {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 60px;
+}
+
+.cover-content {
+  max-width: 900px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cover-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.4em;
+  color: var(--accent);
+  margin-bottom: 28px;
+  text-transform: uppercase;
+  padding: 8px 18px;
+  border: 1px solid var(--border);
+  border-radius: 30px;
+  background: rgba(251,191,36,0.05);
+}
+
+.cover-title {
+  font-family: 'Fraunces', serif;
+  font-size: 112px;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+  margin-bottom: 24px;
+  background: linear-gradient(135deg, #ffffff 0%, var(--accent) 60%, var(--accent-2) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.cover-amp {
+  font-style: italic;
+  font-weight: 300;
+  background: linear-gradient(135deg, var(--accent-2), var(--accent-3));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.cover-subtitle {
+  font-size: 18px;
+  color: var(--fg-dim);
+  max-width: 620px;
+  margin: 0 auto 40px;
+  line-height: 1.6;
+  font-weight: 300;
+}
+
+.cover-meta {
+  display: flex;
+  gap: 60px;
+  justify-content: center;
+  margin: 20px 0 40px;
+}
+
+.meta-item { text-align: center; }
+
+.meta-value {
+  font-family: 'Fraunces', serif;
+  font-size: 42px;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+}
+
+.meta-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--fg-muted);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-top: 6px;
+}
+
+/* TOC */
+.toc-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.toc-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 16px 22px;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.toc-item:hover {
+  border-color: var(--accent);
+  background: rgba(251,191,36,0.04);
+  transform: translateX(6px);
+}
+
+.toc-num {
+  font-family: 'Fraunces', serif;
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--accent);
+  min-width: 50px;
+}
+
+.toc-text {
+  flex: 1;
+  font-size: 17px;
+  font-weight: 500;
+}
+
+.toc-sub {
+  font-size: 12px;
+  color: var(--fg-muted);
+  margin-top: 2px;
+  font-weight: 400;
+}
+
+.toc-arrow {
+  color: var(--fg-muted);
+  font-size: 18px;
+  transition: all 0.3s;
+}
+
+.toc-item:hover .toc-arrow {
+  color: var(--accent);
+  transform: translateX(4px);
+}
+
+/* Navigation */
+.nav {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  z-index: 100;
+  background: rgba(15, 21, 37, 0.85);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  padding: 8px 18px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+}
+
+.nav-btn {
+  background: transparent;
+  border: 1px solid var(--border-soft);
+  color: var(--fg);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+  font-size: 16px;
+}
+
+.nav-btn:hover {
+  background: var(--accent);
+  color: var(--bg-0);
+  border-color: var(--accent);
+  transform: scale(1.05);
+}
+
+.nav-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.nav-counter {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--fg-dim);
+  min-width: 60px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.nav-counter .current { color: var(--accent); font-weight: 700; }
+
+.slide-indicators {
+  position: fixed;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  z-index: 100;
+}
+
+.indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+  border: none;
+  padding: 0;
+}
+
+.indicator:hover { background: rgba(255, 255, 255, 0.35); transform: scale(1.3); }
+
+.indicator.active {
+  background: var(--accent);
+  transform: scale(1.6);
+  box-shadow: 0 0 12px var(--accent);
+}
+
+.indicator .tip {
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--bg-2);
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 11px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+  border: 1px solid var(--border);
+  color: var(--fg);
+}
+
+.indicator:hover .tip { opacity: 1; }
+
+/* Buttons */
+.btn {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: var(--bg-0);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-family: 'Manrope', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  letter-spacing: 0.02em;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(251, 191, 36, 0.35);
+}
+
+.btn:active { transform: translateY(0); }
+
+.btn.small { padding: 7px 14px; font-size: 12px; }
+
+.btn.secondary {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--fg);
+}
+
+.btn.secondary:hover {
+  background: rgba(251,191,36,0.08);
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: none;
+}
+
+.btn.large {
+  padding: 14px 32px;
+  font-size: 15px;
+  border-radius: 12px;
+}
+
+.answer-box {
+  background: rgba(34, 197, 94, 0.08);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  border-left: 3px solid var(--accent-right);
+  padding: 14px 18px;
+  border-radius: 8px;
+  margin-top: 10px;
+  display: none;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.answer-box.show { display: block; animation: slideDown 0.35s ease-out; }
+.answer-box .katex { color: #d4f7d4; }
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Diagram styling */
+.diagrams-row {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 14px 0;
+}
+
+.diagram-card {
+  background: rgba(255,255,255,0.025);
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+  padding: 14px 16px 12px;
+  text-align: center;
+  transition: all 0.3s;
+}
+
+.diagram-card:hover { border-color: var(--accent); }
+
+.diagram-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--fg-dim);
+  margin-top: 6px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.diagram-svg { display: block; margin: 0 auto; }
+
+/* Function pairs table */
+.func-pairs {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 6px 0;
+  font-size: 14px;
+}
+
+.func-pairs th, .func-pairs td {
+  padding: 9px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.func-pairs th {
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  background: rgba(251,191,36,0.04);
+}
+
+.func-pairs tr:hover td { background: rgba(255,255,255,0.02); }
+
+.func-pairs td:first-child {
+  color: var(--accent);
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  width: 50px;
+}
+
+/* Operation tabs */
+.op-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.op-tab {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border-soft);
+  color: var(--fg-dim);
+  padding: 9px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: 'Manrope', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  transition: all 0.3s;
+}
+
+.op-tab:hover {
+  border-color: var(--accent);
+  color: var(--fg);
+}
+
+.op-tab.active {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: var(--bg-0);
+  border-color: transparent;
+  font-weight: 700;
+}
+
+.op-content { display: none; }
+.op-content.active { display: block; animation: fadeIn 0.3s; }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.op-problem {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border-soft);
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 8px;
+}
+
+.op-problem-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
+.op-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  color: var(--accent);
+  background: rgba(251,191,36,0.1);
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+
+.op-fns {
+  color: var(--fg-dim);
+  font-size: 13px;
+  flex: 1;
+}
+
+.op-fns .katex { font-size: 0.95em; color: var(--fg); }
+
+.op-question {
+  font-size: 14px;
+  margin: 4px 0 8px;
+  color: var(--fg);
+}
+
+.op-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* MCQ */
+.mcq {
+  background: rgba(255,255,255,0.025);
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 10px;
+}
+
+.mcq-head {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.mcq-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  color: var(--accent);
+  background: rgba(251,191,36,0.1);
+  min-width: 32px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.mcq-question {
+  font-weight: 500;
+  line-height: 1.5;
+  font-size: 14px;
+  flex: 1;
+}
+
+.mcq-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 6px;
+  margin: 8px 0 10px;
+}
+
+.mcq-option {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border-soft);
+  padding: 9px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  user-select: none;
+}
+
+.mcq-option:hover {
+  background: rgba(251,191,36,0.05);
+  border-color: var(--accent);
+}
+
+.mcq-option.selected {
+  background: rgba(251,191,36,0.12);
+  border-color: var(--accent);
+}
+
+.mcq-option.correct {
+  background: rgba(34,197,94,0.15);
+  border-color: var(--accent-right);
+}
+
+.mcq-option.correct .option-letter {
+  background: var(--accent-right);
+  color: white;
+}
+
+.mcq-option.wrong {
+  background: rgba(239,68,68,0.12);
+  border-color: var(--accent-wrong);
+}
+
+.mcq-option.wrong .option-letter {
+  background: var(--accent-wrong);
+  color: white;
+}
+
+.option-letter {
+  font-weight: 700;
+  color: var(--accent);
+  width: 22px;
+  height: 22px;
+  background: rgba(251,191,36,0.1);
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.mcq-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.mcq-status {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 6px;
+  display: none;
+}
+
+.mcq-status.show { display: inline-block; animation: fadeIn 0.3s; }
+.mcq-status.correct { background: rgba(34,197,94,0.15); color: var(--accent-right); }
+.mcq-status.wrong { background: rgba(239,68,68,0.15); color: var(--accent-wrong); }
+
+.mcq-explanation {
+  background: linear-gradient(135deg, rgba(132,204,22,0.06), rgba(34,197,94,0.03));
+  border: 1px solid rgba(132,204,22,0.2);
+  border-left: 3px solid var(--accent-right);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-top: 10px;
+  display: none;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.mcq-explanation.show { display: block; animation: slideDown 0.35s; }
+
+.mcq-explanation strong { color: var(--accent-right); }
+
+/* Pengayaan problem */
+.enrich-problem {
+  background: rgba(255,255,255,0.025);
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 10px;
+}
+
+.enrich-head {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.enrich-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--accent-3);
+  background: rgba(236,72,153,0.12);
+  padding: 4px 10px;
+  border-radius: 6px;
+  letter-spacing: 0.1em;
+}
+
+.enrich-num {
+  font-family: 'Fraunces', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.enrich-question {
+  font-size: 14px;
+  line-height: 1.55;
+  margin: 6px 0 10px;
+}
+
+.enrich-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Property cards */
+.prop-card {
+  background: rgba(255,255,255,0.025);
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+  padding: 18px 22px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s;
+}
+
+.prop-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, var(--accent), var(--accent-2));
+}
+
+.prop-card:hover { transform: translateY(-3px); border-color: var(--accent); }
+
+.prop-title {
+  font-family: 'Fraunces', serif;
+  font-size: 19px;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+
+.prop-desc {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--fg);
+  margin-bottom: 6px;
+}
+
+.prop-sym {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--fg-dim);
+  background: rgba(0,0,0,0.2);
+  padding: 6px 10px;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+/* Steps */
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.step {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 12px 16px;
+  background: rgba(255,255,255,0.02);
+  border-radius: 10px;
+  border-left: 2px solid var(--accent);
+}
+
+.step-num {
+  font-family: 'Fraunces', serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+  min-width: 28px;
+}
+
+.step-text {
+  font-size: 14px;
+  line-height: 1.5;
+  padding-top: 3px;
+}
+
+.step-text strong { color: var(--accent); }
+
+/* Cover decoration */
+.cover-deco {
+  position: absolute;
+  font-family: 'Fraunces', serif;
+  font-size: 280px;
+  font-weight: 200;
+  color: rgba(251,191,36,0.025);
+  pointer-events: none;
+  user-select: none;
+  line-height: 1;
+}
+
+.cover-deco.tl { top: 40px; left: 40px; }
+.cover-deco.br { bottom: 40px; right: 40px; transform: rotate(180deg); }
+
+/* Hint */
+.kbd-hint {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--fg-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 50;
+}
+
+.kbd {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border-soft);
+  padding: 2px 7px;
+  border-radius: 4px;
+  color: var(--fg-dim);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .slide { padding: 40px 40px 90px; }
+  .slide-title { font-size: 34px; }
+  .slide-badge { font-size: 64px; }
+  .three-col { grid-template-columns: 1fr; }
+  .two-col { grid-template-columns: 1fr; }
+  .cover-title { font-size: 64px; }
+  .slide-indicators { display: none; }
+  .kbd-hint { display: none; }
+}
+
+@media (max-width: 640px) {
+  .slide { padding: 30px 20px 90px; }
+  .slide-title { font-size: 26px; }
+  .cover-title { font-size: 44px; }
+  .cover-meta { gap: 30px; }
+  .nav { padding: 6px 12px; gap: 8px; }
+}
+
+.active .stagger > * {
+  animation: fadeUp 0.5s ease-out backwards;
+}
+.active .stagger > *:nth-child(1) { animation-delay: 0.05s; }
+.active .stagger > *:nth-child(2) { animation-delay: 0.15s; }
+.active .stagger > *:nth-child(3) { animation-delay: 0.25s; }
+.active .stagger > *:nth-child(4) { animation-delay: 0.35s; }
+.active .stagger > *:nth-child(5) { animation-delay: 0.45s; }
+.active .stagger > *:nth-child(6) { animation-delay: 0.55s; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
+</head>
+<body>
+
+<!-- Background symbols -->
+<div class="bg-symbols" aria-hidden="true">
+  <span style="top:8%;left:12%;animation-delay:0s">f(x)</span>
+  <span style="top:25%;left:78%;animation-delay:3s">∫</span>
+  <span style="top:65%;left:8%;animation-delay:6s">∑</span>
+  <span style="top:78%;left:72%;animation-delay:9s">√</span>
+  <span style="top:45%;left:45%;animation-delay:12s">π</span>
+  <span style="top:15%;left:50%;animation-delay:5s">∞</span>
+</div>
+
+<div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+
+<div class="presentation">
+<div class="slides">
+
+<!-- ===== SLIDE 1: COVER ===== -->
+<section class="slide cover active">
+  <div class="cover-deco tl">f</div>
+  <div class="cover-deco br">g</div>
+  <div class="cover-content stagger">
+    <div class="cover-eyebrow">Modul Pembelajaran Interaktif</div>
+    <h1 class="cover-title">Relasi <span class="cover-amp">&</span> Fungsi</h1>
+    <p class="cover-subtitle">Pendalaman materi Matematika Kelas XI & pengayaan seleksi PTN. Disusun khusus untuk pendalaman dan persiapan seleksi universitas.</p>
+    <div class="cover-meta">
+      <div class="meta-item">
+        <div class="meta-value">6</div>
+        <div class="meta-label">Bab</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-value">14</div>
+        <div class="meta-label">Slide</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-value">80+</div>
+        <div class="meta-label">Latihan</div>
+      </div>
+    </div>
+    <button class="btn large" onclick="goToSlide(1)">Mulai Presentasi →</button>
+  </div>
+</section>
+
+<!-- ===== SLIDE 2: DAFTAR ISI ===== -->
+<section class="slide">
+  <div class="slide-header">
+    <div class="slide-meta">
+      <span class="slide-number">Daftar Isi</span>
+      <h2 class="slide-title">Peta Perjalanan Belajar</h2>
+    </div>
+    <div class="slide-badge">01</div>
+  </div>
+  <div class="slide-content">
+    <div class="toc-list stagger">
+      <div class="toc-item" onclick="goToSlide(2)">
+        <div class="toc-num">01</div>
+        <div class="toc-text">Pengertian Relasi
+          <div class="toc-sub">Definisi dan tiga bentuk penyajian relasi</div>
+        </div>
+        <div class="toc-arrow">→</div>
+      </div>
+      <div class="toc-item" onclick="goToSlide(3)">
+        <div class="toc-num">02</div>
+        <div class="toc-text">Pengertian Fungsi (Pemetaan)
+          <div class="toc-sub">Syarat relasi disebut fungsi</div>
+        </div>
+        <div class="toc-arrow">→</div>
+      </div>
+      <div class="toc-item" onclick="goToSlide(4)">
+        <div class="toc-num">03</div>
+        <div class="toc-text">Latihan 1: Identifikasi Fungsi
+          <div class="toc-sub">Diagram panah & himpunan pasangan berurutan</div>
+        </div>
+        <div class="toc-arrow">→</div>
+      </div>
+      <div class="toc-item" onclick="goToSlide(5)">
+        <div class="toc-num">04</div>
+        <div class="toc-text">Domain dan Range Fungsi
+          <div class="toc-sub">Definisi dan cara mencari daerah asal & hasil</div>
+        </div>
+        <div class="toc-arrow">→</div>
+      </div>
+      <div class="toc-item" onclick="goToSlide(7)">
+        <div class="toc-num">05</div>
+        <div class="toc-text">Operasi Fungsi & Latihan
+          <div class="toc-sub">Penjumlahan, pengurangan, perkalian, pembagian, komposisi</div>
+        </div>
+        <div class="toc-arrow">→</div>
+      </div>
+      <div class="toc-item" onclick="goToSlide(9)">
+        <div class="toc-num">06</div>
+        <div class="toc-text">Sifat Fungsi & Fungsi Invers
+          <div class="toc-sub">Injektif, surjektif, bijektif, dan invers</div>
+        </div>
+        <div class="toc-arrow">→</div>
+      </div>
+      <div class="toc-item" onclick="goToSlide(12)">
+        <div class="toc-num">07</div>
+        <div class="toc-text">Latihan Soal Pilihan Ganda
+          <div class="toc-sub">20 soal uji kompetensi lengkap dengan pembahasan</div>
+        </div>
+        <div class="toc-arrow">→</div>
+      </div>
+      <div class="toc-item" onclick="goToSlide(13)">
+        <div class="toc-num">08</div>
+        <div class="toc-text">Pengayaan: Soal Seleksi PTN
+          <div class="toc-sub">SNBT, SIMAK UI, UTBK, UM UGM</div>
+        </div>
+        <div class="toc-arrow">→</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 3: 1.1 Pengertian Relasi ===== -->
+<section class="slide">
+  <div class="slide-header">
+    <div class="slide-meta">
+      <span class="slide-number">Bab 1 · 1.1</span>
+      <h2 class="slide-title">Pengertian Relasi</h2>
+    </div>
+    <div class="slide-badge">02</div>
+  </div>
+  <div class="slide-content">
+    <div class="card glow stagger">
+      <p class="lead"><strong>Relasi</strong> dari himpunan $A$ ke himpunan $B$ adalah suatu <strong>aturan atau hubungan</strong> yang memasangkan anggota-anggota himpunan $A$ dengan anggota-anggota himpunan $B$.</p>
+    </div>
+    <div class="card stagger">
+      <h3 class="card-title">Tiga Cara Penyajian Relasi</h3>
+      <div class="three-col">
+        <div class="method-card">
+          <div class="method-icon">→</div>
+          <h4>Diagram Panah</h4>
+          <p>Visualisasi dengan anak panah dari setiap elemen $A$ ke elemen $B$ yang menjadi pasangannya.</p>
+        </div>
+        <div class="method-card">
+          <div class="method-icon">{ }</div>
+          <h4>Himpunan Pasangan Berurutan</h4>
+          <p>Disajikan sebagai himpunan pasangan terurut $\{(a,b) \mid a \in A, b \in B\}$.</p>
+        </div>
+        <div class="method-card">
+          <div class="method-icon">⌗</div>
+          <h4>Grafik Cartesius</h4>
+          <p>Diagram titik-titik pada bidang koordinat Cartesius dengan sumbu $x$ (A) dan sumbu $y$ (B).</p>
+        </div>
+      </div>
+    </div>
+    <div class="card stagger">
+      <h3 class="card-title">Contoh Relasi</h3>
+      <p style="font-size:14px;line-height:1.6;color:var(--fg-dim);margin-bottom:8px">Misal $A = \{1, 2, 3\}$ dan $B = \{a, b, c\}$. Relasi "setiap anggota A dipasangkan dengan satu anggota B":</p>
+      <div class="equation">$R = \{(1, a), (2, b), (3, c)\}$</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 4: 1.2 Pengertian Fungsi ===== -->
+<section class="slide">
+  <div class="slide-header">
+    <div class="slide-meta">
+      <span class="slide-number">Bab 1 · 1.2</span>
+      <h2 class="slide-title">Pengertian Fungsi (Pemetaan)</h2>
+    </div>
+    <div class="slide-badge">03</div>
+  </div>
+  <div class="slide-content">
+    <div class="card glow stagger">
+      <p class="lead"><strong>Fungsi</strong> dari himpunan $A$ ke himpunan $B$ adalah relasi khusus yang memasangkan <strong>setiap anggota himpunan $A$</strong> (daerah asal/domain) dengan <strong>tepat satu anggota himpunan $B$</strong> (daerah kawan/kodomain).</p>
+    </div>
+    <div class="card stagger">
+      <h3 class="card-title">Dua Syarat Suatu Relasi Disebut Fungsi</h3>
+      <div class="two-col">
+        <div class="prop-card">
+          <div class="prop-title">1. Domain Harus Habis Terpasang</div>
+          <div class="prop-desc">Semua anggota domain (himpunan pertama) harus memiliki pasangan di kodomain.</div>
+          <div class="prop-sym">∀x ∈ A, ∃y ∈ B</div>
+        </div>
+        <div class="prop-card">
+          <div class="prop-title">2. Tidak Boleh Bercabang</div>
+          <div class="prop-desc">Anggota domain hanya boleh memiliki <strong>satu pasangan</strong> di kodomain, tidak boleh bercabang.</div>
+          <div class="prop-sym">∀x ∈ A, ∃! y ∈ B</div>
+        </div>
+      </div>
+    </div>
+    <div class="card stagger">
+      <h3 class="card-title">Notasi Fungsi</h3>
+      <div class="equation">$f: A \rightarrow B \quad \text{atau} \quad y = f(x)$</div>
+      <p style="font-size:14px;color:var(--fg-dim);margin-top:6px">di mana $x$ adalah variabel bebas (input) dan $y$ adalah variabel terikat (output).</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 5: 1.3 Latihan 1 ===== -->
+<section class="slide">
+  <div class="slide-header">
+    <div class="slide-meta">
+      <span class="slide-number">Bab 1 · 1.3</span>
+      <h2 class="slide-title">Latihan 1: Identifikasi Fungsi</h2>
+    </div>
+    <div class="slide-badge">04</div>
+  </div>
+  <div class="slide-content">
+    <div class="card stagger">
+      <h3 class="card-title">A. Diagram Panah</h3>
+      <p style="font-size:13px;color:var(--fg-dim);margin-bottom:10px">Tentukan manakah diagram berikut yang merupakan fungsi dan bukan fungsi beserta alasannya!</p>
+      <div class="diagrams-row">
+        <div class="diagram-card">
+          <svg class="diagram-svg" viewBox="0 0 200 180" width="200" height="180">
+            <defs>
+              <marker id="arr1" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L7,3 z" fill="#fbbf24"/>
+              </marker>
+            </defs>
+            <text x="40" y="18" fill="#fbbf24" font-size="13" font-weight="700" font-family="Fraunces">A</text>
+            <text x="155" y="18" fill="#f97316" font-size="13" font-weight="700" font-family="Fraunces">B</text>
+            <line x1="50" y1="30" x2="50" y2="170" stroke="rgba(255,255,255,0.1)"/>
+            <line x1="150" y1="30" x2="150" y2="170" stroke="rgba(255,255,255,0.1)"/>
+            <circle cx="50" cy="55" r="13" fill="rgba(251,191,36,0.15)" stroke="#fbbf24" stroke-width="1.5"/>
+            <text x="50" y="60" text-anchor="middle" fill="#fbbf24" font-size="12" font-weight="600">1</text>
+            <circle cx="50" cy="100" r="13" fill="rgba(251,191,36,0.15)" stroke="#fbbf24" stroke-width="1.5"/>
+            <text x="50" y="105" text-anchor="middle" fill="#fbbf24" font-size="12" font-weight="600">2</text>
+            <circle cx="50" cy="145" r="13" fill="rgba(251,191,36,0.15)" stroke="#fbbf24" stroke-width="1.5"/>
+            <text x="50" y="150" text-anchor="middle" fill="#fbbf24" font-size="12" font-weight="600">3</text>
+            <circle cx="150" cy="55" r="13" fill="rgba(249,115,22,0.15)" stroke="#f97316" stroke-width="1.5"/>
+            <text x="150" y="60" text-anchor="middle" fill="#f97316" font-size="12" font-weight="600">a</text>
+            <circle cx="150" cy="100" r="13" fill="rgba(249,115,22,0.15)" stroke="#f97316" stroke-width="1.5"/>
+            <text x="150" y="105" text-anchor="middle" fill="#f97316" font-size="12" font-weight="600">b</text>
+            <circle cx="150" cy="145" r="13" fill="rgba(249,115,22,0.15)" stroke="#f97316" stroke-width="1.5"/>
+            <text x="150" y="150" text-anchor="middle" fill="#f97316" font-size="12" font-weight="600">c</text>
+            <line x1="64" y1="55" x2="136" y2="55" stroke="#fbbf24" stroke-width="1.5" marker-end="url(#arr1)"/>
+            <line x1="64" y1="100" x2="136" y2="100" stroke="#fbbf24" stroke-width="1.5" marker-end="url(#arr1)"/>
+            <line x1="64" y1="145" x2="136" y2="145" stroke="#fbbf24" stroke-width="1.5" marker-end="url(#arr1)"/>
+          </svg>
+          <div class="diagram-label">Diagram 1</div>
+        </div>
+        <div class="diagram-card">
+          <svg class="diagram-svg" viewBox="0 0 200 180" width="200" height="180">
+            <defs>
+              <marker id="arr2" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L7,3 z" fill="#ef4444"/>
+              </marker>
+            </defs>
+            <text x="40" y="18" fill="#fbbf24" font-size="13" font-weight="700" font-family="Fraunces">A</text>
+            <text x="155" y="18" fill="#f97316" font-size="13" font-weight="700" font-family="Fraunces">B</text>
+            <line x1="50" y1="30" x2="50" y2="170" stroke="rgba(255,255,255,0.1)"/>
+            <line x1="150" y1="30" x2="150" y2="170" stroke="rgba(255,255,255,0.1)"/>
+            <circle cx="50" cy="55" r="13" fill="rgba(251,191,36,0.15)" stroke="#fbbf24" stroke-width="1.5"/>
+            <text x="50" y="60" text-anchor="middle" fill="#fbbf24" font-size="12" font-weight="600">1</text>
+            <circle cx="50" cy="100" r="13" fill="rgba(251,191,36,0.15)" stroke="#fbbf24" stroke-width="1.5"/>
+            <text x="50" y="105" text-anchor="middle" fill="#fbbf24" font-size="12" font-weight="600">2</text>
+            <circle cx="50" cy="145" r="13" fill="rgba(251,191,36,0.15)" stroke="#fbbf24" stroke-width="1.5"/>
+            <text x="50" y="150" text-anchor="middle" fill="#fbbf24" font-size="12" font-weight="600">3</text>
+            <circle cx="150" cy="55" r="13" fill="rgba(249,115,22,0.15)" stroke="#f97316" stroke-width="1.5"/>
+            <text x="150" y="60" text-anchor="middle" fill="#f97316" font-size="12" font-weight="600">a</text>
+            <circle cx="150" cy="100" r="13" fill="rgba(249,115,22,0.15)" stroke="#f97316" stroke-width="1.5"/>
+            <text x="150" y="105" text-anchor="middle" fill="#f97316" font-size="12" font-weight="600">b</text>
+            <circle cx="150" cy="145" r="13" fill="rgba(249,115,22,0.15)" stroke="#f97316" stroke-width="1.5"/>
+            <text x="150" y="150" text-anchor="middle" fill="#f97316" font-size="12" font-weight="600">c</text>
+            <path d="M64,55 Q100,40 136,55" stroke="#ef4444" stroke-width="1.5" fill="none" marker-end="url(#arr2)"/>
+            <path d="M64,55 Q100,75 136,100" stroke="#ef4444" stroke-width="1.5" fill="none" marker-end="url(#arr2)"/>
+            <line x1="64" y1="145" x2="136" y2="145" stroke="#fbbf24" stroke-width="1.5" marker-end="url(#arr1)"/>
+          </svg>
+          <div class="diagram-label">Diagram 2</div>
+        </div>
+        <div class="diagram-card">
+          <svg class="diagram-svg" viewBox="0 0 200 180" width="200" height="180">
+            <defs>
+              <marker id="arr3" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L7,3 z" fill="#fbbf24"/>
+              </marker>
+            </defs>
+            <text x="40" y="18" fill="#fbbf24" font-size="13" font-weight="700" font-family="Fraunces">A</text>
+            <text x="155" y="18" fill="#f97316" font-size="13" font-weight="700" font-family="Fraunces">B</text>
+            <line x1="50" y1="30" x2="50" y2="170" stroke="rgba(255,255,255,0.1)"/>
+            <line x1="150" y1="30" x2="150" y2="170" stroke="rgba(255,255,255,0.1)"/>
+            <circle cx="50" cy="55" r="13" fill="rgba(251,191,36,0.15)" stroke="#fbbf24" stroke-width="1.5"/>
+            <text x="50" y="60" text-anchor="middle" fill="#fbbf24" font-size="12" font-weight="600">1</text>
+            <circle cx="50" cy="100" r="13" fill="rgba(251,191,36,0.15)" stroke="#fbbf24" stroke-width="1.5"/>
+            <text x="50" y="105" text-anchor="middle" fill="#fbbf24" font-size="12" font-weight="600">2</text>
+            <circle cx="50" cy="145" r="13" fill="rgba(251,191,36,0.15)" stroke="#fbbf24" stroke-width="1.5"/>
+            <text x="50" y="150" text-anchor="middle" fill="#fbbf24" font-size="12" font-weight="600">3</text>
+            <circle cx="150" cy="55" r="13" fill="rgba(249,115,22,0.15)" stroke="#f97316" stroke-width="1.5"/>
+            <text x="150" y="60" text-anchor="middle" fill="#f97316" font-size="12" font-weight="600">a</text>
+            <circle cx="150" cy="100" r="13" fill="rgba(249,115,22,0.15)" stroke="#f97316" stroke-width="1.5"/>
+            <text x="150" y="105" text-anchor="middle" fill="#f97316" font-size="12" font-weight="600">b</text>
+            <circle cx="150" cy="145" r="13" fill="rgba(249,115,22,0.15)" stroke="#f97316" stroke-width="1.5"/>
+            <text x="150" y="150" text-anchor="middle" fill="#f97316" font-size="12" font-weight="600">c</text>
+            <line x1="64" y1="55" x2="136" y2="55" stroke="#fbbf24" stroke-width="1.5" marker-end="url(#arr3)"/>
+            <path d="M64,100 Q100,80 136,55" stroke="#fbbf24" stroke-width="1.5" fill="none" marker-end="url(#arr3)"/>
+            <path d="M64,145 Q100,100 136,55" stroke="#fbbf24" stroke-width="1.5" fill="none" marker-end="url(#arr3)"/>
+          </svg>
+          <div class="diagram-label">Diagram 3</div>
+        </div>
+      </div>
+    </div>
+    <div class="card stagger">
+      <h3 class="card-title">B. Himpunan Pasangan Berurutan</h3>
+      <p style="font-size:13px;color:var(--fg-dim);margin-bottom:8px">Manakah dari himpunan berikut yang merupakan fungsi?</p>
+      <div class="equation" style="margin:6px 0">1. $\{(1, x), (2, y), (3, z)\}$</div>
+      <div class="equation" style="margin:6px 0">2. $\{(1, x), (1, y), (2, z)\}$</div>
+      <div class="equation" style="margin:6px 0">3. $\{(a, 1), (b, 1), (c, 1)\}$</div>
+    </div>
+    <div class="stagger">
+      <button class="btn" onclick="toggleAnswer('latihan1-key')">Tunjukkan Kunci Jawaban</button>
+      <div class="answer-box" id="latihan1-key">
+        <strong>Bagian A:</strong><br>
+        • <strong>Diagram 1</strong> = Fungsi (Setiap anggota A tepat satu ke B)<br>
+        • <strong>Diagram 2</strong> = Bukan Fungsi (Elemen 1 bercabang ke a dan b, elemen 2 tidak berpasangan)<br>
+        • <strong>Diagram 3</strong> = Fungsi (Semua elemen A dipasangkan tepat satu kali, walau ke tujuan yang sama yaitu a)<br><br>
+        <strong>Bagian B:</strong><br>
+        • (1) Fungsi &nbsp; • (2) Bukan Fungsi (domain 1 berulang) &nbsp; • (3) Fungsi
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 6: 2.1 Definisi Domain & Range ===== -->
+<section class="slide">
+  <div class="slide-header">
+    <div class="slide-meta">
+      <span class="slide-number">Bab 2 · 2.1</span>
+      <h2 class="slide-title">Definisi Domain dan Range</h2>
+    </div>
+    <div class="slide-badge">05</div>
+  </div>
+  <div class="slide-content">
+    <div class="two-col stagger">
+      <div class="prop-card">
+        <div class="prop-title">Domain ($D_f$)</div>
+        <div class="prop-desc">Daerah asal fungsi, yaitu himpunan semua nilai $x$ agar fungsi terdefinisi di bilangan real.</div>
+        <div class="prop-sym">$D_f = \{x \in \mathbb{R} \mid f(x) \text{ terdefinisi}\}$</div>
+      </div>
+      <div class="prop-card">
+        <div class="prop-title">Range ($R_f$)</div>
+        <div class="prop-desc">Daerah hasil, yaitu himpunan semua nilai $y$ yang merupakan keluaran dari pemetaan fungsi.</div>
+        <div class="prop-sym">$R_f = \{y \in \mathbb{R} \mid y = f(x), x \in D_f\}$</div>
+      </div>
+    </div>
+    <div class="card glow stagger">
+      <h3 class="card-title">Ilustrasi Konsep</h3>
+      <p style="font-size:14px;line-height:1.6;color:var(--fg-dim)">Setiap nilai $x$ di domain akan "dipetakan" oleh fungsi $f$ menjadi nilai $y = f(x)$ di range. Domain adalah <strong style="color:var(--accent)">input</strong>, range adalah <strong style="color:var(--accent)">output</strong>.</p>
+      <div class="equation">$x \in D_f \xrightarrow{\quad f \quad} y = f(x) \in R_f$</div>
+    </div>
+    <div class="card stagger">
+      <h3 class="card-title">Contoh Sederhana</h3>
+      <p style="font-size:14px;line-height:1.6;margin-bottom:8px">Fungsi $f(x) = x^2$ dengan domain $\{1, 2, 3\}$:</p>
+      <div class="equation">$f(1) = 1, \quad f(2) = 4, \quad f(3) = 9$</div>
+      <p style="font-size:14px;color:var(--fg-dim);margin-top:6px">Maka $R_f = \{1, 4, 9\}$.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 7: 2.2 Cara Mencari Domain dan Range ===== -->
+<section class="slide">
+  <div class="slide-header">
+    <div class="slide-meta">
+      <span class="slide-number">Bab 2 · 2.2</span>
+      <h2 class="slide-title">Cara Mencari Domain dan Range</h2>
+    </div>
+    <div class="slide-badge">06</div>
+  </div>
+  <div class="slide-content">
+    <div class="card stagger">
+      <h3 class="card-title">Tiga Kondisi Utama dalam Mencari Domain</h3>
+      <div class="three-col">
+        <div class="method-card">
+          <div class="method-icon">P</div>
+          <h4>Fungsi Polinomial</h4>
+          <p>Tidak memiliki pembatas.</p>
+          <div class="equation" style="margin-top:8px">$f(x) = 3x^2 + 2x - 5$<br>$D_f = \{x \mid x \in \mathbb{R}\}$</div>
+        </div>
+        <div class="method-card">
+          <div class="method-icon">R</div>
+          <h4>Fungsi Rasional</h4>
+          <p>Penyebut tidak boleh nol.</p>
+          <div class="equation" style="margin-top:8px">$f(x) = \dfrac{g(x)}{h(x)}$<br>$h(x) \neq 0$</div>
+        </div>
+        <div class="method-card">
+          <div class="method-icon">√</div>
+          <h4>Fungsi Bentuk Akar</h4>
+          <p>Radikan harus non-negatif.</p>
+          <div class="equation" style="margin-top:8px">$f(x) = \sqrt{g(x)}$<br>$g(x) \geq 0$</div>
+        </div>
+      </div>
+    </div>
+    <div class="card glow stagger">
+      <h3 class="card-title">Mencari Range</h3>
+      <p style="font-size:15px;line-height:1.6">Cara umum yang paling sering dipakai: <strong>nyatakan variabel $x$ dalam bentuk $y$</strong> (yakni membentuk inversnya) dan lihat syarat terdefinisinya variabel $y$.</p>
+      <div class="equation">$y = f(x) \implies x = f^{-1}(y) \implies$ syarat $x$ real menentukan range $y$</div>
+    </div>
+    <div class="card stagger">
+      <h3 class="card-title">Contoh: Mencari Range</h3>
+      <p style="font-size:14px;color:var(--fg-dim);margin-bottom:6px">Misal $f(x) = x^2 + 4$, $x \in \mathbb{R}$:</p>
+      <div class="equation">Karena $x^2 \geq 0$, maka $x^2 + 4 \geq 4$. Jadi $R_f = \{y \mid y \geq 4\}$.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 8: 3. Operasi Fungsi ===== -->
+<section class="slide">
+  <div class="slide-header">
+    <div class="slide-meta">
+      <span class="slide-number">Bab 3</span>
+      <h2 class="slide-title">Operasi Fungsi</h2>
+    </div>
+    <div class="slide-badge">07</div>
+  </div>
+  <div class="slide-content">
+    <div class="card glow stagger">
+      <p class="lead">Sama seperti bilangan, fungsi dapat dioperasikan. Jika $f(x)$ dan $g(x)$ adalah suatu fungsi, maka operasi aljabar dan komposisi didefinisikan sebagai berikut:</p>
+    </div>
+    <div class="stagger" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px">
+      <div class="prop-card">
+        <div class="prop-title">Penjumlahan</div>
+        <div class="equation" style="margin:6px 0">$(f + g)(x) = f(x) + g(x)$</div>
+      </div>
+      <div class="prop-card">
+        <div class="prop-title">Pengurangan</div>
+        <div class="equation" style="margin:6px 0">$(f - g)(x) = f(x) - g(x)$</div>
+      </div>
+      <div class="prop-card">
+        <div class="prop-title">Perkalian</div>
+        <div class="equation" style="margin:6px 0">$(f \cdot g)(x) = f(x) \cdot g(x)$</div>
+      </div>
+      <div class="prop-card">
+        <div class="prop-title">Pembagian</div>
+        <div class="equation" style="margin:6px 0">$\left(\dfrac{f}{g}\right)(x) = \dfrac{f(x)}{g(x)}, \quad g(x) \neq 0$</div>
+      </div>
+      <div class="prop-card" style="grid-column:1/-1">
+        <div class="prop-title">Komposisi</div>
+        <p style="font-size:14px;color:var(--fg-dim);margin-bottom:6px">Fungsi $g(x)$ disubstitusikan ke dalam fungsi $f(x)$.</p>
+        <div class="equation" style="margin:6px 0">$(f \circ g)(x) = f\big(g(x)\big)$</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 9: 3.1 Latihan Operasi Fungsi ===== -->
+<section class="slide">
+  <div class="slide-header">
+    <div class="slide-meta">
+      <span class="slide-number">Bab 3 · 3.1</span>
+      <h2 class="slide-title">Latihan Operasi Fungsi</h2>
+    </div>
+    <div class="slide-badge">08</div>
+  </div>
+  <div class="slide-content">
+    <div class="card stagger" style="padding:14px 20px">
+      <h3 class="card-title" style="font-size:16px;margin-bottom:6px">10 Pasang Fungsi</h3>
+      <table class="func-pairs">
+        <thead><tr><th>No</th><th>f(x)</th><th>g(x)</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>$2x + 1$</td><td>$x - 3$</td></tr>
+          <tr><td>2</td><td>$x^2$</td><td>$4x$</td></tr>
+          <tr><td>3</td><td>$3x - 2$</td><td>$x^2 + 1$</td></tr>
+          <tr><td>4</td><td>$5x$</td><td>$x - 1$</td></tr>
+          <tr><td>5</td><td>$x^2 - 4$</td><td>$x + 2$</td></tr>
+          <tr><td>6</td><td>$\sqrt{x}$</td><td>$x^2$</td></tr>
+          <tr><td>7</td><td>$x + 5$</td><td>$\dfrac{1}{x}$</td></tr>
+          <tr><td>8</td><td>$2x^2$</td><td>$x - 2$</td></tr>
+          <tr><td>9</td><td>$\dfrac{x}{2}$</td><td>$4x + 6$</td></tr>
+          <tr><td>10</td><td>$x^3$</td><td>$\dfrac{x}{3}$</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="stagger">
+      <div class="op-tabs">
+        <button class="op-tab active" data-tab="A">A. Penjumlahan</button>
+        <button class="op-tab" data-tab="B">B. Pengurangan</button>
+        <button class="op-tab" data-tab="C">C. Perkalian</button>
+        <button class="op-tab" data-tab="D">D. Pembagian</button>
+        <button class="op-tab" data-tab="E">E. Komposisi</button>
+      </div>
+      
+      <!-- Tab A: Penjumlahan -->
+      <div class="op-content active" data-content="A">
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">1</span><span class="op-fns">$f(x)=2x+1$, $g(x)=x-3$</span></div><div class="op-question">Tentukan $(f+g)(x)$</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-A-1')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-A-1">$(f+g)(x) = (2x+1) + (x-3) = \mathbf{3x - 2}$</div></div>
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">2</span><span class="op-fns">$f(x)=x^2$, $g(x)=4x$</span></div><div class="op-question">Tentukan $(f+g)(x)$</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-A-2')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-A-2">$(f+g)(x) = x^2 + 4x = \mathbf{x^2 + 4x}$</div></div>
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">3</span><span class="op-fns">$f(x)=3x-2$, $g(x)=x^2+1$</span></div><div class="op-question">Tentukan $(f+g)(x)$</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-A-3')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-A-3">$(f+g)(x) = (3x-2) + (x^2+1) = \mathbf{x^2 + 3x - 1}$</div></div>
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">4</span><span class="op-fns">$f(x)=5x$, $g(x)=x-1$</span></div><div class="op-question">Tentukan $(f+g)(x)$</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-A-4')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-A-4">$(f+g)(x) = 5x + (x-1) = \mathbf{6x - 1}$</div></div>
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">5</span><span class="op-fns">$f(x)=x^2-4$, $g(x)=x+2$</span></div><div class="op-question">Tentukan $(f+g)(x)$</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-A-5')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-A-5">$(f+g)(x) = (x^2-4) + (x+2) = \mathbf{x^2 + x - 2}$</div></div>
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">6</span><span class="op-fns">$f(x)=\sqrt{x}$, $g(x)=x^2$</span></div><div class="op-question">Tentukan $(f+g)(x)$</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-A-6')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-A-6">$(f+g)(x) = \sqrt{x} + x^2 = \mathbf{\sqrt{x} + x^2}$</div></div>
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">7</span><span class="op-fns">$f(x)=x+5$, $g(x)=\frac{1}{x}$</span></div><div class="op-question">Tentukan $(f+g)(x)$</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-A-7')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-A-7">$(f+g)(x) = (x+5) + \dfrac{1}{x} = \mathbf{x + 5 + \dfrac{1}{x}}$</div></div>
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">8</span><span class="op-fns">$f(x)=2x^2$, $g(x)=x-2$</span></div><div class="op-question">Tentukan $(f+g)(x)$</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-A-8')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-A-8">$(f+g)(x) = 2x^2 + (x-2) = \mathbf{2x^2 + x - 2}$</div></div>
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">9</span><span class="op-fns">$f(x)=\frac{x}{2}$, $g(x)=4x+6$</span></div><div class="op-question">Tentukan $(f+g)(x)$</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-A-9')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-A-9">$(f+g)(x) = \dfrac{x}{2} + (4x+6) = \mathbf{\dfrac{9x}{2} + 6}$</div></div>
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">10</span><span class="op-fns">$f(x)=x^3$, $g(x)=\frac{x}{3}$</span></div><div class="op-question">Tentukan $(f+g)(x)$</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-A-10')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-A-10">$(f+g)(x) = x^3 + \dfrac{x}{3} = \mathbf{x^3 + \dfrac{x}{3}}$</div></div>
+      </div>
+
+      <!-- Tab B: Pengurangan -->
+      <div class="op-content" data-content="B">
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">1</span><span class="op-fns">$f(x)=2x+1$, $g(x)=x-3$</span></div><div class="op-question">Tentukan $(f-g)(x)$</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-B-1')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-B-1">$(f-g)(x) = (2x+1) - (x-3) = \mathbf{x + 4}$</div></div>
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">2</span><span class="op-fns">$f(x)=x^2$, $g(x)=4x$</span></div><div class="op-question">Tentukan $(f-g)(x)$</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-B-2')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-B-2">$(f-g)(x) = x^2 - 4x = \mathbf{x^2 - 4x}$</div></div>
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">3</span><span class="op-fns">$f(x)=3x-2$, $g(x)=x^2+1$</span></div><div class="op-question">Tentukan $(f-g)(x)$</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-B-3')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-B-3">$(f-g)(x) = (3x-2) - (x^2+1) = \mathbf{-x^2 + 3x - 3}$</div></div>
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">4</span><span class="op-fns">$f(x)=5x$, $g(x)=x-1$</span></div><div class="op-question">Tentukan $(f-g)(x)$</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-B-4')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-B-4">$(f-g)(x) = 5x - (x-1) = \mathbf{4x + 1}$</div></div>
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">5</span><span class="op-fns">$f(x)=x^2-4$, $g(x)=x+2$</span></div><div class="op-question">Tentukan $(f-g)(x)$</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-B-5')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-B-5">$(f-g)(x) = (x^2-4) - (x+2) = \mathbf{x^2 - x - 6}$</div></div>
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">6</span><span class="op-fns">$f(x)=\sqrt{x}$, $g(x)=x^2$</span></div><div class="op-question">Tentukan $(f-g)(x)$</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-B-6')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-B-6">$(f-g)(x) = \sqrt{x} - x^2 = \mathbf{\sqrt{x} - x^2}$</div></div>
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">7</span><span class="op-fns">$f(x)=x+5$, $g(x)=\frac{1}{x}$</span></div><div class="op-question">Tentukan $(f-g)(x)$</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-B-7')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-B-7">$(f-g)(x) = (x+5) - \dfrac{1}{x} = \mathbf{x + 5 - \dfrac{1}{x}}$</div></div>
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">8</span><span class="op-fns">$f(x)=2x^2$, $g(x)=x-2$</span></div><div class="op-question">Tentukan $(f-g)(x)$</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-B-8')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-B-8">$(f-g)(x) = 2x^2 - (x-2) = \mathbf{2x^2 - x + 2}$</div></div>
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">9</span><span class="op-fns">$f(x)=\frac{x}{2}$, $g(x)=4x+6$</span></div><div class="op-question">Tentukan $(f-g)(x)$</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-B-9')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-B-9">$(f-g)(x) = \dfrac{x}{2} - (4x+6) = \mathbf{-\dfrac{7x}{2} - 6}$</div></div>
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">10</span><span class="op-fns">$f(x)=x^3$, $g(x)=\frac{x}{3}$</span></div><div class="op-question">Tentukan $(f-g)(x)$</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-B-10')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-B-10">$(f-g)(x) = x^3 - \dfrac{x}{3} = \mathbf{x^3 - \dfrac{x}{3}}$</div></div>
+      </div>
+
+      <!-- Tab C: Perkalian -->
+      <div class="op-content" data-content="C">
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">1</span><span class="op-fns">$f(x)=2x+1$, $g(x)=x-3$</span></div><div class="op-question">Tentukan $(f \cdot g)(x)$</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-C-1')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-C-1">$(f \cdot g)(x) = (2x+1)(x-3) = \mathbf{2x^2 - 5x - 3}$</div></div>
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">2</span><span class="op-fns">$f(x)=x^2$, $g(x)=4x$</span></div><div class="op-question">Tentukan $(f \cdot g)(x)$</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-C-2')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-C-2">$(f \cdot g)(x) = x^2 \cdot 4x = \mathbf{4x^3}$</div></div>
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">3</span><span class="op-fns">$f(x)=3x-2$, $g(x)=x^2+1$</span></div><div class="op-question">Tentukan $(f \cdot g)(x)$</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-C-3')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-C-3">$(f \cdot g)(x) = (3x-2)(x^2+1) = \mathbf{3x^3 - 2x^2 + 3x - 2}$</div></div>
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">4</span><span class="op-fns">$f(x)=5x$, $g(x)=x-1$</span></div><div class="op-question">Tentukan $(f \cdot g)(x)$</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-C-4')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-C-4">$(f \cdot g)(x) = 5x(x-1) = \mathbf{5x^2 - 5x}$</div></div>
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">5</span><span class="op-fns">$f(x)=x^2-4$, $g(x)=x+2$</span></div><div class="op-question">Tentukan $(f \cdot g)(x)$</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-C-5')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-C-5">$(f \cdot g)(x) = (x^2-4)(x+2) = \mathbf{x^3 + 2x^2 - 4x - 8}$</div></div>
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">6</span><span class="op-fns">$f(x)=\sqrt{x}$, $g(x)=x^2$</span></div><div class="op-question">Tentukan $(f \cdot g)(x)$</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-C-6')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-C-6">$(f \cdot g)(x) = \sqrt{x} \cdot x^2 = x^{1/2} \cdot x^2 = \mathbf{x^{5/2} = x^2\sqrt{x}}$</div></div>
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">7</span><span class="op-fns">$f(x)=x+5$, $g(x)=\frac{1}{x}$</span></div><div class="op-question">Tentukan $(f \cdot g)(x)$</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-C-7')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-C-7">$(f \cdot g)(x) = (x+5) \cdot \dfrac{1}{x} = \mathbf{\dfrac{x+5}{x}}$, $x \neq 0$</div></div>
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">8</span><span class="op-fns">$f(x)=2x^2$, $g(x)=x-2$</span></div><div class="op-question">Tentukan $(f \cdot g)(x)$</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-C-8')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-C-8">$(f \cdot g)(x) = 2x^2(x-2) = \mathbf{2x^3 - 4x^2}$</div></div>
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">9</span><span class="op-fns">$f(x)=\frac{x}{2}$, $g(x)=4x+6$</span></div><div class="op-question">Tentukan $(f \cdot g)(x)$</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-C-9')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-C-9">$(f \cdot g)(x) = \dfrac{x}{2}(4x+6) = \mathbf{2x^2 + 3x}$</div></div>
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">10</span><span class="op-fns">$f(x)=x^3$, $g(x)=\frac{x}{3}$</span></div><div class="op-question">Tentukan $(f \cdot g)(x)$</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-C-10')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-C-10">$(f \cdot g)(x) = x^3 \cdot \dfrac{x}{3} = \mathbf{\dfrac{x^4}{3}}$</div></div>
+      </div>
+
+      <!-- Tab D: Pembagian -->
+      <div class="op-content" data-content="D">
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">1</span><span class="op-fns">$f(x)=2x+1$, $g(x)=x-3$</span></div><div class="op-question">Tentukan $\left(\frac{f}{g}\right)(x)$ beserta syarat penyebut</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-D-1')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-D-1">$\left(\dfrac{f}{g}\right)(x) = \dfrac{2x+1}{x-3}$, dengan syarat $x - 3 \neq 0 \Rightarrow \mathbf{x \neq 3}$</div></div>
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">2</span><span class="op-fns">$f(x)=x^2$, $g(x)=4x$</span></div><div class="op-question">Tentukan $\left(\frac{f}{g}\right)(x)$ beserta syarat penyebut</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-D-2')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-D-2">$\left(\dfrac{f}{g}\right)(x) = \dfrac{x^2}{4x} = \mathbf{\dfrac{x}{4}}$, dengan syarat $x \neq 0$</div></div>
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">3</span><span class="op-fns">$f(x)=3x-2$, $g(x)=x^2+1$</span></div><div class="op-question">Tentukan $\left(\frac{f}{g}\right)(x)$ beserta syarat penyebut</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-D-3')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-D-3">$\left(\dfrac{f}{g}\right)(x) = \mathbf{\dfrac{3x-2}{x^2+1}}$. Karena $x^2+1 > 0$ untuk semua $x$, tidak ada syarat khusus.</div></div>
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">4</span><span class="op-fns">$f(x)=5x$, $g(x)=x-1$</span></div><div class="op-question">Tentukan $\left(\frac{f}{g}\right)(x)$ beserta syarat penyebut</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-D-4')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-D-4">$\left(\dfrac{f}{g}\right)(x) = \mathbf{\dfrac{5x}{x-1}}$, dengan syarat $x \neq 1$</div></div>
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">5</span><span class="op-fns">$f(x)=x^2-4$, $g(x)=x+2$</span></div><div class="op-question">Tentukan $\left(\frac{f}{g}\right)(x)$ beserta syarat penyebut</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-D-5')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-D-5">$\left(\dfrac{f}{g}\right)(x) = \dfrac{x^2-4}{x+2} = \dfrac{(x-2)(x+2)}{x+2} = \mathbf{x-2}$, dengan syarat $x \neq -2$</div></div>
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">6</span><span class="op-fns">$f(x)=\sqrt{x}$, $g(x)=x^2$</span></div><div class="op-question">Tentukan $\left(\frac{f}{g}\right)(x)$ beserta syarat penyebut</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-D-6')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-D-6">$\left(\dfrac{f}{g}\right)(x) = \dfrac{\sqrt{x}}{x^2} = \mathbf{\dfrac{1}{x^{3/2}} = \dfrac{1}{x\sqrt{x}}}$, dengan syarat $x > 0$</div></div>
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">7</span><span class="op-fns">$f(x)=x+5$, $g(x)=\frac{1}{x}$</span></div><div class="op-question">Tentukan $\left(\frac{f}{g}\right)(x)$ beserta syarat penyebut</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-D-7')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-D-7">$\left(\dfrac{f}{g}\right)(x) = \dfrac{x+5}{1/x} = (x+5) \cdot x = \mathbf{x^2 + 5x}$, dengan syarat $x \neq 0$</div></div>
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">8</span><span class="op-fns">$f(x)=2x^2$, $g(x)=x-2$</span></div><div class="op-question">Tentukan $\left(\frac{f}{g}\right)(x)$ beserta syarat penyebut</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-D-8')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-D-8">$\left(\dfrac{f}{g}\right)(x) = \mathbf{\dfrac{2x^2}{x-2}}$, dengan syarat $x \neq 2$</div></div>
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">9</span><span class="op-fns">$f(x)=\frac{x}{2}$, $g(x)=4x+6$</span></div><div class="op-question">Tentukan $\left(\frac{f}{g}\right)(x)$ beserta syarat penyebut</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-D-9')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-D-9">$\left(\dfrac{f}{g}\right)(x) = \dfrac{x/2}{4x+6} = \mathbf{\dfrac{x}{8x+12}}$, dengan syarat $x \neq -\dfrac{3}{2}$</div></div>
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">10</span><span class="op-fns">$f(x)=x^3$, $g(x)=\frac{x}{3}$</span></div><div class="op-question">Tentukan $\left(\frac{f}{g}\right)(x)$ beserta syarat penyebut</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-D-10')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-D-10">$\left(\dfrac{f}{g}\right)(x) = \dfrac{x^3}{x/3} = x^3 \cdot \dfrac{3}{x} = \mathbf{3x^2}$, dengan syarat $x \neq 0$</div></div>
+      </div>
+
+      <!-- Tab E: Komposisi -->
+      <div class="op-content" data-content="E">
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">1</span><span class="op-fns">$f(x)=2x+1$, $g(x)=x-3$</span></div><div class="op-question">Tentukan $(f \circ g)(x)$</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-E-1')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-E-1">$(f \circ g)(x) = f(x-3) = 2(x-3)+1 = \mathbf{2x - 5}$</div></div>
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">2</span><span class="op-fns">$f(x)=x^2$, $g(x)=4x$</span></div><div class="op-question">Tentukan $(f \circ g)(x)$</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-E-2')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-E-2">$(f \circ g)(x) = f(4x) = (4x)^2 = \mathbf{16x^2}$</div></div>
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">3</span><span class="op-fns">$f(x)=3x-2$, $g(x)=x^2+1$</span></div><div class="op-question">Tentukan $(f \circ g)(x)$</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-E-3')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-E-3">$(f \circ g)(x) = f(x^2+1) = 3(x^2+1)-2 = \mathbf{3x^2 + 1}$</div></div>
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">4</span><span class="op-fns">$f(x)=5x$, $g(x)=x-1$</span></div><div class="op-question">Tentukan $(f \circ g)(x)$</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-E-4')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-E-4">$(f \circ g)(x) = f(x-1) = 5(x-1) = \mathbf{5x - 5}$</div></div>
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">5</span><span class="op-fns">$f(x)=x^2-4$, $g(x)=x+2$</span></div><div class="op-question">Tentukan $(f \circ g)(x)$</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-E-5')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-E-5">$(f \circ g)(x) = f(x+2) = (x+2)^2-4 = x^2+4x+4-4 = \mathbf{x^2 + 4x}$</div></div>
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">6</span><span class="op-fns">$f(x)=\sqrt{x}$, $g(x)=x^2$</span></div><div class="op-question">Tentukan $(f \circ g)(x)$</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-E-6')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-E-6">$(f \circ g)(x) = f(x^2) = \sqrt{x^2} = \mathbf{|x|}$</div></div>
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">7</span><span class="op-fns">$f(x)=x+5$, $g(x)=\frac{1}{x}$</span></div><div class="op-question">Tentukan $(f \circ g)(x)$</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-E-7')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-E-7">$(f \circ g)(x) = f\!\left(\dfrac{1}{x}\right) = \dfrac{1}{x} + 5 = \mathbf{\dfrac{1}{x} + 5}$, $x \neq 0$</div></div>
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">8</span><span class="op-fns">$f(x)=2x^2$, $g(x)=x-2$</span></div><div class="op-question">Tentukan $(f \circ g)(x)$</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-E-8')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-E-8">$(f \circ g)(x) = f(x-2) = 2(x-2)^2 = 2(x^2-4x+4) = \mathbf{2x^2 - 8x + 8}$</div></div>
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">9</span><span class="op-fns">$f(x)=\frac{x}{2}$, $g(x)=4x+6$</span></div><div class="op-question">Tentukan $(f \circ g)(x)$</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-E-9')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-E-9">$(f \circ g)(x) = f(4x+6) = \dfrac{4x+6}{2} = \mathbf{2x + 3}$</div></div>
+        <div class="op-problem"><div class="op-problem-head"><span class="op-num">10</span><span class="op-fns">$f(x)=x^3$, $g(x)=\frac{x}{3}$</span></div><div class="op-question">Tentukan $(f \circ g)(x)$</div><div class="op-actions"><button class="btn small" onclick="toggleAnswer('op-E-10')">Tunjukkan Jawaban</button></div><div class="answer-box" id="op-E-10">$(f \circ g)(x) = f\!\left(\dfrac{x}{3}\right) = \left(\dfrac{x}{3}\right)^3 = \mathbf{\dfrac{x^3}{27}}$</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 10: 4.1 Sifat-sifat Fungsi ===== -->
+<section class="slide">
+  <div class="slide-header">
+    <div class="slide-meta">
+      <span class="slide-number">Bab 4 · 4.1</span>
+      <h2 class="slide-title">Sifat-sifat Fungsi</h2>
+    </div>
+    <div class="slide-badge">09</div>
+  </div>
+  <div class="slide-content">
+    <div class="stagger" style="display:grid;grid-template-columns:1fr;gap:14px">
+      <div class="prop-card">
+        <div class="prop-title">Fungsi Injektif (Satu-satu)</div>
+        <div class="prop-desc">Setiap anggota daerah asal dipetakan ke daerah kawan yang berbeda. Tidak ada dua $x$ berbeda yang memiliki peta $y$ yang sama.</div>
+        <div class="prop-sym">Jika $f(x_1) = f(x_2) \Rightarrow x_1 = x_2$</div>
+      </div>
+      <div class="prop-card">
+        <div class="prop-title">Fungsi Surjektif (Onto)</div>
+        <div class="prop-desc">Setiap anggota daerah kawan merupakan bayangan dari minimal satu anggota daerah asal. Range sama dengan Kodomain.</div>
+        <div class="prop-sym">Range = Kodomain, $\forall y \in B, \exists x \in A : f(x)=y$</div>
+      </div>
+      <div class="prop-card">
+        <div class="prop-title">Fungsi Bijektif</div>
+        <div class="prop-desc">Fungsi yang sekaligus bersifat injektif dan surjektif. Dikenal sebagai <strong>korespondensi satu-satu</strong>.</div>
+        <div class="prop-sym">Injektif $\land$ Surjektif</div>
+      </div>
+    </div>
+    <div class="card glow stagger">
+      <p style="font-size:14px;line-height:1.6;color:var(--fg-dim)"><strong style="color:var(--accent)">Catatan penting:</strong> Hanya fungsi <strong style="color:var(--accent)">bijektif</strong> yang memiliki invers. Injektif = "tidak bercabang di arah berlawanan", Surjektif = "tidak ada elemen kodomain yang kosong".</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 11: 4.2 Fungsi Invers ===== -->
+<section class="slide">
+  <div class="slide-header">
+    <div class="slide-meta">
+      <span class="slide-number">Bab 4 · 4.2</span>
+      <h2 class="slide-title">Fungsi Invers</h2>
+    </div>
+    <div class="slide-badge">10</div>
+  </div>
+  <div class="slide-content">
+    <div class="card glow stagger">
+      <p class="lead"><strong>Fungsi invers</strong> $f^{-1}(x)$ adalah fungsi kebalikan. Jika fungsi $f$ memetakan $x \rightarrow y$, maka invers memetakan $y \rightarrow x$.</p>
+      <div class="equation" style="margin-top:10px">$f: x \rightarrow y \quad \Longleftrightarrow \quad f^{-1}: y \rightarrow x$</div>
+    </div>
+    <div class="card stagger">
+      <h3 class="card-title">Syarat Mutlak Fungsi Memiliki Invers</h3>
+      <p style="font-size:15px;line-height:1.6">Fungsi tersebut harus bersifat <strong style="color:var(--accent)">bijektif</strong> (injektif dan surjektif sekaligus).</p>
+    </div>
+    <div class="card stagger">
+      <h3 class="card-title">Langkah Menentukan Invers</h3>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-text"><strong>Misalkan</strong> persamaan fungsi menjadi $y = f(x)$.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-text"><strong>Ubah struktur</strong> persamaan sehingga terbentuk $x = g(y)$ (nyatakan $x$ dalam $y$).</div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-text"><strong>Tukar variabel:</strong> ganti $x$ menjadi $f^{-1}(x)$ dan $y$ menjadi $x$.</div>
+        </div>
+      </div>
+    </div>
+    <div class="card stagger">
+      <h3 class="card-title">Contoh</h3>
+      <p style="font-size:14px;color:var(--fg-dim);margin-bottom:6px">Misal $f(x) = 2x + 3$:</p>
+      <div class="equation">$y = 2x + 3 \;\Rightarrow\; x = \dfrac{y-3}{2} \;\Rightarrow\; f^{-1}(x) = \dfrac{x-3}{2}$</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 12: 4.3 Latihan Soal Fungsi Invers ===== -->
+<section class="slide">
+  <div class="slide-header">
+    <div class="slide-meta">
+      <span class="slide-number">Bab 4 · 4.3</span>
+      <h2 class="slide-title">Latihan Soal Fungsi Invers</h2>
+    </div>
+    <div class="slide-badge">11</div>
+  </div>
+  <div class="slide-content">
+    <div class="stagger">
+      <div class="op-problem">
+        <div class="op-problem-head"><span class="op-num">1</span><span class="op-fns">$f(x) = 3x - 5$</span></div>
+        <div class="op-question">Tentukan rumus fungsi invers $f^{-1}(x)$</div>
+        <div class="op-actions"><button class="btn small" onclick="toggleAnswer('inv-1')">Tunjukkan Jawaban</button></div>
+        <div class="answer-box" id="inv-1">
+          $y = 3x - 5 \;\Rightarrow\; 3x = y + 5 \;\Rightarrow\; x = \dfrac{y+5}{3}$<br>
+          Jadi, $\mathbf{f^{-1}(x) = \dfrac{x+5}{3}}$         </div>
+      </div>
+      <div class="op-problem">
+        <div class="op-problem-head"><span class="op-num">2</span><span class="op-fns">$f(x) = \dfrac{2x+1}{x-4}, \; x \neq 4$</span></div>
+        <div class="op-question">Tentukan rumus fungsi invers $f^{-1}(x)$</div>
+        <div class="op-actions"><button class="btn small" onclick="toggleAnswer('inv-2')">Tunjukkan Jawaban</button></div>
+        <div class="answer-box" id="inv-2">
+          $y = \dfrac{2x+1}{x-4} \;\Rightarrow\; y(x-4) = 2x+1 \;\Rightarrow\; xy - 4y = 2x + 1$<br>
+          $xy - 2x = 4y + 1 \;\Rightarrow\; x(y-2) = 4y+1 \;\Rightarrow\; x = \dfrac{4y+1}{y-2}$<br>
+          Jadi, $\mathbf{f^{-1}(x) = \dfrac{4x+1}{x-2}}$         </div>
+      </div>
+      <div class="op-problem">
+        <div class="op-problem-head"><span class="op-num">3</span><span class="op-fns">$f(x) = \sqrt{x + 2}$</span></div>
+        <div class="op-question">Tentukan rumus fungsi invers $f^{-1}(x)$</div>
+        <div class="op-actions"><button class="btn small" onclick="toggleAnswer('inv-3')">Tunjukkan Jawaban</button></div>
+        <div class="answer-box" id="inv-3">
+          $y = \sqrt{x+2} \;\Rightarrow\; y^2 = x+2 \;\Rightarrow\; x = y^2 - 2$<br>
+          Karena $f(x) = \sqrt{x+2} \geq 0$, maka $y \geq 0$.<br>
+          Jadi, $\mathbf{f^{-1}(x) = x^2 - 2, \; x \geq 0}$         </div>
+      </div>
+      <div class="op-problem">
+        <div class="op-problem-head"><span class="op-num">4</span><span class="op-fns">$f(x) = x^2 - 4x + 4, \; x \geq 2$</span></div>
+        <div class="op-question">Tentukan rumus fungsi invers $f^{-1}(x)$</div>
+        <div class="op-actions"><button class="btn small" onclick="toggleAnswer('inv-4')">Tunjukkan Jawaban</button></div>
+        <div class="answer-box" id="inv-4">
+          $f(x) = (x-2)^2$. Misal $y = (x-2)^2 \;\Rightarrow\; \sqrt{y} = x - 2$ (karena $x \geq 2$, $x-2 \geq 0$)<br>
+          $x = 2 + \sqrt{y}$<br>
+          Jadi, $\mathbf{f^{-1}(x) = 2 + \sqrt{x}, \; x \geq 0}$         </div>
+      </div>
+      <div class="op-problem">
+        <div class="op-problem-head"><span class="op-num">5</span><span class="op-fns">$f(x) = \dfrac{10x+1}{4}$</span></div>
+        <div class="op-question">Tentukan rumus fungsi invers $f^{-1}(x)$</div>
+        <div class="op-actions"><button class="btn small" onclick="toggleAnswer('inv-5')">Tunjukkan Jawaban</button></div>
+        <div class="answer-box" id="inv-5">
+          $y = \dfrac{10x+1}{4} \;\Rightarrow\; 4y = 10x + 1 \;\Rightarrow\; 10x = 4y - 1 \;\Rightarrow\; x = \dfrac{4y-1}{10}$<br>
+          Jadi, $\mathbf{f^{-1}(x) = \dfrac{4x-1}{10}}$         </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 13: 5. Latihan Soal Pilihan Ganda ===== -->
+<section class="slide">
+  <div class="slide-header">
+    <div class="slide-meta">
+      <span class="slide-number">Bab 5</span>
+      <h2 class="slide-title">Latihan Soal Pilihan Ganda</h2>
+      <div class="slide-subtitle">20 Soal Uji Kompetensi — Klik opsi lalu tekan "Cek Jawaban"</div>
+    </div>
+    <div class="slide-badge">12</div>
+  </div>
+  <div class="slide-content" id="mcq-container">
+    <!-- MCQ akan di-generate oleh JavaScript -->
+  </div>
+</section>
+
+<!-- ===== SLIDE 14: 6. Pengayaan ===== -->
+<section class="slide">
+  <div class="slide-header">
+    <div class="slide-meta">
+      <span class="slide-number">Bab 6</span>
+      <h2 class="slide-title">Pengayaan: Soal Seleksi PTN</h2>
+      <div class="slide-subtitle">SNBT · SIMAK UI · UTBK · UM UGM</div>
+    </div>
+    <div class="slide-badge">13</div>
+  </div>
+  <div class="slide-content">
+    <div class="stagger">
+      <div class="enrich-problem">
+        <div class="enrich-head">
+          <span class="enrich-tag">UTBK</span>
+          <span class="enrich-num">01</span>
+        </div>
+        <div class="enrich-question">Jika $f(x) = x^2 - 1$ dan $g(x) = \dfrac{x-1}{x+1}$, tentukan domain yang valid untuk fungsi $(g \circ f)(x)$.</div>
+        <div class="enrich-actions">
+          <button class="btn small" onclick="toggleAnswer('en-1')">Tunjukkan Jawaban & Pembahasan</button>
+        </div>
+        <div class="answer-box" id="en-1">
+          <strong>Langkah 1:</strong> Bentuk komposisi<br>
+          $(g \circ f)(x) = g(x^2-1) = \dfrac{(x^2-1)-1}{(x^2-1)+1} = \dfrac{x^2-2}{x^2}$<br><br>
+          <strong>Langkah 2:</strong> Syarat penyebut tidak boleh nol<br>
+          $x^2 \neq 0 \;\Rightarrow\; x \neq 0$<br><br>
+          <strong>Jawaban:</strong> Domain adalah $\mathbf{\{x \mid x \neq 0, x \in \mathbb{R}\}}$ (semua bilangan real kecuali 0).
+        </div>
+      </div>
+
+      <div class="enrich-problem">
+        <div class="enrich-head">
+          <span class="enrich-tag">SIMAK UI</span>
+          <span class="enrich-num">02</span>
+        </div>
+        <div class="enrich-question">Diketahui $f(x) = \dfrac{1}{x}$ dan $g(x) = \sqrt{x - 1}$. Tentukan domain dari $(f \circ g)(x)$.</div>
+        <div class="enrich-actions">
+          <button class="btn small" onclick="toggleAnswer('en-2')">Tunjukkan Jawaban & Pembahasan</button>
+        </div>
+        <div class="answer-box" id="en-2">
+          <strong>Langkah 1:</strong> Bentuk komposisi<br>
+          $(f \circ g)(x) = f(\sqrt{x-1}) = \dfrac{1}{\sqrt{x-1}}$<br><br>
+          <strong>Langkah 2:</strong> Syarat akar (radikan non-negatif)<br>
+          $x - 1 \geq 0 \;\Rightarrow\; x \geq 1$<br><br>
+          <strong>Langkah 3:</strong> Syarat penyebut pecahan tidak nol<br>
+          $\sqrt{x-1} \neq 0 \;\Rightarrow\; x - 1 \neq 0 \;\Rightarrow\; x \neq 1$<br><br>
+          <strong>Langkah 4:</strong> Irisan kedua syarat<br>
+          $x \geq 1 \;\land\; x \neq 1 \;\Rightarrow\; x > 1$<br><br>
+          <strong>Jawaban:</strong> Domain adalah $\mathbf{\{x \mid x > 1\}}$.
+        </div>
+      </div>
+
+      <div class="enrich-problem">
+        <div class="enrich-head">
+          <span class="enrich-tag">SBMPTN</span>
+          <span class="enrich-num">03</span>
+        </div>
+        <div class="enrich-question">Diberikan suatu persamaan fungsi $f$ yang memenuhi $f(x) + 2f(1-x) = 3x$. Tentukan nilai dari $f(2)$.</div>
+        <div class="enrich-actions">
+          <button class="btn small" onclick="toggleAnswer('en-3')">Tunjukkan Jawaban & Pembahasan</button>
+        </div>
+        <div class="answer-box" id="en-3">
+          <strong>Persamaan fungsional:</strong> $f(x) + 2f(1-x) = 3x$<br><br>
+          <strong>Substitusi $x = 2$:</strong><br>
+          $f(2) + 2f(-1) = 6 \quad \cdots (1)$<br><br>
+          <strong>Substitusi $x = -1$:</strong><br>
+          $f(-1) + 2f(2) = -3 \quad \cdots (2)$<br><br>
+          <strong>Selesaikan SPLDV:</strong> Dari (2): $f(-1) = -3 - 2f(2)$. Substitusi ke (1):<br>
+          $f(2) + 2(-3 - 2f(2)) = 6$<br>
+          $f(2) - 6 - 4f(2) = 6$<br>
+          $-3f(2) = 12$<br><br>
+          <strong>Jawaban:</strong> $\mathbf{f(2) = -4}$         </div>
+      </div>
+
+      <div class="enrich-problem">
+        <div class="enrich-head">
+          <span class="enrich-tag">SNBT</span>
+          <span class="enrich-num">04</span>
+        </div>
+        <div class="enrich-question">Jika fungsi rasional $f(x) = \dfrac{ax+1}{3x-1}$ kurvanya melalui titik $(1, 2)$, berapakah nilai dari $f^{-1}(3)$?</div>
+        <div class="enrich-actions">
+          <button class="btn small" onclick="toggleAnswer('en-4')">Tunjukkan Jawaban & Pembahasan</button>
+        </div>
+        <div class="answer-box" id="en-4">
+          <strong>Langkah 1:</strong> Gunakan titik $(1, 2)$, artinya $f(1) = 2$<br>
+          $\dfrac{a(1)+1}{3(1)-1} = 2 \;\Rightarrow\; \dfrac{a+1}{2} = 2 \;\Rightarrow\; a + 1 = 4 \;\Rightarrow\; a = 3$<br><br>
+          <strong>Langkah 2:</strong> Fungsi utuhnya: $f(x) = \dfrac{3x+1}{3x-1}$<br><br>
+          <strong>Langkah 3:</strong> $f^{-1}(3)$ ekuivalen dengan mencari $x$ saat $f(x) = 3$<br>
+          $\dfrac{3x+1}{3x-1} = 3 \;\Rightarrow\; 3x+1 = 3(3x-1) \;\Rightarrow\; 3x+1 = 9x-3$<br>
+          $6x = 4 \;\Rightarrow\; x = \dfrac{2}{3}$<br><br>
+          <strong>Jawaban:</strong> $\mathbf{f^{-1}(3) = \dfrac{2}{3}}$         </div>
+      </div>
+
+      <div class="enrich-problem">
+        <div class="enrich-head">
+          <span class="enrich-tag">UM UGM</span>
+          <span class="enrich-num">05</span>
+        </div>
+        <div class="enrich-question">Misalkan $f(x) = 2x - 1$ dan diketahui $(g \circ f)(x) = 4x^2 - 10x + 5$. Tentukan nilai dari $g(-1)$.</div>
+        <div class="enrich-actions">
+          <button class="btn small" onclick="toggleAnswer('en-5')">Tunjukkan Jawaban & Pembahasan</button>
+        </div>
+        <div class="answer-box" id="en-5">
+          <strong>Langkah 1:</strong> Kita ingin mencari $g(-1)$, artinya kita harus mencari nilai $x$ agar $f(x) = -1$<br>
+          $f(x) = -1 \;\Rightarrow\; 2x - 1 = -1 \;\Rightarrow\; 2x = 0 \;\Rightarrow\; x = 0$<br><br>
+          <strong>Langkah 2:</strong> Substitusi $x = 0$ ke persamaan komposisi<br>
+          $g(-1) = (g \circ f)(0) = 4(0)^2 - 10(0) + 5 = 5$<br><br>
+          <strong>Jawaban:</strong> $\mathbf{g(-1) = 5}$         </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div>
+</div>
+
+<!-- Slide indicators -->
+<div class="slide-indicators" id="indicators"></div>
+
+<!-- Navigation -->
+<div class="nav">
+  <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">←</button>
+  <div class="nav-counter"><span class="current">01</span> / <span class="total">14</span></div>
+  <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">→</button>
+</div>
+
+<div class="kbd-hint">
+  <span class="kbd">←</span> <span class="kbd">→</span> navigasi
+</div>
+
+<script>
+// ===== Slide Navigation =====
+let currentSlide = 0;
+const slides = document.querySelectorAll('.slide');
+const totalSlides = slides.length;
+const slideTitles = [
+  'Cover', 'Daftar Isi', 'Pengertian Relasi', 'Pengertian Fungsi', 
+  'Latihan Identifikasi', 'Domain & Range', 'Cara Mencari D/R',
+  'Operasi Fungsi', 'Latihan Operasi', 'Sifat Fungsi',
+  'Fungsi Invers', 'Latihan Invers', 'Pilihan Ganda', 'Pengayaan PTN'
+];
+
+// Build indicators
+const indicatorsContainer = document.getElementById('indicators');
+slides.forEach((_, i) => {
+  const btn = document.createElement('button');
+  btn.className = 'indicator' + (i === 0 ? ' active' : '');
+  btn.onclick = () => goToSlide(i);
+  const tip = document.createElement('span');
+  tip.className = 'tip';
+  tip.textContent = `${String(i+1).padStart(2,'0')} · ${slideTitles[i]}`;
+  btn.appendChild(tip);
+  indicatorsContainer.appendChild(btn);
+});
+
+document.querySelector('.nav-counter .total').textContent = String(totalSlides).padStart(2, '0');
+
+function updateIndicators() {
+  document.querySelectorAll('.indicator').forEach((ind, i) => {
+    ind.classList.toggle('active', i === currentSlide);
+  });
+}
+
+function updateNav() {
+  const progress = ((currentSlide + 1) / totalSlides) * 100;
+  document.getElementById('progressBar').style.width = progress + '%';
+  document.querySelector('.nav-counter .current').textContent = String(currentSlide + 1).padStart(2, '0');
+  document.getElementById('prevBtn').disabled = currentSlide === 0;
+  document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+  updateIndicators();
+}
+
+function showSlide(index) {
+  if (index < 0 || index >= totalSlides || index === currentSlide) return;
+  const direction = index > currentSlide ? 1 : -1;
+  slides[currentSlide].classList.remove('active');
+  if (direction === -1) slides[currentSlide].classList.add('prev');
+  setTimeout(() => {
+    slides[currentSlide].classList.remove('prev');
+    currentSlide = index;
+    slides[currentSlide].classList.add('active');
+    slides[currentSlide].scrollTop = 0;
+    updateNav();
+  }, 50);
+}
+
+function changeSlide(delta) { showSlide(currentSlide + delta); }
+function goToSlide(index) { showSlide(index); }
+
+// Keyboard navigation
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+    e.preventDefault();
+    changeSlide(1);
+  }
+  if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+    e.preventDefault();
+    changeSlide(-1);
+  }
+  if (e.key === 'Home') { e.preventDefault(); goToSlide(0); }
+  if (e.key === 'End') { e.preventDefault(); goToSlide(totalSlides - 1); }
+});
+
+// ===== Toggle Answer =====
+function toggleAnswer(id) {
+  const box = document.getElementById(id);
+  if (!box) return;
+  box.classList.toggle('show');
+  // Re-render math inside this box
+  if (typeof renderMathInElement !== 'undefined' && box.classList.contains('show')) {
+    renderMathInElement(box, {
+      delimiters: [
+        {left: '$$', right: '$$', display: true},
+        {left: '$', right: '$', display: false}
+      ],
+      throwOnError: false
+    });
+  }
+}
+
+// ===== Operation Tabs =====
+document.querySelectorAll('.op-tab').forEach(tab => {
+  tab.addEventListener('click', function() {
+    const target = this.dataset.tab;
+    document.querySelectorAll('.op-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.op-content').forEach(c => c.classList.remove('active'));
+    this.classList.add('active');
+    document.querySelector(`[data-content="${target}"]`).classList.add('active');
+  });
+});
+
+// ===== MCQ Data & Rendering =====
+const mcqData = [
+  {
+    q: 'Diketahui $f(x) = 3x + 2$. Nilai dari $f(-4)$ adalah...',
+    opts: {'A': '$-10$', 'B': '$-12$', 'C': '$14$', 'D': '$10$', 'E': '$-14$'},
+    ans: 'A',
+    exp: '$f(-4) = 3(-4) + 2 = -12 + 2 = -10$. <strong>Jawaban: A</strong>'
+  },
+  {
+    q: 'Domain dari fungsi rasional $f(x) = \\dfrac{2x-1}{x+3}$ adalah...',
+    opts: {'A': '$\\{x \\mid x \\neq 3\\}$', 'B': '$\\{x \\mid x \\neq -3\\}$', 'C': '$\\{x \\mid x \\neq 1/2\\}$', 'D': '$\\{x \\mid x > -3\\}$', 'E': '$\\{x \\mid x \\in \\mathbb{R}\\}$'},
+    ans: 'B',
+    exp: 'Penyebut tidak boleh 0: $x + 3 \\neq 0 \\Rightarrow x \\neq -3$. <strong>Jawaban: B</strong>'
+  },
+  {
+    q: 'Range dari fungsi kuadrat $f(x) = x^2 + 4$ dengan domain $\\mathbb{R}$ adalah...',
+    opts: {'A': '$\\{y \\mid y \\geq 0\\}$', 'B': '$\\{y \\mid y \\geq 4\\}$', 'C': '$\\{y \\mid y \\leq 4\\}$', 'D': '$\\{y \\mid y \\in \\mathbb{R}\\}$', 'E': '$\\{y \\mid y \\neq 0\\}$'},
+    ans: 'B',
+    exp: 'Kuadrat bilangan real minimum 0 ($x^2 \\geq 0$), sehingga $x^2 + 4 \\geq 4$. Jadi $y \\geq 4$. <strong>Jawaban: B</strong>'
+  },
+  {
+    q: 'Diketahui $f(x) = 2x + 3$ dan $g(x) = x^2 - 1$. Hasil dari $(f + g)(x)$ adalah...',
+    opts: {'A': '$x^2 + 2x + 2$', 'B': '$x^2 + 2x + 4$', 'C': '$x^2 - 2x + 2$', 'D': '$2x^2 + 2$', 'E': '$x^2 + x + 2$'},
+    ans: 'A',
+    exp: 'Penjumlahan polinomial: $(2x + 3) + (x^2 - 1) = x^2 + 2x + 2$. <strong>Jawaban: A</strong>'
+  },
+  {
+    q: 'Diketahui $f(x) = x - 5$ dan $g(x) = x + 5$. Hasil pemetaan dari $(f \\cdot g)(x)$ adalah...',
+    opts: {'A': '$x^2 - 10$', 'B': '$x^2 + 25$', 'C': '$x^2 - 25$', 'D': '$x^2 - 10x + 25$', 'E': '$x^2 - 5x$'},
+    ans: 'C',
+    exp: 'Selisih kuadrat: $(x - 5)(x + 5) = x^2 - 25$. <strong>Jawaban: C</strong>'
+  },
+  {
+    q: 'Jika $f(x) = x^2$ dan $g(x) = 2x$, maka nilai dari $\\left(\\dfrac{f}{g}\\right)(4)$ adalah...',
+    opts: {'A': '$2$', 'B': '$4$', 'C': '$8$', 'D': '$16$', 'E': '$32$'},
+    ans: 'A',
+    exp: '$f(4) = 4^2 = 16$, $g(4) = 2(4) = 8$. Pembagiannya $\\dfrac{16}{8} = 2$. <strong>Jawaban: A</strong>'
+  },
+  {
+    q: 'Diketahui $f(x) = 2x - 1$ dan $g(x) = 3x + 4$. Hasil $(f \\circ g)(x)$ adalah...',
+    opts: {'A': '$6x + 7$', 'B': '$6x + 8$', 'C': '$6x + 3$', 'D': '$6x + 4$', 'E': '$5x + 3$'},
+    ans: 'A',
+    exp: 'Substitusi $g(x)$ ke $f$: $f(3x + 4) = 2(3x + 4) - 1 = 6x + 8 - 1 = 6x + 7$. <strong>Jawaban: A</strong>'
+  },
+  {
+    q: 'Diketahui $f(x) = x^2$ dan $g(x) = x - 2$. Hasil $(g \\circ f)(x)$ adalah...',
+    opts: {'A': '$x^2 - 2$', 'B': '$x^2 - 4x + 4$', 'C': '$x^2 - 4$', 'D': '$x - 2$', 'E': '$(x - 2)^2$'},
+    ans: 'A',
+    exp: 'Substitusi $f(x)$ ke $g$: $g(x^2) = x^2 - 2$. <strong>Jawaban: A</strong>'
+  },
+  {
+    q: 'Jika $(f \\circ g)(x) = 4x^2 + 8x - 3$ dan $g(x) = 2x + 2$, maka $f(x) = \\ldots$',
+    opts: {'A': '$x^2 - 7$', 'B': '$x^2 + 7$', 'C': '$x^2 - 4x - 3$', 'D': '$x^2 - 5$', 'E': '$2x^2 - 3$'},
+    ans: 'A',
+    exp: 'Misal $y = 2x + 2 \\Rightarrow x = \\dfrac{y-2}{2}$. Substitusi: $f(y) = 4\\left(\\dfrac{y-2}{2}\\right)^2 + 8\\left(\\dfrac{y-2}{2}\\right) - 3 = (y-2)^2 + 4(y-2) - 3 = y^2 - 4y + 4 + 4y - 8 - 3 = y^2 - 7$. <strong>Jawaban: A</strong>'
+  },
+  {
+    q: 'Jika $f(x) = 3x - 2$, maka invers dari $f(x)$ adalah $f^{-1}(x) = \\ldots$',
+    opts: {'A': '$\\dfrac{x-2}{3}$', 'B': '$\\dfrac{x+2}{3}$', 'C': '$\\dfrac{x}{3} - 2$', 'D': '$\\dfrac{3}{x+2}$', 'E': '$3x + 2$'},
+    ans: 'B',
+    exp: 'Misal $y = 3x - 2 \\Rightarrow 3x = y + 2 \\Rightarrow x = \\dfrac{y+2}{3}$. Jadi $f^{-1}(x) = \\dfrac{x+2}{3}$. <strong>Jawaban: B</strong>'
+  },
+  {
+    q: 'Invers dari fungsi rasional $f(x) = \\dfrac{2x+3}{x-5}$ adalah $f^{-1}(x) = \\ldots$',
+    opts: {'A': '$\\dfrac{5x+3}{x-2}$', 'B': '$\\dfrac{5x-3}{x+2}$', 'C': '$\\dfrac{2x-5}{x+3}$', 'D': '$\\dfrac{5x+3}{x+2}$', 'E': '$\\dfrac{x-5}{2x+3}$'},
+    ans: 'A',
+    exp: 'Rumus cepat fungsi rasional $f(x) = \\dfrac{ax+b}{cx+d} \\Rightarrow f^{-1}(x) = \\dfrac{-dx+b}{cx-a}$. Karena $a=2, b=3, c=1, d=-5$, maka inversnya $\\dfrac{5x+3}{x-2}$. <strong>Jawaban: A</strong>'
+  },
+  {
+    q: 'Diketahui $f(x) = 5x + 1$ dan $g(x) = 2x - 3$. Rumus untuk $(f \\circ g)^{-1}(x)$ adalah...',
+    opts: {'A': '$\\dfrac{x+14}{10}$', 'B': '$\\dfrac{x-14}{10}$', 'C': '$\\dfrac{x+10}{14}$', 'D': '$\\dfrac{10x-1}{14}$', 'E': '$\\dfrac{x+4}{10}$'},
+    ans: 'A',
+    exp: '$(f \\circ g)(x) = 5(2x-3) + 1 = 10x - 14$. Misal $y = 10x - 14 \\Rightarrow x = \\dfrac{y+14}{10}$. Maka $(f \\circ g)^{-1}(x) = \\dfrac{x+14}{10}$. <strong>Jawaban: A</strong>'
+  },
+  {
+    q: 'Jika $f(x) = \\sqrt{x + 4}$, daerah asal (domain) fungsi tersebut adalah...',
+    opts: {'A': '$x \\geq -4$', 'B': '$x \\leq -4$', 'C': '$x > 0$', 'D': '$x \\geq 4$', 'E': 'Semua bilangan real'},
+    ans: 'A',
+    exp: 'Syarat fungsi akar genap adalah radikan non-negatif: $x + 4 \\geq 0 \\Rightarrow x \\geq -4$. <strong>Jawaban: A</strong>'
+  },
+  {
+    q: 'Diketahui $f(x - 2) = 3x + 1$. Maka rumus fungsi $f(x) = \\ldots$',
+    opts: {'A': '$3x - 5$', 'B': '$3x + 7$', 'C': '$3x - 1$', 'D': '$3x + 5$', 'E': '$3x + 3$'},
+    ans: 'B',
+    exp: 'Misal $y = x - 2 \\Rightarrow x = y + 2$. Substitusi balik: $f(y) = 3(y+2) + 1 = 3y + 6 + 1 = 3y + 7$. Jadi $f(x) = 3x + 7$. <strong>Jawaban: B</strong>'
+  },
+  {
+    q: 'Jika $f(g(x)) = x$ dan $f(x) = 4x - 1$, maka fungsi $g(x) = \\ldots$',
+    opts: {'A': '$\\dfrac{x+1}{4}$', 'B': '$\\dfrac{x-1}{4}$', 'C': '$4x + 1$', 'D': '$4x - 1$', 'E': '$\\dfrac{1}{4x-1}$'},
+    ans: 'A',
+    exp: '$f(g(x)) = x$ berarti $g(x)$ adalah invers dari $f(x)$. Misal $y = 4x - 1 \\Rightarrow 4x = y + 1 \\Rightarrow x = \\dfrac{y+1}{4}$. Maka $g(x) = \\dfrac{x+1}{4}$. <strong>Jawaban: A</strong>'
+  },
+  {
+    q: 'Diketahui fungsi $f(x) = 2^{x+1}$. Invers dari fungsi tersebut adalah...',
+    opts: {'A': '$\\log_2 x - 1$', 'B': '$\\log_2 (x - 1)$', 'C': '$\\log_2 (x + 1)$', 'D': '$\\log_2 x + 1$', 'E': '$2^{x-1}$'},
+    ans: 'A',
+    exp: '$y = 2^{x+1} \\Rightarrow x + 1 = \\log_2 y \\Rightarrow x = \\log_2 y - 1$. Jadi $f^{-1}(x) = \\log_2 x - 1$. <strong>Jawaban: A</strong>'
+  },
+  {
+    q: 'Misalkan $f(x) = x^2 - 6x + 8$. Agar $f(x)$ memiliki invers, domain bisa dibatasi pada...',
+    opts: {'A': '$x \\geq 3$', 'B': '$x \\geq 0$', 'C': '$x \\geq 8$', 'D': '$x \\leq 6$', 'E': 'Seluruh $\\mathbb{R}$'},
+    ans: 'A',
+    exp: 'Parabola kuadrat tidak injektif di $\\mathbb{R}$. Agar injektif (punya invers), domain dibatasi pada salah satu sisi sumbu simetri $x_p = \\dfrac{-b}{2a} = \\dfrac{6}{2} = 3$. Jadi $x \\geq 3$ atau $x \\leq 3$. <strong>Jawaban: A</strong>'
+  },
+  {
+    q: 'Nilai $(f \\circ f)(2)$ jika $f(x) = -x + 3$ adalah...',
+    opts: {'A': '$1$', 'B': '$2$', 'C': '$3$', 'D': '$4$', 'E': '$5$'},
+    ans: 'B',
+    exp: 'Cari dari dalam: $f(2) = -2 + 3 = 1$. Lalu masukkan ke luar: $f(1) = -1 + 3 = 2$. <strong>Jawaban: B</strong>'
+  },
+  {
+    q: 'Jika $f^{-1}(x) = 2x + 5$, maka nilai $f(3) = \\ldots$',
+    opts: {'A': '$11$', 'B': '$-1$', 'C': '$0$', 'D': '$1$', 'E': '$-2$'},
+    ans: 'B',
+    exp: 'Jika $f^{-1}(x) = y$, maka $f(y) = x$. Misal $f^{-1}(x) = 2x + 5 = a \\Rightarrow x = \\dfrac{a-5}{2}$. Substitusi ke definisi sehingga $f(a) = \\dfrac{a-5}{2}$. Untuk $f(3) = \\dfrac{3-5}{2} = -1$. <strong>Jawaban: B</strong>'
+  },
+  {
+    q: 'Sebuah grafik fungsi berbentuk kurva parabola penuh (fungsi kuadrat di domain $\\mathbb{R}$). Fungsi ini bersifat...',
+    opts: {'A': 'Injektif', 'B': 'Surjektif', 'C': 'Bijektif', 'D': 'Bukan fungsi injektif', 'E': 'Semua salah'},
+    ans: 'D',
+    exp: 'Uji garis horizontal akan memotong kurva parabola di dua titik. Jadi satu nilai kodomain punya lebih dari satu pasangan domain (bercabang pada invers). Artinya bukan injektif. <strong>Jawaban: D</strong>'
+  }
+];
+
+function renderMCQ() {
+  const container = document.getElementById('mcq-container');
+  let html = '';
+  mcqData.forEach((item, idx) => {
+    const num = String(idx + 1).padStart(2, '0');
+    let optsHTML = '';
+    ['A','B','C','D','E'].forEach(letter => {
+      optsHTML += `<div class="mcq-option" data-value="${letter}" data-q="${idx}"><span class="option-letter">${letter}</span><span>${item.opts[letter]}</span></div>`;
+    });
+    html += `
+      <div class="mcq" data-q="${idx}">
+        <div class="mcq-head">
+          <span class="mcq-num">${num}</span>
+          <div class="mcq-question">${item.q}</div>
+        </div>
+        <div class="mcq-options">${optsHTML}</div>
+        <div class="mcq-actions">
+          <button class="btn small" onclick="checkMCQ(${idx})">Cek Jawaban</button>
+          <button class="btn small secondary" onclick="showExplanationOnly(${idx})">Lihat Pembahasan</button>
+          <span class="mcq-status" id="status-${idx}"></span>
+        </div>
+        <div class="mcq-explanation" id="exp-mcq-${idx}"><strong>Pembahasan:</strong> ${item.exp}</div>
+      </div>
+    `;
+  });
+  container.innerHTML = html;
+  attachMCQHandlers();
+  // Re-render math
+  if (typeof renderMathInElement !== 'undefined') {
+    renderMathInElement(container, {
+      delimiters: [
+        {left: '$$', right: '$$', display: true},
+        {left: '$', right: '$', display: false}
+      ],
+      throwOnError: false
+    });
+  }
+}
+
+function attachMCQHandlers() {
+  document.querySelectorAll('.mcq-option').forEach(opt => {
+    opt.addEventListener('click', function() {
+      const qIdx = parseInt(this.dataset.q);
+      const mcq = document.querySelector(`.mcq[data-q="${qIdx}"]`);
+      // Don't allow change after checked
+      if (mcq.querySelector('.mcq-option.correct, .mcq-option.wrong')) return;
+      mcq.querySelectorAll('.mcq-option').forEach(o => o.classList.remove('selected'));
+      this.classList.add('selected');
+    });
+  });
+}
+
+function checkMCQ(idx) {
+  const mcq = document.querySelector(`.mcq[data-q="${idx}"]`);
+  const selected = mcq.querySelector('.mcq-option.selected');
+  const status = document.getElementById(`status-${idx}`);
+  const explanation = document.getElementById(`exp-mcq-${idx}`);
+  
+  if (!selected) {
+    status.className = 'mcq-status show wrong';
+    status.textContent = 'Pilih opsi dulu!';
+    setTimeout(() => { if (status.textContent === 'Pilih opsi dulu!') status.classList.remove('show'); }, 2000);
+    return;
+  }
+  
+  const userAns = selected.dataset.value;
+  const correctAns = mcqData[idx].ans;
+  
+  mcq.querySelectorAll('.mcq-option').forEach(opt => {
+    const val = opt.dataset.value;
+    if (val === correctAns) opt.classList.add('correct');
+    else if (opt.classList.contains('selected')) opt.classList.add('wrong');
+  });
+  
+  if (userAns === correctAns) {
+    status.className = 'mcq-status show correct';
+    status.textContent = '✓ Benar';
+  } else {
+    status.className = 'mcq-status show wrong';
+    status.textContent = `✗ Salah (Jawaban: ${correctAns})`;
+  }
+  
+  explanation.classList.add('show');
+  renderMathInElement(explanation, {
+    delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}],
+    throwOnError: false
+  });
+}
+
+function showExplanationOnly(idx) {
+  const explanation = document.getElementById(`exp-mcq-${idx}`);
+  explanation.classList.toggle('show');
+  if (typeof renderMathInElement !== 'undefined') {
+    renderMathInElement(explanation, {
+      delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}],
+      throwOnError: false
+    });
+  }
+}
+
+// ===== KaTeX Rendering =====
+function renderAllMath() {
+  if (typeof renderMathInElement === 'undefined') {
+    setTimeout(renderAllMath, 100);
+    return;
+  }
+  renderMathInElement(document.body, {
+    delimiters: [
+      {left: '$$', right: '$$', display: true},
+      {left: '$', right: '$', display: false},
+      {left: '\\[', right: '\\]', display: true},
+      {left: '\\(', right: '\\)', display: false}
+    ],
+    throwOnError: false,
+    ignoredTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+  });
+  renderMCQ();
+}
+
+// Initialize
+window.addEventListener('load', () => {
+  renderAllMath();
+  updateNav();
+});
+
+// Touch / swipe support
+let touchStartX = 0;
+document.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; });
+document.addEventListener('touchend', e => {
+  const diff = e.changedTouches[0].screenX - touchStartX;
+  if (Math.abs(diff) > 70) {
+    if (diff < 0) changeSlide(1);
+    else changeSlide(-1);
+  }
+});
+</script>
+</body>
+</html>
