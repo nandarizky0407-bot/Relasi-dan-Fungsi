@@ -1,0 +1,2049 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Post Test: Komposisi Fungsi</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  :root {
+    --bg: #FFF8EE;
+    --bg-2: #FFEDD5;
+    --card: #FFFFFF;
+    --primary: #FF6B4A;
+    --primary-dark: #E54B2C;
+    --primary-light: #FFE4DC;
+    --accent: #0EA5A0;
+    --accent-dark: #0B7B77;
+    --accent-light: #CCFBF1;
+    --yellow: #FFC93C;
+    --yellow-light: #FFF4D6;
+    --text: #2A1F1A;
+    --text-muted: #7A6A5F;
+    --border: #F0E4D7;
+    --success: #10B981;
+    --success-light: #D1FAE5;
+    --danger: #EF4444;
+    --danger-light: #FEE2E2;
+  }
+  * { -webkit-font-smoothing: antialiased; box-sizing: border-box; }
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    margin: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  .font-display { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; letter-spacing: -0.02em; }
+  .screen { display: none; min-height: 100vh; }
+  .screen.active { display: block; }
+
+  /* ===== COVER SCREEN ===== */
+  .cover-bg {
+    position: fixed; inset: 0; z-index: 0;
+    background:
+      radial-gradient(circle at 15% 20%, rgba(255, 107, 74, 0.18), transparent 45%),
+      radial-gradient(circle at 85% 70%, rgba(14, 165, 160, 0.15), transparent 45%),
+      radial-gradient(circle at 50% 100%, rgba(255, 201, 60, 0.2), transparent 50%),
+      var(--bg);
+  }
+  .floating-symbol {
+    position: absolute;
+    font-family: 'Bricolage Grotesque', serif;
+    font-weight: 700;
+    color: var(--primary);
+    opacity: 0.10;
+    pointer-events: none;
+    user-select: none;
+    animation: float 18s infinite ease-in-out;
+  }
+  @keyframes float {
+    0%, 100% { transform: translate(0,0) rotate(0deg); }
+    25% { transform: translate(30px, -40px) rotate(8deg); }
+    50% { transform: translate(-25px, -25px) rotate(-5deg); }
+    75% { transform: translate(15px, 20px) rotate(3deg); }
+  }
+  .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.4;
+    pointer-events: none;
+    animation: blobMove 15s infinite ease-in-out;
+  }
+  @keyframes blobMove {
+    0%, 100% { transform: translate(0,0) scale(1); }
+    33% { transform: translate(40px, -30px) scale(1.1); }
+    66% { transform: translate(-30px, 20px) scale(0.95); }
+  }
+  .cover-content {
+    position: relative; z-index: 2;
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 24px;
+    text-align: center;
+  }
+  .pill-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(8px);
+    border: 1.5px solid var(--border);
+    padding: 8px 18px;
+    border-radius: 100px;
+    font-size: 13px; font-weight: 600;
+    color: var(--primary-dark);
+    margin-bottom: 28px;
+    box-shadow: 0 4px 16px rgba(255, 107, 74, 0.08);
+  }
+  .pill-badge .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--primary);
+    box-shadow: 0 0 0 4px rgba(255, 107, 74, 0.2);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 4px rgba(255, 107, 74, 0.2); }
+    50% { box-shadow: 0 0 0 8px rgba(255, 107, 74, 0); }
+  }
+  .cover-title {
+    font-size: clamp(48px, 9vw, 96px);
+    line-height: 0.95;
+    margin: 0 0 20px;
+    background: linear-gradient(135deg, var(--text) 0%, var(--primary-dark) 60%, var(--primary) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .cover-subtitle {
+    font-size: clamp(15px, 1.5vw, 18px);
+    color: var(--text-muted);
+    max-width: 540px;
+    margin: 0 auto 40px;
+    line-height: 1.6;
+  }
+  .cover-card {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    border: 1.5px solid rgba(255, 255, 255, 0.8);
+    border-radius: 28px;
+    padding: 32px;
+    width: 100%; max-width: 480px;
+    box-shadow: 0 20px 60px rgba(255, 107, 74, 0.12), 0 8px 24px rgba(42, 31, 26, 0.06);
+  }
+  .input-label {
+    display: block; text-align: left;
+    font-size: 13px; font-weight: 700;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  .name-input {
+    width: 100%;
+    padding: 16px 20px;
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    font-size: 16px; font-weight: 500;
+    background: var(--bg);
+    color: var(--text);
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+  .name-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: white;
+    box-shadow: 0 0 0 4px rgba(255, 107, 74, 0.15);
+  }
+  .cover-buttons {
+    display: flex; gap: 12px; margin-top: 20px;
+    flex-wrap: wrap;
+  }
+  .btn {
+    padding: 14px 24px;
+    border-radius: 14px;
+    font-weight: 700; font-size: 15px;
+    border: none; cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .btn-primary {
+    background: var(--primary);
+    color: white;
+    box-shadow: 0 8px 20px rgba(255, 107, 74, 0.35);
+    flex: 1;
+  }
+  .btn-primary:hover:not(:disabled) {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(255, 107, 74, 0.45);
+  }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-secondary {
+    background: white;
+    color: var(--text);
+    border: 2px solid var(--border);
+    flex: 1;
+  }
+  .btn-secondary:hover {
+    border-color: var(--accent);
+    color: var(--accent-dark);
+    background: var(--accent-light);
+  }
+  .cover-meta {
+    display: flex; gap: 20px; justify-content: center;
+    margin-top: 36px;
+    flex-wrap: wrap;
+  }
+  .meta-item {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; font-weight: 600;
+    color: var(--text-muted);
+  }
+  .meta-item i { color: var(--primary); }
+
+  /* ===== MODAL ===== */
+  .modal {
+    position: fixed; inset: 0;
+    background: rgba(42, 31, 26, 0.5);
+    backdrop-filter: blur(8px);
+    z-index: 100;
+    display: none;
+    align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .modal.active { display: flex; }
+  .modal-content {
+    background: white;
+    border-radius: 24px;
+    max-width: 760px; width: 100%;
+    max-height: 88vh; overflow-y: auto;
+    padding: 36px;
+    position: relative;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.2);
+    animation: modalIn 0.3s ease-out;
+  }
+  @keyframes modalIn {
+    from { transform: scale(0.95) translateY(20px); opacity: 0; }
+    to { transform: scale(1) translateY(0); opacity: 1; }
+  }
+  .modal-close {
+    position: absolute; top: 20px; right: 20px;
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    border: none; background: var(--bg);
+    color: var(--text-muted);
+    font-size: 18px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .modal-close:hover { background: var(--danger-light); color: var(--danger); }
+  .modal h2 {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 32px; font-weight: 800;
+    margin: 0 0 8px;
+    color: var(--text);
+  }
+  .modal .modal-sub {
+    color: var(--text-muted); margin-bottom: 24px; font-size: 14px;
+  }
+  .mat-section {
+    margin-bottom: 24px;
+    padding: 20px;
+    background: var(--bg);
+    border-radius: 16px;
+    border-left: 4px solid var(--primary);
+  }
+  .mat-section h3 {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 18px; font-weight: 700;
+    margin: 0 0 10px;
+    color: var(--primary-dark);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .mat-section p, .mat-section li {
+    color: var(--text); line-height: 1.7;
+    margin: 6px 0; font-size: 14.5px;
+  }
+  .mat-section ul { padding-left: 22px; margin: 8px 0; }
+  .math-block {
+    background: white;
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-family: 'Cambria Math', 'Times New Roman', serif;
+    font-size: 16px;
+    margin: 10px 0;
+    border: 1.5px dashed var(--border);
+    color: var(--text);
+    font-style: italic;
+  }
+  .mat-tag {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 6px;
+    font-size: 12px; font-weight: 700;
+    background: var(--accent-light);
+    color: var(--accent-dark);
+    margin-right: 6px;
+  }
+
+  /* ===== QUIZ SCREEN ===== */
+  .quiz-header {
+    position: sticky; top: 0; z-index: 20;
+    background: rgba(255, 248, 238, 0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1.5px solid var(--border);
+    padding: 14px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .student-info {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .avatar {
+    width: 40px; height: 40px; border-radius: 12px;
+    background: linear-gradient(135deg, var(--primary), var(--yellow));
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 800; font-size: 18px;
+    font-family: 'Bricolage Grotesque', sans-serif;
+  }
+  .student-name-text { font-weight: 700; font-size: 15px; }
+  .student-name-text small { display: block; color: var(--text-muted); font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .progress-info {
+    display: flex; align-items: center; gap: 12px;
+    background: white;
+    padding: 8px 16px;
+    border-radius: 12px;
+    border: 1.5px solid var(--border);
+    font-weight: 600; font-size: 14px;
+  }
+  .progress-bar-mini {
+    width: 80px; height: 6px;
+    background: var(--bg);
+    border-radius: 100px;
+    overflow: hidden;
+  }
+  .progress-bar-mini-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--yellow));
+    border-radius: 100px;
+    transition: width 0.4s;
+  }
+  .btn-finish {
+    background: var(--text);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-weight: 700; font-size: 14px;
+    border: none; cursor: pointer;
+    display: flex; align-items: center; gap: 8px;
+    transition: all 0.2s;
+  }
+  .btn-finish:hover { background: var(--primary); transform: translateY(-1px); }
+
+  .quiz-body {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 24px;
+    padding: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  @media (max-width: 980px) {
+    .quiz-body { grid-template-columns: 1fr; }
+    .quiz-sidebar { order: 2; }
+  }
+  .quiz-sidebar {
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    border: 1.5px solid var(--border);
+    position: sticky; top: 90px;
+    height: fit-content;
+  }
+  .sidebar-title {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-weight: 700; font-size: 16px;
+    margin: 0 0 14px;
+    color: var(--text);
+  }
+  .question-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+  .q-btn {
+    aspect-ratio: 1;
+    border: 2px solid var(--border);
+    background: white;
+    border-radius: 10px;
+    font-weight: 700; font-size: 14px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .q-btn:hover { border-color: var(--primary); color: var(--primary); transform: translateY(-1px); }
+  .q-btn.current { background: var(--text); color: white; border-color: var(--text); }
+  .q-btn.answered { background: var(--accent-light); border-color: var(--accent); color: var(--accent-dark); }
+  .q-btn.correct { background: var(--success-light); border-color: var(--success); color: var(--success); }
+  .q-btn.wrong { background: var(--danger-light); border-color: var(--danger); color: var(--danger); }
+  .q-btn .diff-mark {
+    position: absolute; top: 2px; right: 4px;
+    width: 5px; height: 5px; border-radius: 50%;
+  }
+  .diff-mark.easy { background: var(--success); }
+  .diff-mark.medium { background: var(--yellow); }
+  .diff-mark.hard { background: var(--danger); }
+  .legend {
+    display: flex; flex-direction: column; gap: 8px;
+    font-size: 12px; color: var(--text-muted);
+    padding-top: 14px;
+    border-top: 1.5px solid var(--border);
+  }
+  .legend-row { display: flex; align-items: center; gap: 8px; }
+  .legend-dot { width: 14px; height: 14px; border-radius: 4px; border: 2px solid; }
+  .ld-current { background: var(--text); border-color: var(--text); }
+  .ld-answered { background: var(--accent-light); border-color: var(--accent); }
+  .ld-correct { background: var(--success-light); border-color: var(--success); }
+  .ld-wrong { background: var(--danger-light); border-color: var(--danger); }
+  .ld-empty { background: white; border-color: var(--border); }
+
+  /* QUESTION AREA */
+  .question-area {
+    background: white;
+    border-radius: 24px;
+    padding: 32px;
+    border: 1.5px solid var(--border);
+    box-shadow: 0 8px 32px rgba(42, 31, 26, 0.04);
+  }
+  .question-top {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  .badges { display: flex; gap: 8px; flex-wrap: wrap; }
+  .badge {
+    padding: 6px 14px;
+    border-radius: 100px;
+    font-size: 12px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  .badge-easy { background: var(--success-light); color: var(--success); }
+  .badge-medium { background: var(--yellow-light); color: #B8860B; }
+  .badge-hard { background: var(--danger-light); color: var(--danger); }
+  .badge-hots { background: #F3E8FF; color: #7C3AED; }
+  .badge-category { background: var(--bg); color: var(--text-muted); }
+
+  .timer-wrap {
+    display: flex; align-items: center; gap: 14px;
+    background: var(--bg);
+    padding: 10px 14px;
+    border-radius: 16px;
+    border: 1.5px solid var(--border);
+  }
+  .timer-ring { transform: rotate(-90deg); }
+  .timer-bg-circle { fill: none; stroke: var(--border); stroke-width: 6; }
+  .timer-fg-circle {
+    fill: none; stroke: var(--accent);
+    stroke-width: 6; stroke-linecap: round;
+    transition: stroke-dashoffset 1s linear, stroke 0.3s;
+  }
+  .timer-fg-circle.warning { stroke: var(--yellow); }
+  .timer-fg-circle.danger { stroke: var(--danger); }
+  .timer-text-block { text-align: left; }
+  .timer-text {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 22px; font-weight: 800;
+    line-height: 1;
+  }
+  .timer-text.warning { color: #B8860B; }
+  .timer-text.danger { color: var(--danger); }
+  .timer-label { font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+  .add-time-btn {
+    background: var(--yellow-light);
+    border: 1.5px solid var(--yellow);
+    color: #B8860B;
+    padding: 6px 12px;
+    border-radius: 10px;
+    font-size: 12px; font-weight: 700;
+    cursor: pointer; transition: all 0.2s;
+    font-family: inherit;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .add-time-btn:hover:not(:disabled) { background: var(--yellow); color: white; }
+  .add-time-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .add-time-btn.pulse { animation: pulseYellow 1.5s infinite; }
+  @keyframes pulseYellow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255, 201, 60, 0.6); }
+    50% { box-shadow: 0 0 0 8px rgba(255, 201, 60, 0); }
+  }
+
+  .question-number {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 14px; font-weight: 700;
+    color: var(--primary);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    margin-bottom: 8px;
+  }
+  .question-text {
+    font-size: 19px; font-weight: 500;
+    line-height: 1.6; color: var(--text);
+    margin-bottom: 28px;
+  }
+  .question-text .math { font-family: 'Cambria Math', 'Times New Roman', serif; font-style: italic; }
+  .question-text sup, .option-text sup { font-size: 0.75em; }
+
+  .options { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
+  .option {
+    display: flex; align-items: center; gap: 14px;
+    padding: 16px 20px;
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: white;
+    font-size: 16px;
+  }
+  .option:hover:not(.locked) {
+    border-color: var(--primary);
+    background: var(--primary-light);
+    transform: translateX(4px);
+  }
+  .option.selected {
+    border-color: var(--primary);
+    background: var(--primary-light);
+    box-shadow: 0 4px 16px rgba(255, 107, 74, 0.15);
+  }
+  .option.locked { cursor: default; }
+  .option.correct-answer {
+    border-color: var(--success);
+    background: var(--success-light);
+  }
+  .option.wrong-answer {
+    border-color: var(--danger);
+    background: var(--danger-light);
+  }
+  .option-letter {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 15px;
+    flex-shrink: 0;
+    font-family: 'Bricolage Grotesque', sans-serif;
+    transition: all 0.2s;
+  }
+  .option.selected .option-letter { background: var(--primary); color: white; border-color: var(--primary); }
+  .option.correct-answer .option-letter { background: var(--success); color: white; border-color: var(--success); }
+  .option.wrong-answer .option-letter { background: var(--danger); color: white; border-color: var(--danger); }
+  .option-text { flex: 1; font-weight: 500; }
+  .option-text .math { font-family: 'Cambria Math', 'Times New Roman', serif; font-style: italic; }
+  .option-icon { font-size: 18px; }
+  .option.correct-answer .option-icon { color: var(--success); }
+  .option.wrong-answer .option-icon { color: var(--danger); }
+
+  .action-buttons {
+    display: flex; gap: 10px; flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  .action-btn {
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-weight: 700; font-size: 14px;
+    border: 2px solid;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn-check {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+    box-shadow: 0 6px 16px rgba(255, 107, 74, 0.25);
+  }
+  .btn-check:hover:not(:disabled) { background: var(--primary-dark); border-color: var(--primary-dark); transform: translateY(-1px); }
+  .btn-check:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
+  .btn-discuss {
+    background: white;
+    color: var(--accent-dark);
+    border-color: var(--accent);
+  }
+  .btn-discuss:hover:not(:disabled) { background: var(--accent-light); }
+  .btn-discuss:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-discuss.unlocked { animation: glow 2s infinite; }
+  @keyframes glow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(14, 165, 160, 0.4); }
+    50% { box-shadow: 0 0 0 8px rgba(14, 165, 160, 0); }
+  }
+
+  .discussion-panel {
+    background: linear-gradient(135deg, var(--accent-light) 0%, var(--yellow-light) 100%);
+    border: 1.5px solid var(--accent);
+    border-radius: 16px;
+    padding: 22px;
+    margin-bottom: 24px;
+    animation: slideDown 0.3s ease-out;
+  }
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .discussion-panel h4 {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 16px; font-weight: 700;
+    margin: 0 0 12px;
+    color: var(--accent-dark);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .discussion-panel p {
+    margin: 0; line-height: 1.7; font-size: 15px;
+    color: var(--text);
+  }
+  .discussion-panel .math { font-family: 'Cambria Math', 'Times New Roman', serif; font-style: italic; }
+  .answer-status {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 100px;
+    font-size: 12px; font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .answer-status.correct { background: var(--success); color: white; }
+  .answer-status.wrong { background: var(--danger); color: white; }
+
+  .nav-buttons {
+    display: flex; justify-content: space-between;
+    gap: 12px;
+    padding-top: 20px;
+    border-top: 1.5px solid var(--border);
+  }
+  .nav-btn {
+    padding: 12px 20px;
+    border-radius: 12px;
+    background: white;
+    border: 1.5px solid var(--border);
+    font-weight: 700; font-size: 14px;
+    cursor: pointer; transition: all 0.2s;
+    font-family: inherit;
+    display: inline-flex; align-items: center; gap: 8px;
+    color: var(--text);
+  }
+  .nav-btn:hover:not(:disabled) { border-color: var(--primary); color: var(--primary); }
+  .nav-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* ===== RESULT SCREEN ===== */
+  .result-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+  .result-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  .result-header .pill-badge { margin-bottom: 16px; }
+  .result-header h1 {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: clamp(40px, 6vw, 64px);
+    font-weight: 800;
+    margin: 0 0 8px;
+    background: linear-gradient(135deg, var(--text), var(--primary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .result-header .student-name-display {
+    font-size: 18px; color: var(--text-muted); font-weight: 600;
+  }
+  .summary-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+  @media (max-width: 720px) { .summary-cards { grid-template-columns: repeat(2, 1fr); } }
+  .summary-card {
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 20px;
+    padding: 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .summary-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 4px;
+    background: var(--primary);
+  }
+  .summary-card.correct::before { background: var(--success); }
+  .summary-card.wrong::before { background: var(--danger); }
+  .summary-card.time::before { background: var(--accent); }
+  .card-icon {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    background: var(--primary-light);
+    color: var(--primary);
+    display: inline-flex; align-items: center; justify-content: center;
+    margin-bottom: 12px;
+    font-size: 18px;
+  }
+  .summary-card.correct .card-icon { background: var(--success-light); color: var(--success); }
+  .summary-card.wrong .card-icon { background: var(--danger-light); color: var(--danger); }
+  .summary-card.time .card-icon { background: var(--accent-light); color: var(--accent); }
+  .card-value {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 40px; font-weight: 800;
+    line-height: 1; margin-bottom: 6px;
+  }
+  .card-label {
+    font-size: 13px; font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.05em;
+  }
+
+  .section-block {
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 20px;
+    padding: 28px;
+    margin-bottom: 24px;
+  }
+  .section-block h2 {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 24px; font-weight: 800;
+    margin: 0 0 20px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-block h2 i { color: var(--primary); }
+
+  .insights {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  @media (max-width: 720px) { .insights { grid-template-columns: 1fr; } }
+  .insight-card {
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 20px;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .insight-card.weakness { border-left: 5px solid var(--danger); }
+  .insight-card.strength { border-left: 5px solid var(--success); }
+  .insight-card h3 {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 18px; font-weight: 700;
+    margin: 0 0 8px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .insight-card.weakness h3 { color: var(--danger); }
+  .insight-card.strength h3 { color: var(--success); }
+  .insight-card p { margin: 0; color: var(--text); line-height: 1.6; font-size: 14.5px; }
+  .insight-card .big-text {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 22px; font-weight: 800;
+    margin: 8px 0;
+    color: var(--text);
+  }
+
+  .category-row {
+    display: grid;
+    grid-template-columns: 200px 1fr 80px;
+    gap: 16px; align-items: center;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .category-row:last-child { border-bottom: none; }
+  .cat-name { font-weight: 600; font-size: 14.5px; }
+  .cat-bar-wrap {
+    height: 28px;
+    background: var(--bg);
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    position: relative;
+  }
+  .cat-bar-correct {
+    background: linear-gradient(90deg, var(--success), #34D399);
+    transition: width 0.8s ease-out;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 700; font-size: 12px;
+  }
+  .cat-bar-wrong {
+    background: linear-gradient(90deg, #F87171, var(--danger));
+    transition: width 0.8s ease-out;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 700; font-size: 12px;
+  }
+  .cat-bar-empty {
+    background: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-muted); font-size: 11px;
+  }
+  .cat-time { text-align: right; font-weight: 700; font-size: 14px; color: var(--text-muted); }
+  .cat-time small { display: block; font-size: 10px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; }
+  .cat-row-highlight.weakness { background: var(--danger-light); padding: 14px 12px; border-radius: 10px; }
+  .cat-row-highlight.strength { background: var(--success-light); padding: 14px 12px; border-radius: 10px; }
+  @media (max-width: 720px) {
+    .category-row { grid-template-columns: 1fr; gap: 8px; }
+  }
+
+  .detail-table {
+    width: 100%; border-collapse: collapse;
+  }
+  .detail-table th {
+    text-align: left;
+    padding: 12px 14px;
+    background: var(--bg);
+    font-size: 12px; font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.05em;
+    border-bottom: 2px solid var(--border);
+  }
+  .detail-table th:first-child { border-radius: 10px 0 0 0; }
+  .detail-table th:last-child { border-radius: 0 10px 0 0; }
+  .detail-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+  }
+  .detail-table tr:hover { background: var(--bg); }
+  .status-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px;
+    border-radius: 100px;
+    font-size: 12px; font-weight: 700;
+  }
+  .status-pill.correct { background: var(--success-light); color: var(--success); }
+  .status-pill.wrong { background: var(--danger-light); color: var(--danger); }
+  .status-pill.skip { background: var(--bg); color: var(--text-muted); }
+
+  .result-actions {
+    display: flex; gap: 12px; justify-content: center;
+    margin-top: 32px;
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 30px; left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--text); color: white;
+    padding: 14px 24px;
+    border-radius: 14px;
+    font-weight: 600; font-size: 14px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    z-index: 200;
+    opacity: 0;
+    transition: all 0.3s;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+  .toast.success { background: var(--success); }
+  .toast.error { background: var(--danger); }
+  .toast.warning { background: #B8860B; }
+
+  /* Confetti */
+  .confetti {
+    position: fixed; top: -10px;
+    width: 10px; height: 14px;
+    z-index: 150;
+    pointer-events: none;
+    animation: fall linear forwards;
+  }
+  @keyframes fall {
+    to { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+  }
+
+  .hidden { display: none !important; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 100px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+  /* MathJax-like styling */
+  .frac {
+    display: inline-flex;
+    flex-direction: column;
+    vertical-align: middle;
+    text-align: center;
+    font-size: 0.9em;
+    margin: 0 2px;
+  }
+  .frac .num { border-bottom: 1.5px solid currentColor; padding: 0 4px; }
+  .frac .den { padding: 0 4px; }
+</style>
+</head>
+<body>
+
+<!-- ========== COVER SCREEN ========== -->
+<section id="cover-screen" class="screen active">
+  <div class="cover-bg"></div>
+  <div class="blob" style="width:300px;height:300px;background:var(--primary);top:10%;left:5%;"></div>
+  <div class="blob" style="width:400px;height:400px;background:var(--accent);bottom:5%;right:10%;animation-delay:-5s;"></div>
+  <div class="blob" style="width:250px;height:250px;background:var(--yellow);top:40%;right:30%;animation-delay:-10s;"></div>
+
+  <span class="floating-symbol" style="top:12%;left:8%;font-size:80px;animation-delay:0s;">f∘g</span>
+  <span class="floating-symbol" style="top:20%;right:10%;font-size:64px;animation-delay:-3s;">√x</span>
+  <span class="floating-symbol" style="bottom:15%;left:12%;font-size:72px;animation-delay:-6s;">x²</span>
+  <span class="floating-symbol" style="bottom:25%;right:8%;font-size:90px;animation-delay:-9s;">ƒ(x)</span>
+  <span class="floating-symbol" style="top:50%;left:5%;font-size:56px;animation-delay:-12s;">(g∘f)</span>
+  <span class="floating-symbol" style="top:60%;right:5%;font-size:68px;animation-delay:-2s;">h(x)</span>
+
+  <div class="cover-content">
+    <div class="pill-badge">
+      <span class="dot"></span>
+      Post Test • Matematika SMA Kelas XI
+    </div>
+    <h1 class="cover-title">Komposisi<br>Fungsi</h1>
+    <p class="cover-subtitle">Uji pemahamanmu melalui 20 soal pilihan ganda dengan tiga tingkat kesulitan. Dilengkapi timer per soal, pembahasan lengkap, dan analisis hasil belajar.</p>
+
+    <div class="cover-card">
+      <label class="input-label" for="student-name-input">Nama Lengkap Peserta</label>
+      <input type="text" id="student-name-input" class="name-input" placeholder="Tulis namamu di sini..." autocomplete="off">
+      <div class="cover-buttons">
+        <button class="btn btn-secondary" id="material-btn">
+          <i class="fa-solid fa-book-open"></i> Lihat Materi
+        </button>
+        <button class="btn btn-primary" id="start-btn" disabled>
+          Mulai Mengerjakan <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="cover-meta">
+      <div class="meta-item"><i class="fa-solid fa-circle-check"></i> 20 Soal PG</div>
+      <div class="meta-item"><i class="fa-solid fa-layer-group"></i> 3 Tingkat Kesulitan</div>
+      <div class="meta-item"><i class="fa-solid fa-stopwatch"></i> Timer 2-3 menit/soal</div>
+      <div class="meta-item"><i class="fa-solid fa-chart-line"></i> Analisis Hasil</div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== MATERIAL MODAL ========== -->
+<div id="material-modal" class="modal">
+  <div class="modal-content">
+    <button class="modal-close" id="close-material" aria-label="Tutup">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+    <h2>Materi: Operasi pada Fungsi</h2>
+    <p class="modal-sub">Rangkuman singkat tentang komposisi fungsi untuk membantumu mengerjakan soal.</p>
+
+    <div class="mat-section">
+      <h3><i class="fa-solid fa-circle-info"></i> Pengertian Komposisi Fungsi</h3>
+      <p>Komposisi fungsi adalah penggabungan dua fungsi atau lebih sehingga menghasilkan fungsi baru. Jika f dan g adalah dua fungsi, maka komposisi f oleh g ditulis:</p>
+      <div class="math-block">(f ∘ g)(x) = f(g(x))</div>
+      <p>Artinya: masukkan g(x) sebagai input dari fungsi f.</p>
+    </div>
+
+    <div class="mat-section">
+      <h3><i class="fa-solid fa-arrows-rotate"></i> Urutan Operasi</h3>
+      <p><span class="mat-tag">Penting</span> Komposisi fungsi <b>tidak komutatif</b>, artinya:</p>
+      <div class="math-block">(f ∘ g)(x) ≠ (g ∘ f)(x)</div>
+      <p>(f ∘ g)(x) berarti kerjakan g dulu, lalu hasilnya dipakai di f. (g ∘ f)(x) berarti kerjakan f dulu, lalu di g.</p>
+    </div>
+
+    <div class="mat-section">
+      <h3><i class="fa-solid fa-calculator"></i> Menentukan Rumus Komposisi</h3>
+      <p>Contoh: f(x) = 2x + 3 dan g(x) = x − 1. Maka:</p>
+      <div class="math-block">(f ∘ g)(x) = f(g(x)) = f(x − 1) = 2(x − 1) + 3 = 2x + 1</div>
+      <p>Substitusikan seluruh argumen fungsi luar ke variabel fungsi dalam.</p>
+    </div>
+
+    <div class="mat-section">
+      <h3><i class="fa-solid fa-puzzle-piece"></i> Mencari Fungsi Komponen</h3>
+      <p>Jika (f ∘ g)(x) dan g(x) diketahui, untuk mencari f(x):</p>
+      <ul>
+        <li>Misalkan g(x) = p, lalu nyatakan x dalam p</li>
+        <li>Substitusi ke (f ∘ g)(x) untuk mendapatkan f(p)</li>
+        <li>Ganti p menjadi x → f(x)</li>
+      </ul>
+      <p>Contoh: (f ∘ g)(x) = 4x + 2, g(x) = x + 1.<br>Misal p = x + 1 → x = p − 1. Maka f(p) = 4(p − 1) + 2 = 4p − 2. Jadi f(x) = 4x − 2.</p>
+    </div>
+
+    <div class="mat-section">
+      <h3><i class="fa-solid fa-layer-group"></i> Komposisi Tiga Fungsi</h3>
+      <p>Untuk (f ∘ g ∘ h)(x), kerjakan dari kanan ke kiri:</p>
+      <div class="math-block">(f ∘ g ∘ h)(x) = f(g(h(x)))</div>
+      <p>Hitung h(x) dulu → masukkan ke g → masukkan ke f.</p>
+    </div>
+
+    <div class="mat-section">
+      <h3><i class="fa-solid fa-globe"></i> Domain Komposisi</h3>
+      <p>Domain (f ∘ g)(x) adalah semua x di domain g sehingga g(x) berada di domain f. Untuk fungsi akar, syaratnya:</p>
+      <div class="math-block">√(g(x)) terdefinisi ⟺ g(x) ≥ 0</div>
+    </div>
+
+    <div class="mat-section">
+      <h3><i class="fa-solid fa-arrow-rotate-left"></i> Invers Komposisi</h3>
+      <p>Sifat invers komposisi fungsi:</p>
+      <div class="math-block">(f ∘ g)⁻¹(x) = (g⁻¹ ∘ f⁻¹)(x)</div>
+      <p>Selain itu: jika (f ∘ g)⁻¹(a) = b, maka (f ∘ g)(b) = a.</p>
+    </div>
+
+    <div class="mat-section">
+      <h3><i class="fa-solid fa-lightbulb"></i> Tips Cepat</h3>
+      <ul>
+        <li>Untuk soal nilai (f ∘ g)(a), kerjakan g(a) dulu, lalu substitusi ke f.</li>
+        <li>Untuk soal rumus komposisi kuadrat, gunakan identitas (a + b)² = a² + 2ab + b².</li>
+        <li>Periksa domain fungsi pecahan: penyebut ≠ 0. Fungsi akar: radikan ≥ 0.</li>
+        <li>Untuk mencari g(x) dari (g ∘ f)(x), coba nyatakan dalam bentuk f(x) lalu substitusi.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ========== QUIZ SCREEN ========== -->
+<section id="quiz-screen" class="screen">
+  <header class="quiz-header">
+    <div class="student-info">
+      <div class="avatar" id="avatar-letter">A</div>
+      <div class="student-name-text">
+        <small>Peserta</small>
+        <span id="display-name">Nama Siswa</span>
+      </div>
+    </div>
+    <div class="progress-info">
+      <i class="fa-solid fa-list-check" style="color:var(--primary)"></i>
+      <span id="progress-text">Soal 1 dari 20</span>
+      <div class="progress-bar-mini"><div class="progress-bar-mini-fill" id="progress-fill" style="width:5%"></div></div>
+    </div>
+    <button class="btn-finish" id="finish-btn">
+      <i class="fa-solid fa-flag-checkered"></i> Selesai
+    </button>
+  </header>
+
+  <div class="quiz-body">
+    <aside class="quiz-sidebar">
+      <h3 class="sidebar-title"><i class="fa-solid fa-map"></i> Navigasi Soal</h3>
+      <div class="question-grid" id="question-grid"></div>
+      <div class="legend">
+        <div class="legend-row"><span class="legend-dot ld-current"></span> Soal aktif</div>
+        <div class="legend-row"><span class="legend-dot ld-correct"></span> Jawaban benar</div>
+        <div class="legend-row"><span class="legend-dot ld-wrong"></span> Jawaban salah</div>
+        <div class="legend-row"><span class="legend-dot ld-empty"></span> Belum dijawab</div>
+      </div>
+    </aside>
+
+    <main class="question-area">
+      <div class="question-top">
+        <div class="badges" id="badges"></div>
+        <div class="timer-wrap">
+          <svg class="timer-ring" width="56" height="56" viewBox="0 0 56 56">
+            <circle class="timer-bg-circle" cx="28" cy="28" r="24"></circle>
+            <circle class="timer-fg-circle" id="timer-circle" cx="28" cy="28" r="24" stroke-dasharray="150.8" stroke-dashoffset="0"></circle>
+          </svg>
+          <div class="timer-text-block">
+            <div class="timer-text" id="timer-text">2:00</div>
+            <div class="timer-label">Sisa waktu</div>
+          </div>
+          <button class="add-time-btn" id="add-time-btn">
+            <i class="fa-solid fa-plus"></i> 15s
+          </button>
+        </div>
+      </div>
+
+      <div class="question-number" id="question-number">Soal 01</div>
+      <div class="question-text" id="question-text"></div>
+
+      <div class="options" id="options-container"></div>
+
+      <div class="action-buttons">
+        <button class="action-btn btn-check" id="check-btn" disabled>
+          <i class="fa-solid fa-check-double"></i> Cek Jawaban
+        </button>
+        <button class="action-btn btn-discuss" id="discuss-btn" disabled>
+          <i class="fa-solid fa-lightbulb"></i> Lihat Pembahasan
+        </button>
+      </div>
+
+      <div class="discussion-panel hidden" id="discussion-panel">
+        <span class="answer-status" id="answer-status"></span>
+        <h4><i class="fa-solid fa-book-open-reader"></i> Pembahasan</h4>
+        <p id="discussion-text"></p>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="nav-btn" id="prev-btn">
+          <i class="fa-solid fa-arrow-left"></i> Sebelumnya
+        </button>
+        <button class="nav-btn" id="next-btn">
+          Selanjutnya <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+    </main>
+  </div>
+</section>
+
+<!-- ========== RESULT SCREEN ========== -->
+<section id="result-screen" class="screen">
+  <div class="result-container">
+    <div class="result-header">
+      <div class="pill-badge"><span class="dot"></span> Post Test Selesai</div>
+      <h1>Hasil Pengerjaanmu</h1>
+      <div class="student-name-display" id="result-name">Nama Siswa</div>
+    </div>
+
+    <div class="summary-cards">
+      <div class="summary-card">
+        <div class="card-icon"><i class="fa-solid fa-pen-to-square"></i></div>
+        <div class="card-value" id="total-worked">0</div>
+        <div class="card-label">Soal Dikerjakan</div>
+      </div>
+      <div class="summary-card correct">
+        <div class="card-icon"><i class="fa-solid fa-circle-check"></i></div>
+        <div class="card-value" id="total-correct">0</div>
+        <div class="card-label">Jawaban Benar</div>
+      </div>
+      <div class="summary-card wrong">
+        <div class="card-icon"><i class="fa-solid fa-circle-xmark"></i></div>
+        <div class="card-value" id="total-wrong">0</div>
+        <div class="card-label">Jawaban Salah</div>
+      </div>
+      <div class="summary-card time">
+        <div class="card-icon"><i class="fa-solid fa-stopwatch"></i></div>
+        <div class="card-value" id="avg-time">0s</div>
+        <div class="card-label">Rata-rata Waktu</div>
+      </div>
+    </div>
+
+    <div class="insights">
+      <div class="insight-card weakness">
+        <h3><i class="fa-solid fa-triangle-exclamation"></i> Perlu Diperbaiki</h3>
+        <p id="weakness-text">-</p>
+      </div>
+      <div class="insight-card strength">
+        <h3><i class="fa-solid fa-trophy"></i> Kekuatanmu</h3>
+        <p id="strength-text">-</p>
+      </div>
+    </div>
+
+    <div class="section-block">
+      <h2><i class="fa-solid fa-chart-column"></i> Analisis per Bab / Topik</h2>
+      <div id="category-analysis"></div>
+    </div>
+
+    <div class="section-block">
+      <h2><i class="fa-solid fa-table-list"></i> Detail Pengerjaan Setiap Soal</h2>
+      <div style="overflow-x:auto">
+        <table class="detail-table">
+          <thead>
+            <tr>
+              <th>No</th>
+              <th>Tingkat</th>
+              <th>Topik</th>
+              <th>Jawaban</th>
+              <th>Status</th>
+              <th>Waktu</th>
+            </tr>
+          </thead>
+          <tbody id="detail-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="result-actions">
+      <button class="btn btn-secondary" id="review-btn">
+        <i class="fa-solid fa-eye"></i> Tinjau Soal
+      </button>
+      <button class="btn btn-primary" id="restart-btn">
+        <i class="fa-solid fa-rotate-right"></i> Kerjakan Ulang
+      </button>
+    </div>
+  </div>
+</section>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   DATA SOAL - Komposisi Fungsi
+   ============================================================ */
+const QUESTIONS = [
+  {
+    id: 1, difficulty: 'easy', category: 'Menentukan Rumus Komposisi',
+    text: 'Diketahui fungsi <span class="math">f(x) = 2x + 3</span> dan <span class="math">g(x) = x − 1</span>. Rumus fungsi komposisi <span class="math">(f ∘ g)(x)</span> adalah . . .',
+    options: {
+      A: '<span class="math">2x + 1</span>',
+      B: '<span class="math">2x + 2</span>',
+      C: '<span class="math">2x + 3</span>',
+      D: '<span class="math">x + 2</span>',
+      E: '<span class="math">2x − 1</span>'
+    },
+    correct: 'A',
+    explanation: '<span class="math">(f ∘ g)(x) = f(g(x)) = f(x − 1) = 2(x − 1) + 3 = 2x − 2 + 3 = 2x + 1</span>'
+  },
+  {
+    id: 2, difficulty: 'easy', category: 'Menentukan Rumus Komposisi',
+    text: 'Diketahui <span class="math">f(x) = x²</span> dan <span class="math">g(x) = 2x</span>. Hasil dari <span class="math">(g ∘ f)(x)</span> adalah . . .',
+    options: {
+      A: '<span class="math">4x²</span>',
+      B: '<span class="math">2x²</span>',
+      C: '<span class="math">x² + 2x</span>',
+      D: '<span class="math">2x</span>',
+      E: '<span class="math">x²</span>'
+    },
+    correct: 'B',
+    explanation: '<span class="math">(g ∘ f)(x) = g(f(x)) = g(x²) = 2(x²) = 2x²</span>'
+  },
+  {
+    id: 3, difficulty: 'easy', category: 'Menghitung Nilai Komposisi',
+    text: 'Diketahui fungsi <span class="math">f(x) = 3x − 5</span> dan <span class="math">g(x) = x + 2</span>. Nilai dari <span class="math">(f ∘ g)(2)</span> adalah . . .',
+    options: { A: '7', B: '8', C: '9', D: '10', E: '11' },
+    correct: 'A',
+    explanation: 'Cari <span class="math">g(2) = 2 + 2 = 4</span>, lalu substitusi: <span class="math">f(g(2)) = f(4) = 3(4) − 5 = 12 − 5 = 7</span>'
+  },
+  {
+    id: 4, difficulty: 'easy', category: 'Menghitung Nilai Komposisi',
+    text: 'Diketahui <span class="math">f(x) = x + 4</span> dan <span class="math">g(x) = 3x</span>. Nilai dari <span class="math">(f ∘ g)(1)</span> adalah . . .',
+    options: { A: '3', B: '5', C: '7', D: '9', E: '12' },
+    correct: 'C',
+    explanation: '<span class="math">g(1) = 3(1) = 3</span>, lalu <span class="math">f(3) = 3 + 4 = 7</span>'
+  },
+  {
+    id: 5, difficulty: 'easy', category: 'Menghitung Nilai Komposisi',
+    text: 'Diketahui <span class="math">f(x) = 2x</span> dan <span class="math">g(x) = x − 5</span>. Nilai dari <span class="math">(g ∘ f)(3)</span> adalah . . .',
+    options: { A: '1', B: '2', C: '3', D: '4', E: '5' },
+    correct: 'A',
+    explanation: '<span class="math">f(3) = 2(3) = 6</span>, lalu <span class="math">g(6) = 6 − 5 = 1</span>'
+  },
+  {
+    id: 6, difficulty: 'easy', category: 'Mencari Fungsi Komponen',
+    text: 'Diketahui <span class="math">(f ∘ g)(x) = 4x + 2</span> dan <span class="math">g(x) = x + 1</span>. Rumus fungsi <span class="math">f(x)</span> adalah . . .',
+    options: {
+      A: '<span class="math">4x − 2</span>',
+      B: '<span class="math">4x + 2</span>',
+      C: '<span class="math">4x</span>',
+      D: '<span class="math">4x − 4</span>',
+      E: '<span class="math">2x − 4</span>'
+    },
+    correct: 'A',
+    explanation: '<span class="math">f(x + 1) = 4x + 2</span>. Misal <span class="math">p = x + 1</span> maka <span class="math">x = p − 1</span>. <span class="math">f(p) = 4(p − 1) + 2 = 4p − 4 + 2 = 4p − 2</span>. Jadi <span class="math">f(x) = 4x − 2</span>'
+  },
+  {
+    id: 7, difficulty: 'easy', category: 'Menentukan Rumus Komposisi',
+    text: 'Diketahui <span class="math">f(x) = 5x − 2</span> dan <span class="math">g(x) = x²</span>. Rumus fungsi <span class="math">(f ∘ g)(x)</span> adalah . . .',
+    options: {
+      A: '<span class="math">5x² − 10</span>',
+      B: '<span class="math">25x² − 2</span>',
+      C: '<span class="math">5x² − 2</span>',
+      D: '<span class="math">5x − 2</span>',
+      E: '<span class="math">x² − 2</span>'
+    },
+    correct: 'C',
+    explanation: '<span class="math">(f ∘ g)(x) = f(g(x)) = f(x²) = 5(x²) − 2 = 5x² − 2</span>'
+  },
+  {
+    id: 8, difficulty: 'medium', category: 'Menentukan Rumus Komposisi',
+    text: 'Diketahui <span class="math">f(x) = (2x + 1)/(x − 3)</span> untuk <span class="math">x ≠ 3</span>, dan <span class="math">g(x) = x − 2</span>. Rumus fungsi <span class="math">(f ∘ g)(x)</span> adalah . . .',
+    options: {
+      A: '<span class="math">(2x − 3)/(x − 5), x ≠ 5</span>',
+      B: '<span class="math">(2x + 3)/(x − 5), x ≠ 5</span>',
+      C: '<span class="math">(2x − 3)/(x − 1), x ≠ 1</span>',
+      D: '<span class="math">(2x + 1)/(x − 5), x ≠ 5</span>',
+      E: '<span class="math">(2x − 1)/(x − 5), x ≠ 5</span>'
+    },
+    correct: 'A',
+    explanation: '<span class="math">f(g(x)) = f(x − 2) = (2(x − 2) + 1)/((x − 2) − 3) = (2x − 4 + 1)/(x − 5) = (2x − 3)/(x − 5)</span>, dengan <span class="math">x ≠ 5</span>'
+  },
+  {
+    id: 9, difficulty: 'medium', category: 'Menentukan Rumus Komposisi',
+    text: 'Diketahui <span class="math">f(x) = x² − 3x + 2</span> dan <span class="math">g(x) = 2x + 1</span>. Rumus <span class="math">(f ∘ g)(x)</span> adalah . . .',
+    options: {
+      A: '<span class="math">4x² + 2x</span>',
+      B: '<span class="math">4x² − 2x</span>',
+      C: '<span class="math">4x² − 4x</span>',
+      D: '<span class="math">2x² − 2x + 1</span>',
+      E: '<span class="math">4x² + 4x + 2</span>'
+    },
+    correct: 'B',
+    explanation: '<span class="math">f(2x + 1) = (2x + 1)² − 3(2x + 1) + 2 = (4x² + 4x + 1) − (6x + 3) + 2 = 4x² − 2x</span>'
+  },
+  {
+    id: 10, difficulty: 'medium', category: 'Mencari Fungsi Komponen',
+    text: 'Diketahui <span class="math">(f ∘ g)(x) = x² − 4x + 5</span> dan <span class="math">f(x) = x + 3</span>. Rumus fungsi <span class="math">g(x)</span> adalah . . .',
+    options: {
+      A: '<span class="math">x² − 4x + 8</span>',
+      B: '<span class="math">x² − 4x + 2</span>',
+      C: '<span class="math">x² − 4x − 2</span>',
+      D: '<span class="math">x² + 4x + 2</span>',
+      E: '<span class="math">x² − 4x + 5</span>'
+    },
+    correct: 'B',
+    explanation: '<span class="math">f(g(x)) = g(x) + 3 = x² − 4x + 5</span>. Maka <span class="math">g(x) = x² − 4x + 5 − 3 = x² − 4x + 2</span>'
+  },
+  {
+    id: 11, difficulty: 'medium', category: 'Mencari Fungsi Komponen',
+    text: 'Diketahui <span class="math">(f ∘ g)(x) = 6x + 3</span> dan <span class="math">f(x) = 2x − 5</span>. Rumus fungsi <span class="math">g(x)</span> adalah . . .',
+    options: {
+      A: '<span class="math">3x − 4</span>',
+      B: '<span class="math">3x + 4</span>',
+      C: '<span class="math">3x + 8</span>',
+      D: '<span class="math">3x − 1</span>',
+      E: '<span class="math">3x + 1</span>'
+    },
+    correct: 'B',
+    explanation: '<span class="math">f(g(x)) = 2g(x) − 5 = 6x + 3</span>. Maka <span class="math">2g(x) = 6x + 8</span>, sehingga <span class="math">g(x) = 3x + 4</span>'
+  },
+  {
+    id: 12, difficulty: 'medium', category: 'Komposisi Tiga Fungsi',
+    text: 'Diketahui <span class="math">f(x) = x + 2</span>, <span class="math">g(x) = 3x − 1</span>, dan <span class="math">h(x) = 2x</span>. Rumus fungsi komposisi <span class="math">(f ∘ g ∘ h)(x)</span> adalah . . .',
+    options: {
+      A: '<span class="math">6x − 1</span>',
+      B: '<span class="math">6x + 1</span>',
+      C: '<span class="math">6x + 2</span>',
+      D: '<span class="math">5x + 1</span>',
+      E: '<span class="math">6x + 3</span>'
+    },
+    correct: 'B',
+    explanation: 'Kerjakan dari kanan: <span class="math">h(x) = 2x</span>, <span class="math">g(h(x)) = g(2x) = 3(2x) − 1 = 6x − 1</span>, <span class="math">f(g(h(x))) = f(6x − 1) = (6x − 1) + 2 = 6x + 1</span>'
+  },
+  {
+    id: 13, difficulty: 'medium', category: 'Mencari Fungsi Komponen',
+    text: 'Diketahui <span class="math">f(x) = 2x − 1</span> dan <span class="math">(g ∘ f)(x) = 4x² − 4x + 3</span>. Rumus fungsi <span class="math">g(x)</span> adalah . . .',
+    options: {
+      A: '<span class="math">x² − 2</span>',
+      B: '<span class="math">x² + 2</span>',
+      C: '<span class="math">x² + 4</span>',
+      D: '<span class="math">2x² + 2</span>',
+      E: '<span class="math">x² + 1</span>'
+    },
+    correct: 'B',
+    explanation: '<span class="math">(2x − 1)² = 4x² − 4x + 1</span>. Perhatikan <span class="math">4x² − 4x + 3 = (2x − 1)² + 2</span>. Jadi <span class="math">g(p) = p² + 2</span>, maka <span class="math">g(x) = x² + 2</span>'
+  },
+  {
+    id: 14, difficulty: 'medium', category: 'Menentukan Rumus Komposisi',
+    text: 'Diketahui <span class="math">f(x) = (x + 2)/(x − 1)</span> dan <span class="math">g(x) = (x − 2)/(x + 1)</span>. Rumus <span class="math">(f ∘ g)(x)</span> yang paling sederhana adalah . . .',
+    options: {
+      A: '<span class="math">x</span>',
+      B: '<span class="math">−x</span>',
+      C: '<span class="math">2x</span>',
+      D: '<span class="math">−2x</span>',
+      E: '<span class="math">x + 1</span>'
+    },
+    correct: 'B',
+    explanation: '<span class="math">f(g(x)) = ((x−2)/(x+1) + 2) / ((x−2)/(x+1) − 1)</span>. Pembilang: <span class="math">(x − 2 + 2x + 2)/(x + 1) = 3x/(x + 1)</span>. Penyebut: <span class="math">(x − 2 − x − 1)/(x + 1) = −3/(x + 1)</span>. Hasil: <span class="math">(3x/(x+1)) / (−3/(x+1)) = 3x/(−3) = −x</span>'
+  },
+  {
+    id: 15, difficulty: 'hard', category: 'Domain & Invers Komposisi',
+    text: 'Diketahui <span class="math">f(x) = √(x + 2)</span> dan <span class="math">g(x) = x² − 4</span>. Daerah asal (domain) dari fungsi <span class="math">(f ∘ g)(x)</span> agar terdefinisi pada bilangan real adalah . . .',
+    options: {
+      A: '<span class="math">x ≤ −2 atau x ≥ 2</span>',
+      B: '<span class="math">−√2 ≤ x ≤ √2</span>',
+      C: '<span class="math">x ≤ −√2 atau x ≥ √2</span>',
+      D: '<span class="math">x ≥ −2</span>',
+      E: '<span class="math">x ≥ √2</span>'
+    },
+    correct: 'C',
+    explanation: '<span class="math">(f ∘ g)(x) = f(x² − 4) = √((x² − 4) + 2) = √(x² − 2)</span>. Syarat: <span class="math">x² − 2 ≥ 0 ⟺ (x − √2)(x + √2) ≥ 0</span>. Penyelesaian: <span class="math">x ≤ −√2 atau x ≥ √2</span>'
+  },
+  {
+    id: 16, difficulty: 'hard', category: 'Mencari Fungsi Komponen',
+    text: 'Diketahui <span class="math">(f ∘ g)(x) = (4x − 1)/(2x + 3)</span> dan <span class="math">g(x) = 2x − 1</span>. Rumus fungsi <span class="math">f(x)</span> adalah . . .',
+    options: {
+      A: '<span class="math">(2x + 1)/(x + 4), x ≠ −4</span>',
+      B: '<span class="math">(2x − 1)/(x + 4), x ≠ −4</span>',
+      C: '<span class="math">(4x + 1)/(x + 4), x ≠ −4</span>',
+      D: '<span class="math">(2x + 1)/(2x + 4), x ≠ −2</span>',
+      E: '<span class="math">(2x + 3)/(x + 4), x ≠ −4</span>'
+    },
+    correct: 'A',
+    explanation: 'Misal <span class="math">y = 2x − 1</span> → <span class="math">x = (y + 1)/2</span>. Substitusi: <span class="math">f(y) = (4·(y+1)/2 − 1)/(2·(y+1)/2 + 3) = (2(y+1) − 1)/((y+1) + 3) = (2y + 1)/(y + 4)</span>. Jadi <span class="math">f(x) = (2x + 1)/(x + 4)</span>'
+  },
+  {
+    id: 17, difficulty: 'hard', category: 'Komposisi Tiga Fungsi',
+    text: 'Jika <span class="math">f(x) = x² + 1</span>, <span class="math">g(x) = 1/x</span>, dan <span class="math">h(x) = x − 1</span>. Nilai dari <span class="math">(f ∘ g ∘ h)(2)</span> adalah . . .',
+    options: { A: '1', B: '2', C: '3', D: '4', E: '5' },
+    correct: 'B',
+    explanation: 'Kerjakan dari kanan ke kiri: <span class="math">h(2) = 2 − 1 = 1</span>. <span class="math">g(1) = 1/1 = 1</span>. <span class="math">f(1) = 1² + 1 = 2</span>'
+  },
+  {
+    id: 18, difficulty: 'hard', category: 'Domain & Invers Komposisi',
+    text: 'Diketahui fungsi <span class="math">f(x) = 2x + 1</span> dan <span class="math">g(x) = (3x − 1)/(x + 2), x ≠ −2</span>. Jika <span class="math">(g ∘ f)⁻¹(a) = 1</span>, nilai a adalah . . .',
+    options: {
+      A: '<span class="math">3/5</span>',
+      B: '<span class="math">4/5</span>',
+      C: '<span class="math">6/5</span>',
+      D: '<span class="math">8/5</span>',
+      E: '2'
+    },
+    correct: 'D',
+    explanation: 'Sifat invers: <span class="math">(g ∘ f)⁻¹(a) = 1 ⟺ (g ∘ f)(1) = a</span>. Hitung: <span class="math">f(1) = 2(1) + 1 = 3</span>. <span class="math">g(3) = (3(3) − 1)/(3 + 2) = 8/5</span>. Jadi <span class="math">a = 8/5</span>'
+  },
+  {
+    id: 19, difficulty: 'hard', category: 'Aplikasi & HOTS',
+    text: 'Diketahui <span class="math">f(x − 1) = 5x² + 6x − 6</span> dan <span class="math">g(x) = ax + 1</span>. Jika <span class="math">(g ∘ f)(1) = −51</span>, nilai dari konstanta a adalah . . .',
+    options: { A: '−4', B: '−3', C: '−2', D: '2', E: '3' },
+    correct: 'C',
+    explanation: 'Cari <span class="math">f(1)</span>: agar <span class="math">x − 1 = 1</span>, maka <span class="math">x = 2</span>. <span class="math">f(1) = 5(2)² + 6(2) − 6 = 20 + 12 − 6 = 26</span>. Lalu <span class="math">g(26) = a(26) + 1 = −51</span> → <span class="math">26a = −52</span> → <span class="math">a = −2</span>'
+  },
+  {
+    id: 20, difficulty: 'hard', category: 'Aplikasi & HOTS', isHOTS: true,
+    text: 'Sebuah pabrik kertas memproduksi kertas melalui dua tahap. Tahap pertama menggunakan mesin I yang menghasilkan bahan kertas setengah jadi dengan fungsi <span class="math">m = f(x) = x² − 3x − 2</span>. Tahap kedua menggunakan mesin II menghasilkan kertas dengan fungsi <span class="math">g(m) = 4m + 2</span>. Variabel x dan m dalam satuan ton. Jika bahan dasar kayu yang tersedia sebanyak 4 ton, banyak kertas yang dihasilkan adalah . . .',
+    options: { A: '8 ton', B: '10 ton', C: '12 ton', D: '14 ton', E: '16 ton' },
+    correct: 'B',
+    explanation: 'Ini aplikasi komposisi fungsi. <span class="math">x = 4</span> ton. Tahap I: <span class="math">m = f(4) = 4² − 3(4) − 2 = 16 − 12 − 2 = 2</span> ton. Tahap II: <span class="math">g(2) = 4(2) + 2 = 10</span> ton. Jadi banyak kertas = 10 ton.'
+  }
+];
+
+/* ============================================================
+   STATE
+   ============================================================ */
+const STATE = {
+  studentName: '',
+  currentIdx: 0,
+  answers: {}, // {qid: {selected, checked, correct, timeSpent, discussionOpened}}
+  quizStartTime: null
+};
+
+const TIMER = {
+  interval: null,
+  remaining: 0,
+  initial: 0,
+  isRunning: false
+};
+
+const DIFF_TIME = { easy: 120, medium: 120, hard: 180 };
+const DIFF_LABEL = { easy: 'Mudah', medium: 'Sedang', hard: 'Sulit' };
+
+/* ============================================================
+   UTILITY
+   ============================================================ */
+function $(s) { return document.querySelector(s); }
+function $$(s) { return document.querySelectorAll(s); }
+
+function showToast(msg, type = '') {
+  const t = $('#toast');
+  t.textContent = '';
+  const icon = document.createElement('i');
+  icon.className = 'fa-solid ' + (type === 'success' ? 'fa-circle-check' : type === 'error' ? 'fa-circle-xmark' : type === 'warning' ? 'fa-triangle-exclamation' : 'fa-circle-info');
+  t.appendChild(icon);
+  t.appendChild(document.createTextNode(' ' + msg));
+  t.className = 'toast show ' + type;
+  clearTimeout(t._timeout);
+  t._timeout = setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+function formatTime(s) {
+  const m = Math.floor(s / 60);
+  const sec = s % 60;
+  return m + ':' + String(sec).padStart(2, '0');
+}
+
+function switchScreen(id) {
+  $$('.screen').forEach(s => s.classList.remove('active'));
+  $('#' + id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+/* ============================================================
+   COVER & MATERIAL
+   ============================================================ */
+ $('#student-name-input').addEventListener('input', e => {
+  const val = e.target.value.trim();
+  $('#start-btn').disabled = val.length < 2;
+});
+
+ $('#material-btn').addEventListener('click', () => {
+  $('#material-modal').classList.add('active');
+});
+ $('#close-material').addEventListener('click', () => {
+  $('#material-modal').classList.remove('active');
+});
+ $('#material-modal').addEventListener('click', e => {
+  if (e.target.id === 'material-modal') $('#material-modal').classList.remove('active');
+});
+
+ $('#start-btn').addEventListener('click', () => {
+  const name = $('#student-name-input').value.trim();
+  if (name.length < 2) {
+    showToast('Mohon masukkan nama terlebih dahulu', 'warning');
+    return;
+  }
+  STATE.studentName = name;
+  STATE.quizStartTime = Date.now();
+  $('#display-name').textContent = name;
+  $('#avatar-letter').textContent = name.charAt(0).toUpperCase();
+  switchScreen('quiz-screen');
+  initQuiz();
+});
+
+/* ============================================================
+   QUIZ INIT
+   ============================================================ */
+function initQuiz() {
+  buildQuestionGrid();
+  loadQuestion(0);
+}
+
+function buildQuestionGrid() {
+  const grid = $('#question-grid');
+  grid.innerHTML = '';
+  QUESTIONS.forEach((q, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'q-btn';
+    btn.textContent = idx + 1;
+    btn.dataset.idx = idx;
+    const mark = document.createElement('span');
+    mark.className = 'diff-mark ' + q.difficulty;
+    btn.appendChild(mark);
+    btn.addEventListener('click', () => loadQuestion(idx));
+    grid.appendChild(btn);
+  });
+  updateGridStatus();
+}
+
+function updateGridStatus() {
+  $$('.q-btn').forEach((btn, idx) => {
+    btn.classList.remove('current', 'answered', 'correct', 'wrong');
+    const ans = STATE.answers[QUESTIONS[idx].id];
+    if (idx === STATE.currentIdx) btn.classList.add('current');
+    else if (ans && ans.checked) {
+      btn.classList.add(ans.correct ? 'correct' : 'wrong');
+    } else if (ans && ans.selected) {
+      btn.classList.add('answered');
+    }
+  });
+}
+
+function loadQuestion(idx) {
+  // Save current state (already saved on actions)
+  STATE.currentIdx = idx;
+  const q = QUESTIONS[idx];
+
+  // Reset answer when opening NEW question (per requirement: jawaban tereset ketika siswa membuka soal baru)
+  // If question was checked before, keep state. Otherwise reset.
+  if (!STATE.answers[q.id] || !STATE.answers[q.id].checked) {
+    STATE.answers[q.id] = { selected: null, checked: false, correct: false, timeSpent: 0, discussionOpened: false };
+  }
+
+  // Badges
+  const badges = $('#badges');
+  badges.innerHTML = '';
+  const diffBadge = document.createElement('span');
+  const diffClass = q.isHOTS ? 'badge-hots' : (q.difficulty === 'easy' ? 'badge-easy' : q.difficulty === 'medium' ? 'badge-medium' : 'badge-hard');
+  diffBadge.className = 'badge ' + diffClass;
+  diffBadge.textContent = q.isHOTS ? 'HOTS' : DIFF_LABEL[q.difficulty];
+  badges.appendChild(diffBadge);
+  const catBadge = document.createElement('span');
+  catBadge.className = 'badge badge-category';
+  catBadge.textContent = q.category;
+  badges.appendChild(catBadge);
+
+  // Question
+  $('#question-number').textContent = 'Soal ' + String(idx + 1).padStart(2, '0');
+  $('#question-text').innerHTML = q.text;
+
+  // Options
+  const oc = $('#options-container');
+  oc.innerHTML = '';
+  const ans = STATE.answers[q.id];
+  ['A','B','C','D','E'].forEach(letter => {
+    const opt = document.createElement('div');
+    opt.className = 'option';
+    opt.dataset.letter = letter;
+    if (ans.checked) opt.classList.add('locked');
+    if (ans.checked && letter === q.correct) opt.classList.add('correct-answer');
+    if (ans.checked && letter === ans.selected && ans.selected !== q.correct) opt.classList.add('wrong-answer');
+    if (ans.selected === letter && !ans.checked) opt.classList.add('selected');
+
+    const letterEl = document.createElement('div');
+    letterEl.className = 'option-letter';
+    letterEl.textContent = letter;
+    const textEl = document.createElement('div');
+    textEl.className = 'option-text';
+    textEl.innerHTML = q.options[letter];
+    opt.appendChild(letterEl);
+    opt.appendChild(textEl);
+
+    if (ans.checked) {
+      const icon = document.createElement('i');
+      icon.className = 'fa-solid option-icon ';
+      if (letter === q.correct) icon.classList.add('fa-circle-check');
+      else if (letter === ans.selected) icon.classList.add('fa-circle-xmark');
+      else icon.classList.add('fa-circle');
+      icon.style.opacity = letter === q.correct || letter === ans.selected ? '1' : '0.3';
+      opt.appendChild(icon);
+    }
+
+    if (!ans.checked) {
+      opt.addEventListener('click', () => selectOption(letter));
+    }
+    oc.appendChild(opt);
+  });
+
+  // Buttons
+  $('#check-btn').disabled = !ans.selected || ans.checked;
+  $('#discuss-btn').disabled = !ans.checked;
+  $('#discuss-btn').classList.toggle('unlocked', ans.checked && !ans.discussionOpened);
+
+  // Discussion
+  if (ans.discussionOpened) {
+    $('#discussion-panel').classList.remove('hidden');
+    const status = $('#answer-status');
+    if (ans.correct) {
+      status.className = 'answer-status correct';
+      status.textContent = '✓ Jawaban Benar';
+    } else {
+      status.className = 'answer-status wrong';
+      status.textContent = '✗ Jawaban Salah';
+    }
+    $('#discussion-text').innerHTML = q.explanation;
+  } else {
+    $('#discussion-panel').classList.add('hidden');
+  }
+
+  // Nav buttons
+  $('#prev-btn').disabled = idx === 0;
+  $('#next-btn').disabled = idx === QUESTIONS.length - 1;
+  $('#next-btn').innerHTML = idx === QUESTIONS.length - 1 ? 'Selesai <i class="fa-solid fa-flag-checkered"></i>' : 'Selanjutnya <i class="fa-solid fa-arrow-right"></i>';
+
+  // Progress
+  $('#progress-text').textContent = 'Soal ' + (idx + 1) + ' dari ' + QUESTIONS.length;
+  $('#progress-fill').style.width = ((idx + 1) / QUESTIONS.length * 100) + '%';
+
+  // Timer
+  startTimer(q);
+
+  updateGridStatus();
+}
+
+function selectOption(letter) {
+  const q = QUESTIONS[STATE.currentIdx];
+  const ans = STATE.answers[q.id];
+  if (ans.checked) return;
+  ans.selected = letter;
+  // Update UI
+  $$('.option').forEach(o => {
+    o.classList.remove('selected');
+    if (o.dataset.letter === letter) o.classList.add('selected');
+  });
+  $('#check-btn').disabled = false;
+}
+
+/* ============================================================
+   TIMER
+   ============================================================ */
+function startTimer(q) {
+  stopTimer();
+  const ans = STATE.answers[q.id];
+  if (ans.checked) {
+    // Already checked - show spent time, no running
+    TIMER.isRunning = false;
+    TIMER.remaining = 0;
+    updateTimerUI(0, 0, true);
+    return;
+  }
+  TIMER.initial = DIFF_TIME[q.difficulty];
+  TIMER.remaining = TIMER.initial;
+  TIMER.isRunning = true;
+  updateTimerUI(TIMER.remaining, TIMER.initial, false);
+  TIMER.interval = setInterval(() => {
+    TIMER.remaining--;
+    if (TIMER.remaining <= 0) {
+      TIMER.remaining = 0;
+      stopTimer();
+      // Auto-stop, student can still answer
+      showToast('Waktu habis! Kamu masih bisa menjawab tapi tanpa tambahan waktu.', 'warning');
+    }
+    updateTimerUI(TIMER.remaining, TIMER.initial, false);
+    // Pulse +15 button when low
+    const addBtn = $('#add-time-btn');
+    if (TIMER.remaining <= 30 && TIMER.remaining > 0 && TIMER.isRunning) {
+      addBtn.classList.add('pulse');
+    } else {
+      addBtn.classList.remove('pulse');
+    }
+  }, 1000);
+}
+
+function stopTimer() {
+  if (TIMER.interval) {
+    clearInterval(TIMER.interval);
+    TIMER.interval = null;
+  }
+  TIMER.isRunning = false;
+  $('#add-time-btn').classList.remove('pulse');
+}
+
+function updateTimerUI(remaining, initial, stopped) {
+  $('#timer-text').textContent = stopped ? '—' : formatTime(remaining);
+  const circle = $('#timer-circle');
+  const radius = 24;
+  const circumference = 2 * Math.PI * radius;
+  const offset = stopped ? circumference : circumference - (remaining / initial) * circumference;
+  circle.style.strokeDasharray = circumference;
+  circle.style.strokeDashoffset = offset;
+
+  const textEl = $('#timer-text');
+  textEl.classList.remove('warning', 'danger');
+  circle.classList.remove('warning', 'danger');
+  if (!stopped) {
+    const ratio = remaining / initial;
+    if (ratio < 0.25) {
+      textEl.classList.add('danger');
+      circle.classList.add('danger');
+    } else if (ratio < 0.5) {
+      textEl.classList.add('warning');
+      circle.classList.add('warning');
+    }
+  }
+}
+
+ $('#add-time-btn').addEventListener('click', () => {
+  if (!TIMER.isRunning) return;
+  TIMER.remaining += 15;
+  TIMER.initial += 15; // extend initial for progress calc
+  updateTimerUI(TIMER.remaining, TIMER.initial, false);
+  showToast('+15 detik ditambahkan!', 'success');
+});
+
+/* ============================================================
+   CHECK ANSWER
+   ============================================================ */
+ $('#check-btn').addEventListener('click', () => {
+  const q = QUESTIONS[STATE.currentIdx];
+  const ans = STATE.answers[q.id];
+  if (!ans.selected || ans.checked) return;
+
+  // Stop timer
+  const spent = TIMER.initial - TIMER.remaining;
+  ans.timeSpent = spent;
+  ans.checked = true;
+  ans.correct = (ans.selected === q.correct);
+  stopTimer();
+
+  // Reload question to show result
+  loadQuestion(STATE.currentIdx);
+
+  if (ans.correct) {
+    showToast('Jawaban benar! Pembahasan tersedia.', 'success');
+  } else {
+    showToast('Jawaban kurang tepat. Pelajari pembahasannya.', 'error');
+  }
+});
+
+/* ============================================================
+   DISCUSSION
+   ============================================================ */
+ $('#discuss-btn').addEventListener('click', () => {
+  const q = QUESTIONS[STATE.currentIdx];
+  const ans = STATE.answers[q.id];
+  if (!ans.checked) return;
+  ans.discussionOpened = true;
+  $('#discuss-btn').classList.remove('unlocked');
+  $('#discussion-panel').classList.remove('hidden');
+  const status = $('#answer-status');
+  if (ans.correct) {
+    status.className = 'answer-status correct';
+    status.textContent = '✓ Jawaban Benar';
+  } else {
+    status.className = 'answer-status wrong';
+    status.textContent = '✗ Jawaban Salah';
+  }
+  $('#discussion-text').innerHTML = q.explanation;
+  $('#discussion-panel').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+});
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+ $('#prev-btn').addEventListener('click', () => {
+  if (STATE.currentIdx > 0) loadQuestion(STATE.currentIdx - 1);
+});
+ $('#next-btn').addEventListener('click', () => {
+  if (STATE.currentIdx < QUESTIONS.length - 1) {
+    loadQuestion(STATE.currentIdx + 1);
+  } else {
+    // Last question - prompt finish
+    finishQuiz();
+  }
+});
+
+/* ============================================================
+   FINISH
+   ============================================================ */
+ $('#finish-btn').addEventListener('click', () => {
+  finishQuiz();
+});
+
+function finishQuiz() {
+  // Count answered
+  let answered = 0;
+  QUESTIONS.forEach(q => {
+    if (STATE.answers[q.id] && STATE.answers[q.id].checked) answered++;
+  });
+  if (answered === 0) {
+    showToast('Kamu belum mengerjakan soal apa pun!', 'warning');
+    return;
+  }
+  const confirmFinish = confirm('Selesaikan post test? Soal yang sudah dikerjakan: ' + answered + ' dari ' + QUESTIONS.length + '.');
+  if (!confirmFinish) return;
+
+  stopTimer();
+  showResults();
+}
+
+/* ============================================================
+   RESULTS
+   ============================================================ */
+function showResults() {
+  // Compute stats
+  let totalWorked = 0, totalCorrect = 0, totalWrong = 0;
+  let totalTime = 0;
+  const catStats = {}; // {cat: {total, correct, wrong, time, count}}
+
+  QUESTIONS.forEach(q => {
+    if (!catStats[q.category]) catStats[q.category] = { total: 0, correct: 0, wrong: 0, time: 0, count: 0, questions: [] };
+    catStats[q.category].total++;
+    catStats[q.category].questions.push(q.id);
+    const ans = STATE.answers[q.id];
+    if (ans && ans.checked) {
+      totalWorked++;
+      catStats[q.category].count++;
+      if (ans.correct) {
+        totalCorrect++;
+        catStats[q.category].correct++;
+      } else {
+        totalWrong++;
+        catStats[q.category].wrong++;
+      }
+      catStats[q.category].time += ans.timeSpent;
+      totalTime += ans.timeSpent;
+    }
+  });
+
+  const avgTime = totalWorked > 0 ? Math.round(totalTime / totalWorked) : 0;
+
+  // Summary cards
+  animateNumber('#total-worked', totalWorked);
+  animateNumber('#total-correct', totalCorrect);
+  animateNumber('#total-wrong', totalWrong);
+  $('#avg-time').textContent = formatTime(avgTime);
+
+  // Weakness & strength analysis
+  let weakCat = null, weakScore = -1;
+  let strongCat = null, strongScore = -1;
+  Object.entries(catStats).forEach(([cat, s]) => {
+    if (s.count === 0) return;
+    const wrongRatio = s.wrong / s.count;
+    // Weakness: highest wrong ratio (with min 1 attempt)
+    if (wrongRatio > weakScore) {
+      weakScore = wrongRatio;
+      weakCat = cat;
+    }
+    // Strength: highest correct ratio AND fast time (combined score)
+    const correctRatio = s.correct / s.count;
+    const avgTimeCat = s.time / s.count;
+    // Score: correct ratio weighted, minus time penalty (lower time = better)
+    // Normalize: score = correctRatio * 100 - (avgTimeCat / maxTime) * 20
+    const maxTime = 180;
+    const strengthScore = correctRatio * 100 - (avgTimeCat / maxTime) * 20;
+    if (strengthScore > strongScore) {
+      strongScore = strengthScore;
+      strongCat = cat;
+    }
+  });
+
+  // Weakness text
+  if (weakCat && weakScore > 0) {
+    const ws = catStats[weakCat];
+    $('#weakness-text').innerHTML = 'Kamu paling banyak salah pada bab <b>' + weakCat + '</b> (' + ws.wrong + ' dari ' + ws.count + ' soal dijawab salah).<br><br>Saran: pelajari kembali konsep ini, perhatikan langkah substitusi dan penyederhanaan. Fokus pada soal-soal tipe yang serupa.';
+  } else if (totalWorked > 0) {
+    $('#weakness-text').innerHTML = 'Selamat! Tidak ada kelemahan signifikan. Kamu menjawab dengan baik di semua bab yang dikerjakan.';
+  } else {
+    $('#weakness-text').textContent = 'Belum ada soal yang dikerjakan.';
+  }
+
+  // Strength text
+  if (strongCat) {
+    const ss = catStats[strongCat];
+    const avgT = ss.count > 0 ? Math.round(ss.time / ss.count) : 0;
+    $('#strength-text').innerHTML = 'Kekuatan terbesarmu di bab <b>' + strongCat + '</b> — ' + ss.correct + ' dari ' + ss.count + ' jawaban benar dengan rata-rata waktu ' + formatTime(avgT) + ' per soal.<br><br>Pertahankan kecepatan dan ketelitian ini pada bab lainnya.';
+  } else {
+    $('#strength-text').textContent = 'Kerjakan beberapa soal untuk melihat analisis kekuatan.';
+  }
+
+  // Category analysis bars
+  const catDiv = $('#category-analysis');
+  catDiv.innerHTML = '';
+  // Sort: weakness first (highest wrong ratio), then by total
+  const sortedCats = Object.entries(catStats).sort((a, b) => {
+    const aRatio = a[1].count > 0 ? a[1].wrong / a[1].count : 0;
+    const bRatio = b[1].count > 0 ? b[1].wrong / b[1].count : 0;
+    return bRatio - aRatio;
+  });
+
+  sortedCats.forEach(([cat, s]) => {
+    const row = document.createElement('div');
+    row.className = 'category-row';
+    if (cat === weakCat && weakScore > 0) row.classList.add('cat-row-highlight', 'weakness');
+    if (cat === strongCat) row.classList.add('cat-row-highlight', 'strength');
+
+    const nameDiv = document.createElement('div');
+    nameDiv.className = 'cat-name';
+    nameDiv.textContent = cat;
+    if (cat === weakCat && weakScore > 0) nameDiv.innerHTML += ' <i class="fa-solid fa-triangle-exclamation" style="color:var(--danger)"></i>';
+    if (cat === strongCat) nameDiv.innerHTML += ' <i class="fa-solid fa-trophy" style="color:var(--success)"></i>';
+    row.appendChild(nameDiv);
+
+    const barWrap = document.createElement('div');
+    barWrap.className = 'cat-bar-wrap';
+    const total = s.total;
+    const correctPct = (s.correct / total) * 100;
+    const wrongPct = (s.wrong / total) * 100;
+    const emptyPct = 100 - correctPct - wrongPct;
+
+    if (s.correct > 0) {
+      const cb = document.createElement('div');
+      cb.className = 'cat-bar-correct';
+      cb.style.width = '0%';
+      cb.textContent = s.correct + ' benar';
+      barWrap.appendChild(cb);
+      setTimeout(() => cb.style.width = correctPct + '%', 100);
+    }
+    if (s.wrong > 0) {
+      const wb = document.createElement('div');
+      wb.className = 'cat-bar-wrong';
+      wb.style.width = '0%';
+      wb.textContent = s.wrong + ' salah';
+      barWrap.appendChild(wb);
+      setTimeout(() => wb.style.width = wrongPct + '%', 100);
+    }
+    if (emptyPct > 0) {
+      const eb = document.createElement('div');
+      eb.className = 'cat-bar-empty';
+      eb.style.width = emptyPct + '%';
+      eb.textContent = s.total - s.count > 0 ? (s.total - s.count) + ' kosong' : '';
+      barWrap.appendChild(eb);
+    }
+    row.appendChild(barWrap);
+
+    const timeDiv = document.createElement('div');
+    timeDiv.className = 'cat-time';
+    const avgT = s.count > 0 ? formatTime(Math.round(s.time / s.count)) : '—';
+    timeDiv.innerHTML = avgT + '<small>Rata-rata</small>';
+    row.appendChild(timeDiv);
+
+    catDiv.appendChild(row);
+  });
+
+  // Detail table
+  const tbody = $('#detail-tbody');
+  tbody.innerHTML = '';
+  QUESTIONS.forEach((q, idx) => {
+    const ans = STATE.answers[q.id];
+    const tr = document.createElement('tr');
+    const status = ans && ans.checked ? (ans.correct ? 'correct' : 'wrong') : 'skip';
+    const statusText = status === 'correct' ? 'Benar' : status === 'wrong' ? 'Salah' : 'Tidak Dijawab';
+    const statusIcon = status === 'correct' ? 'fa-circle-check' : status === 'wrong' ? 'fa-circle-xmark' : 'fa-minus';
+    tr.innerHTML = `
+      <td><b>${idx + 1}</b></td>
+      <td>${q.isHOTS ? 'HOTS' : DIFF_LABEL[q.difficulty]}</td>
+      <td style="font-size:13px;color:var(--text-muted)">${q.category}</td>
+      <td>${ans && ans.selected ? ans.selected : '—'}${ans && ans.checked ? ' <span style="color:var(--text-muted)">(kunci: ' + q.correct + ')</span>' : ''}</td>
+      <td><span class="status-pill ${status}"><i class="fa-solid ${statusIcon}"></i> ${statusText}</span></td>
+      <td>${ans && ans.checked ? formatTime(ans.timeSpent) : '—'}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  $('#result-name').textContent = STATE.studentName;
+  switchScreen('result-screen');
+
+  // Confetti for good results
+  if (totalCorrect >= 15) launchConfetti();
+}
+
+function animateNumber(selector, target) {
+  const el = $(selector);
+  let current = 0;
+  const step = Math.max(1, Math.ceil(target / 30));
+  const interval = setInterval(() => {
+    current += step;
+    if (current >= target) {
+      current = target;
+      clearInterval(interval);
+    }
+    el.textContent = current;
+  }, 30);
+}
+
+function launchConfetti() {
+  const colors = ['#FF6B4A', '#0EA5A0', '#FFC93C', '#10B981', '#E54B2C'];
+  for (let i = 0; i < 80; i++) {
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    c.style.left = Math.random() * 100 + 'vw';
+    c.style.background = colors[Math.floor(Math.random() * colors.length)];
+    c.style.animationDuration = (2 + Math.random() * 2) + 's';
+    c.style.animationDelay = Math.random() * 0.5 + 's';
+    c.style.transform = 'rotate(' + Math.random() * 360 + 'deg)';
+    if (Math.random() > 0.5) c.style.borderRadius = '50%';
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 5000);
+  }
+}
+
+/* ============================================================
+   RESTART / REVIEW
+   ============================================================ */
+ $('#restart-btn').addEventListener('click', () => {
+  if (!confirm('Kerjakan ulang post test? Semua jawaban akan dihapus.')) return;
+  STATE.answers = {};
+  STATE.currentIdx = 0;
+  STATE.quizStartTime = Date.now();
+  switchScreen('quiz-screen');
+  initQuiz();
+});
+
+ $('#review-btn').addEventListener('click', () => {
+  switchScreen('quiz-screen');
+  loadQuestion(0);
+});
+
+/* ============================================================
+   KEYBOARD SHORTCUTS
+   ============================================================ */
+document.addEventListener('keydown', e => {
+  if (!$('#quiz-screen').classList.contains('active')) return;
+  if (e.target.tagName === 'INPUT') return;
+  if (e.key === 'ArrowLeft') $('#prev-btn').click();
+  if (e.key === 'ArrowRight') $('#next-btn').click();
+  if (['1','2','3','4','5'].includes(e.key)) {
+    const letters = ['A','B','C','D','E'];
+    const ans = STATE.answers[QUESTIONS[STATE.currentIdx].id];
+    if (!ans || !ans.checked) selectOption(letters[parseInt(e.key) - 1]);
+  }
+  if (e.key === 'Enter') {
+    const checkBtn = $('#check-btn');
+    if (!checkBtn.disabled) checkBtn.click();
+  }
+});
+
+// Initial: focus name input
+window.addEventListener('load', () => {
+  setTimeout(() => $('#student-name-input').focus(), 300);
+});
+</script>
+</body>
+</html>
