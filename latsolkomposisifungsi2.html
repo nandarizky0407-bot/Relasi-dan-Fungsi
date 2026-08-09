@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Latihan Soal — Komposisi Fungsi | Kelas XI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,700;9..144,900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0e1a; --bg-soft:#131826;
+  --surface:rgba(22,28,42,0.7); --surface-2:rgba(30,38,56,0.5);
+  --border:rgba(255,255,255,0.08); --border-strong:rgba(255,255,255,0.18);
+  --text:#f5f0e8; --text-muted:#94a0b8; --text-dim:#5a6478;
+  --primary:#ff7849; --primary-2:#ff9a6b; --primary-glow:rgba(255,120,73,0.4);
+  --secondary:#ffc857; --success:#6ee7b7; --success-glow:rgba(110,231,183,0.3);
+  --error:#fb7185; --error-glow:rgba(251,113,133,0.3); --info:#60a5fa;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+body{overflow:hidden;position:relative}
+
+/* Background */
+.bg-layer{position:fixed;inset:0;z-index:0;pointer-events:none}
+.bg-base{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 75% 15%,rgba(255,120,73,0.1) 0%,transparent 60%),radial-gradient(ellipse 60% 80% at 15% 85%,rgba(96,165,250,0.06) 0%,transparent 60%),var(--bg)}
+.bg-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px);background-size:56px 56px;mask-image:radial-gradient(ellipse at center,black 30%,transparent 90%);-webkit-mask-image:radial-gradient(ellipse at center,black 30%,transparent 90%)}
+.floating-math{position:absolute;inset:0;overflow:hidden}
+.float-eq{position:absolute;font-family:'Fraunces',serif;font-style:italic;color:rgba(255,255,255,0.045);user-select:none;pointer-events:none;animation:floatEq 28s ease-in-out infinite}
+@keyframes floatEq{0%,100%{transform:translate(0,0) rotate(-3deg)}50%{transform:translate(30px,-40px) rotate(4deg)}}
+
+/* App */
+.app{position:relative;z-index:1;height:100vh;width:100vw;overflow:hidden}
+.slide{position:absolute;inset:0;opacity:0;visibility:hidden;transform:translateY(20px);transition:opacity .5s ease,transform .5s ease,visibility 0s .5s;overflow-y:auto;overflow-x:hidden}
+.slide.active{opacity:1;visibility:visible;transform:translateY(0);transition:opacity .5s ease,transform .5s ease,visibility 0s 0s}
+
+/* Math formatting */
+.frac{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;margin:0 .25em;transform:translateY(-.15em)}
+.frac .num{border-bottom:1.5px solid currentColor;padding:0 .35em .1em;line-height:1.3}
+.frac .den{padding:.1em .35em 0;line-height:1.3}
+.sqrt{display:inline-flex;align-items:stretch;vertical-align:middle}
+.sqrt-symbol{font-size:1.05em;line-height:1}
+.sqrt-content{border-top:1.5px solid currentColor;padding:.05em .25em 0;margin-left:-.05em;line-height:1.3}
+sup{font-size:.72em;vertical-align:super;line-height:0}
+.math{font-family:'Fraunces',serif;font-style:italic}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.55rem;padding:.85rem 1.4rem;border:none;border-radius:12px;font-family:inherit;font-size:.95rem;font-weight:600;cursor:pointer;transition:all .25s ease;text-decoration:none;white-space:nowrap}
+.btn-primary{background:var(--primary);color:#1a0f08;box-shadow:0 8px 24px rgba(255,120,73,0.3)}
+.btn-primary:not(:disabled):hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(255,120,73,0.4);background:var(--primary-2)}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed;box-shadow:none}
+.btn-ghost{background:var(--surface);color:var(--text);border:1px solid var(--border-strong);backdrop-filter:blur(10px)}
+.btn-ghost:hover{background:var(--surface-2);border-color:var(--primary)}
+.btn-ghost:disabled{opacity:.4;cursor:not-allowed}
+.btn-success{background:var(--success);color:#062418;box-shadow:0 8px 24px var(--success-glow)}
+.btn-success:hover{transform:translateY(-2px)}
+.btn-outline{background:transparent;color:var(--primary);border:1.5px solid var(--primary)}
+.btn-outline:hover{background:rgba(255,120,73,0.1)}
+.btn svg{width:16px;height:16px}
+
+/* ===== COVER SLIDE ===== */
+.cover{min-height:100vh;display:grid;grid-template-columns:1.15fr 1fr;gap:4rem;padding:3rem 4.5rem;align-items:center}
+.cover-left{display:flex;flex-direction:column;gap:1.6rem}
+.badge{display:inline-flex;align-items:center;gap:.6rem;padding:.5rem 1rem;background:var(--surface);border:1px solid var(--border);border-radius:999px;font-size:.78rem;font-weight:500;letter-spacing:.04em;color:var(--text-muted);width:fit-content;backdrop-filter:blur(10px)}
+.badge-dot{width:6px;height:6px;background:var(--primary);border-radius:50%;box-shadow:0 0 12px var(--primary-glow);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.8)}}
+
+.cover-title{font-family:'Fraunces',serif;line-height:.95;letter-spacing:-.03em}
+.title-eyebrow{display:block;font-family:'Space Grotesk',sans-serif;font-size:.85rem;font-weight:500;text-transform:uppercase;letter-spacing:.22em;color:var(--primary);margin-bottom:1.1rem}
+.title-main{display:block;font-size:clamp(3.2rem,6.5vw,5.8rem);font-weight:700;color:var(--text)}
+.title-main em{font-style:italic;font-weight:300;background:linear-gradient(135deg,var(--primary),var(--secondary));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+
+.cover-desc{font-size:1.05rem;line-height:1.65;color:var(--text-muted);max-width:480px}
+.cover-meta{display:flex;align-items:center;gap:1.5rem;margin:.3rem 0}
+.meta-item{display:flex;flex-direction:column;gap:.15rem}
+.meta-value{font-family:'Fraunces',serif;font-size:1.7rem;font-weight:600;color:var(--text);line-height:1}
+.meta-label{font-size:.7rem;text-transform:uppercase;letter-spacing:.15em;color:var(--text-dim)}
+.meta-divider{width:1px;height:36px;background:var(--border)}
+
+.name-form{display:flex;flex-direction:column;gap:.7rem;margin-top:.5rem;max-width:480px}
+.form-label{font-size:.72rem;text-transform:uppercase;letter-spacing:.18em;color:var(--text-dim);font-weight:500}
+.input-wrap{position:relative}
+.name-input{width:100%;padding:1rem 1.25rem 1rem 3rem;background:var(--surface);border:1px solid var(--border-strong);border-radius:14px;color:var(--text);font-family:inherit;font-size:1rem;transition:all .3s ease;backdrop-filter:blur(10px)}
+.name-input::placeholder{color:var(--text-dim)}
+.name-input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 4px rgba(255,120,73,0.15)}
+.input-icon{position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:var(--text-dim);pointer-events:none;transition:color .3s ease}
+.name-input:focus~.input-icon{color:var(--primary)}
+
+/* Cover right - composition viz */
+.cover-right{display:flex;align-items:center;justify-content:center;position:relative;height:100%}
+.composition-viz{display:flex;flex-direction:column;gap:.85rem;position:relative;width:100%;max-width:380px;padding:2rem 1.5rem;background:var(--surface);border:1px solid var(--border);border-radius:24px;backdrop-filter:blur(20px)}
+.viz-header{text-align:center;margin-bottom:.5rem}
+.viz-header .math{font-family:'Fraunces',serif;font-style:italic;font-size:1.5rem;color:var(--text);font-weight:500}
+.viz-header .math .op{color:var(--primary);font-weight:700}
+.viz-card{background:rgba(15,20,32,0.6);border:1px solid var(--border);border-radius:14px;padding:.85rem 1.1rem;position:relative;overflow:hidden;transition:all .4s ease;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.viz-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,120,73,0.15),transparent);opacity:0;transition:opacity .4s ease}
+.viz-card.highlight::before{opacity:1}
+.viz-card.highlight{border-color:rgba(255,120,73,0.4);transform:translateX(6px)}
+.viz-label{font-size:.68rem;text-transform:uppercase;letter-spacing:.18em;color:var(--text-dim);font-family:'Space Grotesk',sans-serif}
+.viz-value{font-family:'Fraunces',serif;font-style:italic;font-size:1.25rem;font-weight:500;color:var(--text);position:relative;z-index:1}
+.viz-card.input .viz-value{color:var(--secondary)}
+.viz-card.output .viz-value{color:var(--primary)}
+.viz-arrow{display:flex;align-items:center;justify-content:center;color:var(--text-dim);height:14px}
+.viz-arrow svg{width:14px;height:14px}
+
+/* ===== QUIZ SLIDE ===== */
+.quiz{display:grid;grid-template-rows:auto 1fr;height:100vh;padding:1.5rem 2.5rem 1.5rem;gap:1.25rem}
+.quiz-topbar{display:flex;align-items:center;justify-content:space-between;gap:2rem;padding:.85rem 1.25rem;background:var(--surface);border:1px solid var(--border);border-radius:16px;backdrop-filter:blur(12px)}
+.topbar-left{display:flex;align-items:center;gap:1.25rem}
+.topbar-brand{display:flex;align-items:center;gap:.6rem;font-family:'Fraunces',serif;font-weight:600;font-size:1rem;letter-spacing:-.01em}
+.brand-dot{width:8px;height:8px;background:var(--primary);border-radius:50%;box-shadow:0 0 10px var(--primary-glow)}
+.topbar-divider{width:1px;height:24px;background:var(--border)}
+.topbar-name{font-size:.85rem;color:var(--text-muted)}
+.topbar-name span{color:var(--text);font-weight:500}
+.progress-dots{display:flex;gap:.4rem}
+.progress-dot{width:26px;height:6px;background:rgba(255,255,255,0.1);border-radius:3px;cursor:pointer;transition:all .25s ease;position:relative}
+.progress-dot:hover{background:rgba(255,255,255,0.2)}
+.progress-dot.current{background:var(--primary);width:42px;box-shadow:0 0 8px var(--primary-glow)}
+.progress-dot.correct{background:var(--success)}
+.progress-dot.wrong{background:var(--error)}
+.progress-dot.checked.current{box-shadow:0 0 8px currentColor}
+
+.quiz-main{display:grid;grid-template-columns:1.5fr 1fr;gap:1.5rem;min-height:0}
+.question-panel{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:1.75rem 2rem;backdrop-filter:blur(12px);overflow:hidden;min-height:0}
+.question-header{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:1.25rem;padding-bottom:1.25rem;border-bottom:1px solid var(--border)}
+.question-num{display:flex;align-items:baseline;gap:.5rem}
+.q-num-label{font-size:.7rem;text-transform:uppercase;letter-spacing:.2em;color:var(--text-dim)}
+.q-num-value{font-family:'Fraunces',serif;font-size:2.2rem;font-weight:600;color:var(--primary);line-height:1}
+.q-num-total{font-size:.95rem;color:var(--text-dim);font-family:'Fraunces',serif}
+.question-status{display:flex;align-items:center;gap:.4rem;padding:.4rem .8rem;background:var(--surface-2);border:1px solid var(--border);border-radius:999px;font-size:.75rem;color:var(--text-muted)}
+.status-dot{width:6px;height:6px;border-radius:50%;background:var(--text-dim)}
+.question-status.answered .status-dot{background:var(--success);box-shadow:0 0 6px var(--success-glow)}
+
+.question-text{font-family:'Fraunces',serif;font-size:1.3rem;line-height:1.5;color:var(--text);margin-bottom:1.5rem;font-weight:400}
+.question-text .math{font-style:italic}
+
+.options-list{display:flex;flex-direction:column;gap:.6rem;flex:1;min-height:0}
+.option{display:flex;align-items:center;gap:1rem;padding:.95rem 1.1rem;background:rgba(15,20,32,0.5);border:1px solid var(--border);border-radius:12px;cursor:pointer;transition:all .25s ease;position:relative}
+.option:hover{border-color:var(--border-strong);background:rgba(20,26,40,0.7)}
+.option.selected{border-color:var(--primary);background:rgba(255,120,73,0.08)}
+.option-letter{display:flex;align-items:center;justify-content:center;width:32px;height:32px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:8px;font-family:'Fraunces',serif;font-weight:600;font-size:.95rem;color:var(--text-muted);flex-shrink:0;transition:all .25s ease}
+.option.selected .option-letter{background:var(--primary);color:#1a0f08;border-color:var(--primary)}
+.option.correct{border-color:var(--success);background:rgba(110,231,183,0.08)}
+.option.correct .option-letter{background:var(--success);color:#062418;border-color:var(--success)}
+.option.wrong{border-color:var(--error);background:rgba(251,113,133,0.08)}
+.option.wrong .option-letter{background:var(--error);color:#2a0a10;border-color:var(--error)}
+.option.disabled{cursor:not-allowed;pointer-events:none}
+.option-text{font-size:1.02rem;color:var(--text);font-family:'Fraunces',serif;font-style:italic}
+.option-icon{margin-left:auto;width:20px;height:20px;color:var(--success);opacity:0;transition:opacity .25s ease}
+.option.correct .option-icon,.option.wrong .option-icon{opacity:1}
+.option.wrong .option-icon{color:var(--error)}
+
+.discussion{margin-top:1rem;padding:1.1rem 1.25rem;background:rgba(96,165,250,0.06);border:1px solid rgba(96,165,250,0.2);border-radius:12px;max-height:0;overflow:hidden;opacity:0;transition:all .4s ease}
+.discussion.show{max-height:400px;opacity:1;padding:1.1rem 1.25rem}
+.discussion-header{display:flex;align-items:center;gap:.5rem;margin-bottom:.6rem;font-size:.78rem;text-transform:uppercase;letter-spacing:.15em;color:var(--info);font-weight:600}
+.discussion-text{font-size:.95rem;line-height:1.6;color:var(--text-muted);font-family:'Fraunces',serif}
+.discussion-text .math{color:var(--text);font-style:italic}
+
+/* Side panel */
+.side-panel{display:flex;flex-direction:column;gap:1rem;min-height:0}
+.timer-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:1.5rem;backdrop-filter:blur(12px);display:flex;flex-direction:column;align-items:center;gap:1rem;position:relative;overflow:hidden}
+.timer-card::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(255,120,73,0.08) 0%,transparent 50%);pointer-events:none}
+.timer-header{font-size:.7rem;text-transform:uppercase;letter-spacing:.2em;color:var(--text-dim);font-weight:500;position:relative}
+.timer-ring{position:relative;width:180px;height:180px;display:flex;align-items:center;justify-content:center}
+.timer-svg{width:100%;height:100%;transform:rotate(-90deg)}
+.timer-track{fill:none;stroke:rgba(255,255,255,0.06);stroke-width:6}
+.timer-progress{fill:none;stroke:var(--primary);stroke-width:6;stroke-linecap:round;stroke-dasharray:552.92;stroke-dashoffset:0;transition:stroke-dashoffset .3s linear,stroke .3s ease;filter:drop-shadow(0 0 6px var(--primary-glow))}
+.timer-content{position:absolute;display:flex;flex-direction:column;align-items:center;gap:.1rem}
+.timer-time{font-family:'Fraunces',serif;font-size:2.5rem;font-weight:600;color:var(--text);line-height:1;font-variant-numeric:tabular-nums}
+.timer-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.18em;color:var(--text-dim)}
+.timer-card.warning .timer-progress{stroke:var(--secondary);filter:drop-shadow(0 0 6px rgba(255,200,87,0.4))}
+.timer-card.danger .timer-progress{stroke:var(--error);filter:drop-shadow(0 0 6px var(--error-glow))}
+.timer-card.danger .timer-time{color:var(--error);animation:pulseDanger 1s ease-in-out infinite}
+@keyframes pulseDanger{0%,100%{opacity:1}50%{opacity:.6}}
+
+.btn-add-time{position:relative;font-size:.85rem;padding:.6rem 1rem;background:var(--surface-2);border:1px dashed var(--border-strong);color:var(--text-muted)}
+.btn-add-time:not(:disabled):hover{border-color:var(--secondary);color:var(--secondary);background:rgba(255,200,87,0.06)}
+.btn-add-time:disabled{opacity:.4;cursor:not-allowed}
+.btn-add-time .plus15{font-family:'Fraunces',serif;font-weight:700;color:var(--secondary);font-style:italic}
+
+.actions{display:flex;flex-direction:column;gap:.6rem}
+.btn-check{padding:1rem 1.25rem;font-size:.95rem}
+.btn-discussion{padding:.85rem 1.25rem;font-size:.9rem}
+
+.navigator-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1rem 1.1rem;backdrop-filter:blur(12px);flex:1;min-height:0;display:flex;flex-direction:column;gap:.75rem}
+.navigator-header{display:flex;align-items:center;justify-content:space-between;font-size:.7rem;text-transform:uppercase;letter-spacing:.18em;color:var(--text-dim)}
+.navigator-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:.5rem}
+.nav-item{aspect-ratio:1;display:flex;align-items:center;justify-content:center;background:rgba(15,20,32,0.6);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-family:'Fraunces',serif;font-weight:500;font-size:.95rem;color:var(--text-muted);transition:all .2s ease;position:relative}
+.nav-item:hover{border-color:var(--primary);color:var(--text)}
+.nav-item.current{background:var(--primary);color:#1a0f08;border-color:var(--primary);font-weight:700}
+.nav-item.correct{border-color:var(--success);color:var(--success)}
+.nav-item.wrong{border-color:var(--error);color:var(--error)}
+.nav-item.checked::after{content:'';position:absolute;bottom:3px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:currentColor}
+
+.btn-finish{margin-top:auto;padding:.95rem;font-size:.95rem}
+
+/* ===== RESULTS SLIDE ===== */
+.results{min-height:100vh;padding:3rem 4rem;overflow-y:auto}
+.results-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem}
+.results-title{font-family:'Fraunces',serif;font-size:clamp(2rem,4vw,3rem);font-weight:600;letter-spacing:-.02em;line-height:1}
+.results-title em{font-style:italic;color:var(--primary);font-weight:300}
+.results-subtitle{color:var(--text-muted);font-size:1rem;margin-top:.4rem}
+.results-subtitle span{color:var(--text);font-weight:500}
+
+.results-hero{display:grid;grid-template-columns:auto 1fr;gap:3rem;align-items:center;padding:2rem;background:var(--surface);border:1px solid var(--border);border-radius:24px;backdrop-filter:blur(12px);margin-bottom:1.5rem}
+.score-gauge{position:relative;width:200px;height:200px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.gauge-svg{width:100%;height:100%;transform:rotate(-90deg)}
+.gauge-track{fill:none;stroke:rgba(255,255,255,0.06);stroke-width:10}
+.gauge-progress{fill:none;stroke:url(#gaugeGrad);stroke-width:10;stroke-linecap:round;stroke-dasharray:502.65;stroke-dashoffset:502.65;transition:stroke-dashoffset 1.5s cubic-bezier(.4,0,.2,1)}
+.gauge-content{position:absolute;display:flex;flex-direction:column;align-items:center;gap:0}
+.gauge-score{font-family:'Fraunces',serif;font-size:3.8rem;font-weight:700;color:var(--text);line-height:1}
+.gauge-total{font-size:1.1rem;color:var(--text-dim);font-family:'Fraunces',serif}
+.gauge-label{font-size:.7rem;text-transform:uppercase;letter-spacing:.2em;color:var(--text-dim);margin-top:.4rem}
+
+.hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+.stat-card{padding:1.5rem;background:rgba(15,20,32,0.6);border:1px solid var(--border);border-radius:16px;display:flex;flex-direction:column;gap:.5rem}
+.stat-icon{width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:10px;margin-bottom:.5rem}
+.stat-icon.correct{background:rgba(110,231,183,0.12);color:var(--success)}
+.stat-icon.wrong{background:rgba(251,113,133,0.12);color:var(--error)}
+.stat-icon.time{background:rgba(96,165,250,0.12);color:var(--info)}
+.stat-value{font-family:'Fraunces',serif;font-size:2.2rem;font-weight:600;color:var(--text);line-height:1}
+.stat-label{font-size:.75rem;text-transform:uppercase;letter-spacing:.15em;color:var(--text-dim)}
+.stat-detail{font-size:.8rem;color:var(--text-muted);margin-top:.25rem}
+
+.results-table{background:var(--surface);border:1px solid var(--border);border-radius:20px;backdrop-filter:blur(12px);overflow:hidden;margin-bottom:1.5rem}
+.table-header{display:grid;grid-template-columns:60px 1fr 1fr 1fr 100px 100px;padding:1rem 1.5rem;background:rgba(15,20,32,0.6);border-bottom:1px solid var(--border);font-size:.7rem;text-transform:uppercase;letter-spacing:.18em;color:var(--text-dim);font-weight:600}
+.table-row{display:grid;grid-template-columns:60px 1fr 1fr 1fr 100px 100px;padding:1rem 1.5rem;border-bottom:1px solid var(--border);align-items:center;font-size:.9rem;transition:background .2s ease}
+.table-row:last-child{border-bottom:none}
+.table-row:hover{background:rgba(255,255,255,0.02)}
+.row-num{font-family:'Fraunces',serif;font-weight:600;color:var(--primary)}
+.row-answer{font-family:'Fraunces',serif;font-style:italic;color:var(--text)}
+.row-status{display:inline-flex;align-items:center;gap:.4rem;padding:.3rem .7rem;border-radius:999px;font-size:.75rem;font-weight:600;width:fit-content}
+.row-status.correct{background:rgba(110,231,183,0.12);color:var(--success)}
+.row-status.wrong{background:rgba(251,113,133,0.12);color:var(--error)}
+.row-status.unanswered{background:rgba(255,255,255,0.05);color:var(--text-dim)}
+.row-time{font-family:'JetBrains Mono',monospace;color:var(--text-muted);font-size:.85rem}
+.row-time.no-data{color:var(--text-dim);font-style:italic;font-family:'Fraunces',serif}
+
+.results-footer{display:flex;justify-content:space-between;align-items:center;gap:1rem}
+
+/* ===== FINAL SLIDE ===== */
+.final{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3rem 4rem;text-align:center;gap:2rem}
+.final-eyebrow{font-size:.8rem;text-transform:uppercase;letter-spacing:.3em;color:var(--primary);font-weight:500}
+.final-title{font-family:'Fraunces',serif;font-size:clamp(3rem,7vw,6rem);font-weight:700;line-height:.95;letter-spacing:-.03em;max-width:900px}
+.final-title em{font-style:italic;font-weight:300;background:linear-gradient(135deg,var(--primary),var(--secondary));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.final-name{font-family:'Fraunces',serif;font-style:italic;font-size:1.5rem;color:var(--text-muted);margin-top:-1rem}
+.final-name span{color:var(--primary);font-weight:500}
+
+.final-content{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;max-width:1000px;width:100%;margin-top:1rem}
+.final-card{padding:1.75rem;background:var(--surface);border:1px solid var(--border);border-radius:18px;backdrop-filter:blur(12px);text-align:left;display:flex;flex-direction:column;gap:.85rem}
+.final-card-header{display:flex;align-items:center;gap:.6rem;font-size:.75rem;text-transform:uppercase;letter-spacing:.18em;color:var(--primary);font-weight:600}
+.final-card-title{font-family:'Fraunces',serif;font-size:1.3rem;font-weight:600;color:var(--text);line-height:1.2}
+.final-card-text{font-size:.95rem;line-height:1.65;color:var(--text-muted)}
+.final-card-text .math{color:var(--text);font-style:italic}
+.reflection-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:.6rem}
+.reflection-list li{padding-left:1.5rem;position:relative;font-size:.92rem;line-height:1.55;color:var(--text-muted)}
+.reflection-list li::before{content:'';position:absolute;left:0;top:.55em;width:8px;height:1.5px;background:var(--primary)}
+
+.final-footer{display:flex;flex-direction:column;align-items:center;gap:1rem;margin-top:1rem}
+.sign-off{font-family:'Fraunces',serif;font-style:italic;font-size:1.1rem;color:var(--text-muted)}
+.sign-off span{color:var(--text)}
+
+/* Toast */
+.toast-container{position:fixed;top:1.5rem;right:1.5rem;z-index:1000;display:flex;flex-direction:column;gap:.6rem;pointer-events:none}
+.toast{padding:.85rem 1.2rem;background:var(--surface);border:1px solid var(--border-strong);border-radius:12px;backdrop-filter:blur(20px);font-size:.9rem;color:var(--text);box-shadow:0 12px 32px rgba(0,0,0,0.4);display:flex;align-items:center;gap:.6rem;animation:toastIn .3s ease;max-width:340px;pointer-events:auto}
+.toast.success{border-color:rgba(110,231,183,0.4)}
+.toast.error{border-color:rgba(251,113,133,0.4)}
+.toast.info{border-color:rgba(96,165,250,0.4)}
+.toast.removing{animation:toastOut .3s ease forwards}
+@keyframes toastIn{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
+@keyframes toastOut{from{opacity:1;transform:translateX(0)}to{opacity:0;transform:translateX(40px)}}
+
+/* Animations */
+@keyframes fadeInUp{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeInUp .5s ease both}
+.fade-in-delay-1{animation-delay:.1s}
+.fade-in-delay-2{animation-delay:.2s}
+.fade-in-delay-3{animation-delay:.3s}
+.fade-in-delay-4{animation-delay:.4s}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.08);border-radius:5px}
+::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,0.15)}
+
+/* Responsive */
+@media (max-width:1100px){
+  .cover{grid-template-columns:1fr;padding:2.5rem 2rem;gap:2rem}
+  .cover-right{display:none}
+  .quiz{padding:1rem 1.5rem}
+  .quiz-main{grid-template-columns:1fr;overflow-y:auto}
+  .side-panel{flex-direction:row;flex-wrap:wrap}
+  .timer-card{flex:1;min-width:240px}
+  .navigator-card{flex:1;min-width:240px}
+  .results{padding:2rem 1.5rem}
+  .results-hero{grid-template-columns:1fr;text-align:center}
+  .hero-stats{grid-template-columns:1fr 1fr 1fr}
+  .final-content{grid-template-columns:1fr}
+  .table-header,.table-row{grid-template-columns:50px 1fr 80px 80px;font-size:.8rem}
+  .table-header .col-answer,.table-row .col-answer{display:none}
+}
+@media (max-width:640px){
+  .cover{padding:2rem 1.25rem}
+  .cover-meta{gap:1rem}
+  .meta-value{font-size:1.4rem}
+  .quiz{padding:.75rem 1rem}
+  .question-panel{padding:1.25rem}
+  .question-text{font-size:1.1rem}
+  .progress-dots{display:none}
+  .results{padding:1.5rem 1rem}
+  .hero-stats{grid-template-columns:1fr}
+  .final{padding:2rem 1.25rem}
+  .table-header,.table-row{grid-template-columns:40px 1fr 70px}
+  .col-time,.col-correct{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- Background -->
+<div class="bg-layer">
+  <div class="bg-base"></div>
+  <div class="bg-grid"></div>
+  <div class="floating-math" id="floatingMath"></div>
+</div>
+
+<main class="app">
+
+  <!-- ========== COVER ========== -->
+  <section class="slide active" data-slide="cover">
+    <div class="cover">
+      <div class="cover-left">
+        <div class="badge fade-in">
+          <span class="badge-dot"></span>
+          Matematika Wajib · Kelas XI SMA
+        </div>
+        <h1 class="cover-title fade-in fade-in-delay-1">
+          <span class="title-eyebrow">Latihan Soal Interaktif</span>
+          <span class="title-main">Komposisi<br><em>Fungsi</em></span>
+        </h1>
+        <p class="cover-desc fade-in fade-in-delay-2">
+          Menentukan rumus <span class="math">f(x)</span> atau <span class="math">g(x)</span> dari sebuah fungsi komposisi. Sepuluh soal pilihan ganda dengan pembahasan lengkap, timer per soal, dan analisis hasil.
+        </p>
+        <div class="cover-meta fade-in fade-in-delay-2">
+          <div class="meta-item">
+            <div class="meta-value">10</div>
+            <div class="meta-label">Soal</div>
+          </div>
+          <div class="meta-divider"></div>
+          <div class="meta-item">
+            <div class="meta-value">2:00</div>
+            <div class="meta-label">Per Soal</div>
+          </div>
+          <div class="meta-divider"></div>
+          <div class="meta-item">
+            <div class="meta-value">PG</div>
+            <div class="meta-label">5 Pilihan</div>
+          </div>
+        </div>
+        <div class="name-form fade-in fade-in-delay-3">
+          <label for="nameInput" class="form-label">Nama Lengkap Peserta</label>
+          <div class="input-wrap">
+            <input type="text" id="nameInput" class="name-input" placeholder="Tulis namamu di sini..." autocomplete="off" maxlength="40">
+            <span class="input-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </span>
+          </div>
+          <button class="btn btn-primary" id="btnStart" disabled style="margin-top:.5rem;width:fit-content">
+            <span>Mulai Latihan</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="cover-right fade-in fade-in-delay-4">
+        <div class="composition-viz">
+          <div class="viz-header">
+            <span class="math">(f <span class="op">◦</span> g)(x) = f(g(x))</span>
+          </div>
+          <div class="viz-card input" data-idx="0">
+            <span class="viz-label">input</span>
+            <span class="viz-value math">x</span>
+          </div>
+          <div class="viz-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="5 12 12 19 19 12"/></svg></div>
+          <div class="viz-card" data-idx="1">
+            <span class="viz-label">fungsi g</span>
+            <span class="viz-value math">g(x) = x + 1</span>
+          </div>
+          <div class="viz-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="5 12 12 19 19 12"/></svg></div>
+          <div class="viz-card" data-idx="2">
+            <span class="viz-label">fungsi f</span>
+            <span class="viz-value math">f(x) = 2x + 3</span>
+          </div>
+          <div class="viz-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="5 12 12 19 19 12"/></svg></div>
+          <div class="viz-card output" data-idx="3">
+            <span class="viz-label">komposisi</span>
+            <span class="viz-value math">(f ◦ g)(x) = 2x + 5</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== QUIZ ========== -->
+  <section class="slide" data-slide="quiz">
+    <div class="quiz">
+      <div class="quiz-topbar">
+        <div class="topbar-left">
+          <div class="topbar-brand">
+            <span class="brand-dot"></span>
+            <span>Komposisi Fungsi</span>
+          </div>
+          <div class="topbar-divider"></div>
+          <div class="topbar-name">Peserta: <span id="topbarName">—</span></div>
+        </div>
+        <div class="progress-dots" id="progressDots"></div>
+        <button class="btn btn-ghost" id="btnExit" style="padding:.5rem .9rem;font-size:.8rem">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Keluar
+        </button>
+      </div>
+
+      <div class="quiz-main">
+        <div class="question-panel">
+          <div class="question-header">
+            <div class="question-num">
+              <div>
+                <div class="q-num-label">Soal</div>
+                <div class="q-num-value"><span id="qNum">01</span><span class="q-num-total"> / 10</span></div>
+              </div>
+            </div>
+            <div class="question-status" id="qStatus">
+              <span class="status-dot"></span>
+              <span id="qStatusText">Belum dijawab</span>
+            </div>
+          </div>
+          <div class="question-text" id="questionText"></div>
+          <div class="options-list" id="optionsList"></div>
+          <div class="discussion" id="discussion">
+            <div class="discussion-header">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+              <span>Pembahasan</span>
+            </div>
+            <div class="discussion-text" id="discussionText"></div>
+          </div>
+        </div>
+
+        <div class="side-panel">
+          <div class="timer-card" id="timerCard">
+            <div class="timer-header">Waktu tersisa</div>
+            <div class="timer-ring">
+              <svg class="timer-svg" viewBox="0 0 200 200">
+                <circle class="timer-track" cx="100" cy="100" r="88"/>
+                <circle class="timer-progress" id="timerProgress" cx="100" cy="100" r="88"/>
+              </svg>
+              <div class="timer-content">
+                <div class="timer-time" id="timerTime">2:00</div>
+                <div class="timer-label">menit : detik</div>
+              </div>
+            </div>
+            <button class="btn btn-add-time" id="btnAddTime">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <span>Tambah <span class="plus15">+15s</span></span>
+            </button>
+          </div>
+
+          <div class="actions">
+            <button class="btn btn-primary btn-check" id="btnCheck" disabled>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Cek Jawaban</span>
+            </button>
+            <button class="btn btn-ghost btn-discussion" id="btnDiscussion">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+              <span id="btnDiscussionText">Tampilkan Pembahasan</span>
+            </button>
+          </div>
+
+          <div class="navigator-card">
+            <div class="navigator-header">
+              <span>Navigasi Soal</span>
+              <span id="navCounter">0 / 10 dijawab</span>
+            </div>
+            <div class="navigator-grid" id="navigatorGrid"></div>
+            <button class="btn btn-success btn-finish" id="btnFinish">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              <span>Selesai</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== RESULTS ========== -->
+  <section class="slide" data-slide="results">
+    <div class="results">
+      <div class="results-header">
+        <div>
+          <h2 class="results-title">Hasil <em>Latihan</em></h2>
+          <p class="results-subtitle">Peserta: <span id="resultsName">—</span></p>
+        </div>
+        <button class="btn btn-ghost" id="btnBackToQuiz" style="padding:.6rem 1rem;font-size:.85rem">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          Kembali ke Soal
+        </button>
+      </div>
+
+      <div class="results-hero">
+        <div class="score-gauge">
+          <svg class="gauge-svg" viewBox="0 0 180 180">
+            <defs>
+              <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#ff7849"/>
+                <stop offset="100%" stop-color="#ffc857"/>
+              </linearGradient>
+            </defs>
+            <circle class="gauge-track" cx="90" cy="90" r="80"/>
+            <circle class="gauge-progress" id="gaugeProgress" cx="90" cy="90" r="80"/>
+          </svg>
+          <div class="gauge-content">
+            <div style="display:flex;align-items:baseline;gap:.2rem">
+              <span class="gauge-score" id="gaugeScore">0</span>
+              <span class="gauge-total">/10</span>
+            </div>
+            <div class="gauge-label">Skor Akhir</div>
+          </div>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-card">
+            <div class="stat-icon correct">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="stat-value" id="statCorrect">0</div>
+            <div class="stat-label">Jawaban Benar</div>
+            <div class="stat-detail" id="statCorrectPct">0% dari total soal</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon wrong">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </div>
+            <div class="stat-value" id="statWrong">0</div>
+            <div class="stat-label">Jawaban Salah</div>
+            <div class="stat-detail" id="statWrongPct">0% dari total soal</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon time">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div class="stat-value" id="statAvgTime">0:00</div>
+            <div class="stat-label">Rata-rata Waktu</div>
+            <div class="stat-detail">per soal yang dijawab</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="results-table">
+        <div class="table-header">
+          <div>No</div>
+          <div>Jawaban Kamu</div>
+          <div class="col-answer">Kunci</div>
+          <div>Status</div>
+          <div class="col-correct">Waktu</div>
+          <div class="col-time">Keterangan</div>
+        </div>
+        <div id="tableBody"></div>
+      </div>
+
+      <div class="results-footer">
+        <button class="btn btn-ghost" id="btnRestart">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+          Ulangi Latihan
+        </button>
+        <button class="btn btn-primary" id="btnToFinal">
+          <span>Lihat Kesimpulan & Refleksi</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FINAL ========== -->
+  <section class="slide" data-slide="final">
+    <div class="final-eyebrow">Sesi Latihan Selesai</div>
+    <h2 class="final-title">Thank You<br>for <em>Today</em></h2>
+    <p class="final-name">Selamat beristirahat, <span id="finalName">peserta</span> —</p>
+
+    <div class="final-content">
+      <div class="final-card">
+        <div class="final-card-header">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+          <span>Kesimpulan Materi</span>
+        </div>
+        <div class="final-card-title">Inti Komposisi Fungsi</div>
+        <div class="final-card-text">
+          Komposisi fungsi <span class="math">(f ◦ g)(x) = f(g(x))</span> berarti kita menerapkan <span class="math">g</span> terlebih dahulu pada <span class="math">x</span>, lalu hasilnya dimasukkan ke <span class="math">f</span>. Untuk mencari salah satu fungsi pembentuk, gunakan substitusi variabel (misal <span class="math">u = g(x)</span>) lalu selesaikan persamaan secara aljabar. Pada fungsi pecahan, perkalian silang sangat membantu menyederhanakan hubungan <span class="math">f</span> dan <span class="math">g</span>.
+        </div>
+      </div>
+      <div class="final-card">
+        <div class="final-card-header">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11H5a2 2 0 0 0-2 2v7h18v-7a2 2 0 0 0-2-2h-4"/><path d="M15 11V5a3 3 0 0 0-6 0v6"/></svg>
+          <span>Refleksi Diri</span>
+        </div>
+        <div class="final-card-title">Pertanyaan untuk Direnungkan</div>
+        <ul class="reflection-list">
+          <li>Soal tipe mana yang paling menantang bagimu — bentuk linear, kuadrat, pecahan, atau akar?</li>
+          <li>Apakah kamu lebih nyaman mencari <span class="math">f(x)</span> atau <span class="math">g(x)</span>? Mengapa?</li>
+          <li>Bagian mana yang membuatmu ragu — substitusi variabel atau menyederhanakan hasilnya?</li>
+          <li>Strategi apa yang akan kamu pakai untuk soal serupa di Ulangan Harian nanti?</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="final-footer">
+      <p class="sign-off">Tetap semangat belajar. <span>Sampai jumpa di sesi berikutnya.</span></p>
+      <button class="btn btn-primary" id="btnRestartFinal">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+        <span>Mulai Latihan Baru</span>
+      </button>
+    </div>
+  </section>
+
+</main>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+/* ========== DATA ========== */
+const frac = (n, d) => `<span class="frac"><span class="num">${n}</span><span class="den">${d}</span></span>`;
+const sqrt = (c) => `<span class="sqrt"><span class="sqrt-symbol">√</span><span class="sqrt-content">${c}</span></span>`;
+const sup2 = '<sup>2</sup>';
+
+const questions = [
+  {
+    n: 1,
+    q: `Diketahui fungsi komposisi <span class="math">(f ◦ g)(x) = 2x + 5</span> dan fungsi <span class="math">g(x) = x + 1</span>. Rumus fungsi <span class="math">f(x)</span> adalah ....`,
+    options: ['2x + 3','2x + 4','2x + 5','x + 3','x + 4'],
+    correct: 0,
+    explanation: `Diketahui <span class="math">(f ◦ g)(x) = 2x + 5</span> dan <span class="math">g(x) = x + 1</span>, sehingga <span class="math">f(x + 1) = 2x + 5</span>. Misalkan <span class="math">u = x + 1</span> maka <span class="math">x = u − 1</span>. Substitusi: <span class="math">f(u) = 2(u − 1) + 5 = 2u − 2 + 5 = 2u + 3</span>. Jadi, <span class="math">f(x) = 2x + 3</span>.`
+  },
+  {
+    n: 2,
+    q: `Diketahui <span class="math">(f ◦ g)(x) = 3x − 2</span> dan <span class="math">f(x) = 3x + 4</span>. Rumus fungsi <span class="math">g(x)</span> adalah ....`,
+    options: ['x − 1','x − 2','x + 2','3x − 6','3x − 2'],
+    correct: 1,
+    explanation: `Diketahui <span class="math">f(g(x)) = 3x − 2</span> dan <span class="math">f(x) = 3x + 4</span>. Substitusikan <span class="math">g(x)</span> ke <span class="math">f</span>: <span class="math">3·g(x) + 4 = 3x − 2</span>, sehingga <span class="math">3·g(x) = 3x − 6</span> dan <span class="math">g(x) = x − 2</span>.`
+  },
+  {
+    n: 3,
+    q: `Diketahui fungsi <span class="math">(g ◦ f)(x) = x${sup2} − 4x + 5</span> dan <span class="math">f(x) = x − 2</span>. Rumus fungsi <span class="math">g(x)</span> adalah ....`,
+    options: [`x${sup2} − 1`,`x${sup2} + 1`,`x${sup2} − 2x + 1`,`x${sup2} + 2x + 1`,`x${sup2} + 4`],
+    correct: 1,
+    explanation: `Diketahui <span class="math">g(f(x)) = x${sup2} − 4x + 5</span> dan <span class="math">f(x) = x − 2</span>, sehingga <span class="math">g(x − 2) = x${sup2} − 4x + 5</span>. Misalkan <span class="math">u = x − 2</span> maka <span class="math">x = u + 2</span>. Substitusi: <span class="math">g(u) = (u + 2)${sup2} − 4(u + 2) + 5 = u${sup2} + 4u + 4 − 4u − 8 + 5 = u${sup2} + 1</span>. Jadi, <span class="math">g(x) = x${sup2} + 1</span>.`
+  },
+  {
+    n: 4,
+    q: `Diketahui fungsi komposisi <span class="math">(f ◦ g)(x) = 4x${sup2} + 8x − 3</span> dan <span class="math">g(x) = 2x + 4</span>. Rumus untuk fungsi <span class="math">f(x)</span> adalah ....`,
+    options: [`x${sup2} − 4x − 3`,`x${sup2} + 4x − 3`,`x${sup2} − 4x + 3`,`2x${sup2} − 4x − 3`,`x${sup2} − 2x − 3`],
+    correct: 0,
+    explanation: `Diketahui <span class="math">f(2x + 4) = 4x${sup2} + 8x − 3</span>. Misalkan <span class="math">u = 2x + 4</span> maka <span class="math">x = (u − 4)/2</span>. Substitusi: <span class="math">f(u) = 4((u−4)/2)${sup2} + 8((u−4)/2) − 3 = (u − 4)${sup2} + 4(u − 4) − 3 = u${sup2} − 8u + 16 + 4u − 16 − 3 = u${sup2} − 4u − 3</span>. Jadi, <span class="math">f(x) = x${sup2} − 4x − 3</span>.`
+  },
+  {
+    n: 5,
+    q: `Diketahui <span class="math">(g ◦ f)(x) = ${frac('2x − 1','x + 3')}, x ≠ −3</span> dan <span class="math">g(x) = ${frac('x + 1','x − 1')}, x ≠ 1</span>. Rumus fungsi <span class="math">f(x)</span> adalah ....`,
+    options: [
+      `${frac('3x + 2','x − 4')}, x ≠ 4`,
+      `${frac('3x − 2','x + 4')}, x ≠ −4`,
+      `${frac('2x + 3','x − 4')}, x ≠ 4`,
+      `${frac('2x − 3','x + 4')}, x ≠ −4`,
+      `${frac('3x + 2','4 − x')}, x ≠ 4`
+    ],
+    correct: 0,
+    explanation: `Dari <span class="math">g(f(x)) = ${frac('2x − 1','x + 3')}</span> dan <span class="math">g(x) = ${frac('x + 1','x − 1')}</span>, diperoleh <span class="math">${frac('f(x) + 1','f(x) − 1')} = ${frac('2x − 1','x + 3')}</span>. Kali silang: <span class="math">(f(x) + 1)(x + 3) = (f(x) − 1)(2x − 1)</span>. Kumpulkan suku <span class="math">f(x)</span>: <span class="math">f(x)·(4 − x) = −3x − 2</span>, sehingga <span class="math">f(x) = ${frac('3x + 2','x − 4')}</span>.`
+  },
+  {
+    n: 6,
+    q: `Diketahui <span class="math">(f ◦ g)(x) = ${frac('x + 2','3x − 1')}, x ≠ ${frac('1','3')}</span> dan <span class="math">f(x) = ${frac('x − 1','x + 2')}, x ≠ −2</span>. Rumus fungsi <span class="math">g(x)</span> adalah ....`,
+    options: [
+      `${frac('5x + 3','2x − 3')}, x ≠ ${frac('3','2')}`,
+      `${frac('5x − 3','2x + 3')}, x ≠ −${frac('3','2')}`,
+      `${frac('3x + 5','2x − 3')}, x ≠ ${frac('3','2')}`,
+      `${frac('3x − 5','2x + 3')}, x ≠ −${frac('3','2')}`,
+      `${frac('5x + 3','3x − 2')}, x ≠ ${frac('2','3')}`
+    ],
+    correct: 0,
+    explanation: `Dari <span class="math">f(g(x)) = ${frac('x + 2','3x − 1')}</span> dan <span class="math">f(x) = ${frac('x − 1','x + 2')}</span>, diperoleh <span class="math">${frac('g(x) − 1','g(x) + 2')} = ${frac('x + 2','3x − 1')}</span>. Kali silang dan kumpulkan <span class="math">g(x)</span>: <span class="math">g(x)·(2x − 3) = 5x + 3</span>, sehingga <span class="math">g(x) = ${frac('5x + 3','2x − 3')}</span>.`
+  },
+  {
+    n: 7,
+    q: `Jika <span class="math">(g ◦ f)(x) = 6x + 5</span> dan fungsi <span class="math">f(x) = 2x − 1</span>, maka nilai dari fungsi <span class="math">g(x)</span> adalah ....`,
+    options: ['3x + 6','3x + 8','2x + 8','2x + 6','3x − 8'],
+    correct: 1,
+    explanation: `Diketahui <span class="math">g(2x − 1) = 6x + 5</span>. Misalkan <span class="math">u = 2x − 1</span> maka <span class="math">x = (u + 1)/2</span>. Substitusi: <span class="math">g(u) = 6·(u + 1)/2 + 5 = 3(u + 1) + 5 = 3u + 8</span>. Jadi, <span class="math">g(x) = 3x + 8</span>.`
+  },
+  {
+    n: 8,
+    q: `Jika diketahui fungsi komposisi <span class="math">(f ◦ g)(x) = x${sup2} − 6x + 10</span> dan <span class="math">f(x) = x + 1</span>, maka <span class="math">g(x) = ...</span>`,
+    options: [`x${sup2} − 6x + 9`,`x${sup2} − 6x + 11`,`x${sup2} + 6x + 9`,`x${sup2} − 3x + 9`,`x${sup2} − 6x − 9`],
+    correct: 0,
+    explanation: `Diketahui <span class="math">f(g(x)) = x${sup2} − 6x + 10</span> dan <span class="math">f(x) = x + 1</span>. Substitusi: <span class="math">g(x) + 1 = x${sup2} − 6x + 10</span>, sehingga <span class="math">g(x) = x${sup2} − 6x + 9</span>.`
+  },
+  {
+    n: 9,
+    q: `Diketahui fungsi komposisi <span class="math">(f ◦ g)(x) = ${sqrt('x' + sup2 + ' + 1')}</span> dan <span class="math">g(x) = x${sup2} + 2</span>. Fungsi <span class="math">f(x)</span> adalah ....`,
+    options: [sqrt('x + 1'),sqrt('x − 1'),sqrt('x' + sup2 + ' − 1'),sqrt('x − 2'),sqrt('x + 2')],
+    correct: 1,
+    explanation: `Diketahui <span class="math">f(x${sup2} + 2) = ${sqrt('x' + sup2 + ' + 1')}</span>. Misalkan <span class="math">u = x${sup2} + 2</span> maka <span class="math">x${sup2} = u − 2</span>. Substitusi: <span class="math">f(u) = ${sqrt('(u − 2) + 1')} = ${sqrt('u − 1')}</span>. Jadi, <span class="math">f(x) = ${sqrt('x − 1')}</span>.`
+  },
+  {
+    n: 10,
+    q: `Diketahui <span class="math">(g ◦ f)(x) = 2x${sup2} + 4x − 3</span> dan <span class="math">g(x) = 2x + 5</span>. Maka fungsi <span class="math">f(x)</span> adalah ....`,
+    options: [`x${sup2} + 2x − 4`,`x${sup2} + 4x − 4`,`x${sup2} + 2x + 4`,`2x${sup2} + 2x − 4`,`x${sup2} − 2x − 4`],
+    correct: 0,
+    explanation: `Diketahui <span class="math">g(f(x)) = 2·f(x) + 5 = 2x${sup2} + 4x − 3</span>. Maka <span class="math">2·f(x) = 2x${sup2} + 4x − 8</span>, sehingga <span class="math">f(x) = x${sup2} + 2x − 4</span>.`
+  }
+];
+
+/* ========== STATE ========== */
+const state = {
+  studentName: '',
+  current: 0,
+  userAnswers: Array(questions.length).fill(null),
+  checked: Array(questions.length).fill(false),
+  times: Array(questions.length).fill(null),
+  timerStart: null,
+  timeRemaining: 120,
+  extraTime: 0,
+  timerInterval: null,
+  isRunning: false,
+  discussionOpen: false
+};
+
+const TIMER_DURATION = 120;
+const CIRCUMFERENCE = 2 * Math.PI * 88;
+const GAUGE_CIRCUMFERENCE = 2 * Math.PI * 80;
+
+/* ========== ELEMENTS ========== */
+const $ = (id) => document.getElementById(id);
+const slides = document.querySelectorAll('.slide');
+
+/* ========== TOAST ========== */
+function toast(message, type = 'info', duration = 3000){
+  const container = $('toastContainer');
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  const icons = {
+    success: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+    error: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>',
+    info: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>'
+  };
+  t.innerHTML = `${icons[type] || icons.info}<span>${message}</span>`;
+  container.appendChild(t);
+  setTimeout(() => {
+    t.classList.add('removing');
+    setTimeout(() => t.remove(), 300);
+  }, duration);
+}
+
+/* ========== SLIDE NAVIGATION ========== */
+function goToSlide(name){
+  slides.forEach(s => s.classList.remove('active'));
+  document.querySelector(`[data-slide="${name}"]`).classList.add('active');
+}
+
+/* ========== COVER ========== */
+const nameInput = $('nameInput');
+const btnStart = $('btnStart');
+
+nameInput.addEventListener('input', () => {
+  const val = nameInput.value.trim();
+  btnStart.disabled = val.length < 2;
+});
+
+nameInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && !btnStart.disabled) btnStart.click();
+});
+
+btnStart.addEventListener('click', () => {
+  state.studentName = nameInput.value.trim();
+  $('topbarName').textContent = state.studentName;
+  $('resultsName').textContent = state.studentName;
+  $('finalName').textContent = state.studentName;
+  goToSlide('quiz');
+  initQuiz();
+});
+
+/* Composition viz cycling highlight */
+const vizCards = document.querySelectorAll('.viz-card');
+let vizIdx = 0;
+setInterval(() => {
+  vizCards.forEach(c => c.classList.remove('highlight'));
+  vizCards[vizIdx].classList.add('highlight');
+  vizIdx = (vizIdx + 1) % vizCards.length;
+}, 1400);
+
+/* Floating math equations */
+const eqs = ['(f ◦ g)(x)', 'f(x) = 2x + 3', 'g(x) = x − 2', 'x² + 1', '√(x − 1)', '3x + 8', '(fog)(x)', 'u = x + 1', 'x² − 4x − 3'];
+const floatingMath = $('floatingMath');
+eqs.forEach((eq, i) => {
+  const el = document.createElement('div');
+  el.className = 'float-eq';
+  el.textContent = eq;
+  el.style.left = `${Math.random() * 90 + 5}%`;
+  el.style.top = `${Math.random() * 90 + 5}%`;
+  el.style.fontSize = `${1.5 + Math.random() * 2}rem`;
+  el.style.animationDelay = `${Math.random() * 28}s`;
+  el.style.animationDuration = `${24 + Math.random() * 12}s`;
+  floatingMath.appendChild(el);
+});
+
+/* ========== QUIZ ========== */
+function initQuiz(){
+  state.current = 0;
+  state.userAnswers = Array(questions.length).fill(null);
+  state.checked = Array(questions.length).fill(false);
+  state.times = Array(questions.length).fill(null);
+  state.discussionOpen = false;
+  buildProgressDots();
+  buildNavigator();
+  loadQuestion(0);
+}
+
+function buildProgressDots(){
+  const wrap = $('progressDots');
+  wrap.innerHTML = '';
+  questions.forEach((_, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'progress-dot';
+    dot.title = `Soal ${i + 1}`;
+    dot.addEventListener('click', () => loadQuestion(i));
+    wrap.appendChild(dot);
+  });
+}
+
+function buildNavigator(){
+  const wrap = $('navigatorGrid');
+  wrap.innerHTML = '';
+  questions.forEach((_, i) => {
+    const item = document.createElement('div');
+    item.className = 'nav-item';
+    item.textContent = i + 1;
+    item.addEventListener('click', () => loadQuestion(i));
+    wrap.appendChild(item);
+  });
+}
+
+function updateProgressDots(){
+  const dots = $('progressDots').children;
+  for (let i = 0; i < dots.length; i++){
+    dots[i].classList.remove('current','correct','wrong','checked');
+    if (i === state.current) dots[i].classList.add('current');
+    if (state.checked[i]){
+      dots[i].classList.add('checked');
+      dots[i].classList.add(state.userAnswers[i] === questions[i].correct ? 'correct' : 'wrong');
+    }
+  }
+}
+
+function updateNavigator(){
+  const items = $('navigatorGrid').children;
+  for (let i = 0; i < items.length; i++){
+    items[i].classList.remove('current','correct','wrong','checked');
+    if (i === state.current) items[i].classList.add('current');
+    if (state.checked[i]){
+      items[i].classList.add('checked');
+      items[i].classList.add(state.userAnswers[i] === questions[i].correct ? 'correct' : 'wrong');
+    }
+  }
+  const answered = state.checked.filter(c => c).length;
+  $('navCounter').textContent = `${answered} / ${questions.length} dijawab`;
+}
+
+function loadQuestion(idx){
+  // If current question has a running timer and hasn't been checked, record elapsed as "in progress" (not saved as final time)
+  // Spec: timer resets when opening new question
+  if (state.isRunning) stopTimer();
+  
+  state.current = idx;
+  state.discussionOpen = false;
+  $('discussion').classList.remove('show');
+  $('btnDiscussionText').textContent = 'Tampilkan Pembahasan';
+  
+  const q = questions[idx];
+  $('qNum').textContent = String(idx + 1).padStart(2, '0');
+  $('questionText').innerHTML = q.q;
+  
+  // Build options
+  const list = $('optionsList');
+  list.innerHTML = '';
+  const letters = ['A','B','C','D','E'];
+  q.options.forEach((opt, i) => {
+    const el = document.createElement('div');
+    el.className = 'option';
+    if (state.checked[idx] && state.userAnswers[idx] === i) el.classList.add('selected');
+    if (state.checked[idx] && i === q.correct) el.classList.add('correct');
+    if (state.checked[idx] && state.userAnswers[idx] === i && i !== q.correct) el.classList.add('wrong');
+    if (state.checked[idx]) el.classList.add('disabled');
+    
+    const iconSvg = (i === q.correct)
+      ? '<svg class="option-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>'
+      : '<svg class="option-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+    
+    el.innerHTML = `
+      <div class="option-letter">${letters[i]}</div>
+      <div class="option-text">${opt}</div>
+      ${iconSvg}
+    `;
+    el.addEventListener('click', () => selectOption(i));
+    list.appendChild(el);
+  });
+  
+  // Status
+  const statusEl = $('qStatus');
+  const statusText = $('qStatusText');
+  if (state.checked[idx]){
+    statusEl.classList.add('answered');
+    statusText.textContent = state.userAnswers[idx] === q.correct ? 'Jawaban benar' : 'Jawaban salah';
+  } else {
+    statusEl.classList.remove('answered');
+    statusText.textContent = 'Belum dijawab';
+  }
+  
+  // Check button
+  $('btnCheck').disabled = state.checked[idx];
+  if (state.checked[idx]){
+    $('btnCheck').innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span>Sudah Dijawab</span>';
+  } else {
+    $('btnCheck').innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span>Cek Jawaban</span>';
+    $('btnCheck').disabled = state.userAnswers[idx] === null;
+  }
+  
+  // Discussion
+  $('discussionText').innerHTML = q.explanation;
+  
+  updateProgressDots();
+  updateNavigator();
+  
+  // Timer: start fresh if not yet checked; if already checked, show recorded time as static
+  if (state.checked[idx]){
+    // Show recorded time statically (no running)
+    state.timeRemaining = 0;
+    state.extraTime = 0;
+    updateTimerDisplay(0);
+    $('btnAddTime').disabled = true;
+    $('timerCard').classList.remove('warning','danger');
+    // Show recorded time
+    const t = state.times[idx] || 0;
+    $('timerTime').textContent = formatTime(t);
+    $('timerProgress').style.strokeDashoffset = CIRCUMFERENCE;
+  } else {
+    $('btnAddTime').disabled = false;
+    startTimer();
+  }
+}
+
+function selectOption(i){
+  if (state.checked[state.current]) return;
+  state.userAnswers[state.current] = i;
+  // Update UI
+  const opts = $('optionsList').children;
+  for (let j = 0; j < opts.length; j++){
+    opts[j].classList.toggle('selected', j === i);
+  }
+  $('btnCheck').disabled = false;
+}
+
+/* ========== TIMER ========== */
+function startTimer(){
+  stopTimer();
+  state.timeRemaining = TIMER_DURATION;
+  state.extraTime = 0;
+  state.timerStart = Date.now();
+  state.isRunning = true;
+  $('btnAddTime').disabled = false;
+  updateTimerDisplay(state.timeRemaining);
+  state.timerInterval = setInterval(tickTimer, 200);
+}
+
+function tickTimer(){
+  if (!state.isRunning) return;
+  const elapsed = (Date.now() - state.timerStart) / 1000;
+  const remaining = Math.max(0, TIMER_DURATION + state.extraTime - elapsed);
+  state.timeRemaining = remaining;
+  updateTimerDisplay(remaining);
+  if (remaining <= 0){
+    stopTimer();
+    toast('Waktu habis! Silakan cek jawaban atau pindah ke soal lain.', 'error', 4000);
+  }
+}
+
+function stopTimer(){
+  if (state.timerInterval){
+    clearInterval(state.timerInterval);
+    state.timerInterval = null;
+  }
+  state.isRunning = false;
+}
+
+function updateTimerDisplay(remaining){
+  $('timerTime').textContent = formatTime(Math.ceil(remaining));
+  const total = TIMER_DURATION + state.extraTime;
+  const progress = total > 0 ? remaining / total : 0;
+  $('timerProgress').style.strokeDashoffset = CIRCUMFERENCE * (1 - progress);
+  
+  const card = $('timerCard');
+  card.classList.remove('warning','danger');
+  if (remaining <= 30 && remaining > 0) card.classList.add('danger');
+  else if (remaining <= 60 && remaining > 0) card.classList.add('warning');
+}
+
+function formatTime(seconds){
+  seconds = Math.max(0, Math.floor(seconds));
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return `${m}:${s.toString().padStart(2,'0')}`;
+}
+
+ $('btnAddTime').addEventListener('click', () => {
+  if (!state.isRunning) return;
+  state.extraTime += 15;
+  toast('+15 detik ditambahkan. Tetap fokus!', 'info', 2000);
+  // Re-tick to update display
+  tickTimer();
+});
+
+/* ========== CHECK ANSWER ========== */
+ $('btnCheck').addEventListener('click', () => {
+  const idx = state.current;
+  if (state.checked[idx]) return;
+  if (state.userAnswers[idx] === null){
+    toast('Pilih salah satu jawaban dulu.', 'error', 2500);
+    return;
+  }
+  
+  // Stop timer and record time spent
+  stopTimer();
+  const elapsed = (Date.now() - state.timerStart) / 1000;
+  const timeSpent = Math.min(elapsed, TIMER_DURATION + state.extraTime);
+  state.times[idx] = Math.round(timeSpent);
+  state.checked[idx] = true;
+  
+  // Show result
+  const q = questions[idx];
+  const isCorrect = state.userAnswers[idx] === q.correct;
+  
+  // Update option display
+  const opts = $('optionsList').children;
+  for (let i = 0; i < opts.length; i++){
+    opts[i].classList.add('disabled');
+    opts[i].classList.remove('selected');
+    if (i === q.correct) opts[i].classList.add('correct');
+    if (i === state.userAnswers[idx] && i !== q.correct) opts[i].classList.add('wrong');
+  }
+  
+  // Status
+  $('qStatus').classList.add('answered');
+  $('qStatusText').textContent = isCorrect ? 'Jawaban benar' : 'Jawaban salah';
+  
+  // Auto-show discussion
+  $('discussion').classList.add('show');
+  state.discussionOpen = true;
+  $('btnDiscussionText').textContent = 'Sembunyikan Pembahasan';
+  
+  // Update buttons
+  $('btnCheck').disabled = true;
+  $('btnCheck').innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span>Sudah Dijawab</span>';
+  $('btnAddTime').disabled = true;
+  
+  // Update nav
+  updateProgressDots();
+  updateNavigator();
+  
+  toast(isCorrect ? `Benar! Waktu: ${formatTime(state.times[idx])}` : `Belum tepat. Pelajari pembahasannya.`, isCorrect ? 'success' : 'error', 3000);
+});
+
+/* ========== DISCUSSION TOGGLE ========== */
+ $('btnDiscussion').addEventListener('click', () => {
+  state.discussionOpen = !state.discussionOpen;
+  $('discussion').classList.toggle('show', state.discussionOpen);
+  $('btnDiscussionText').textContent = state.discussionOpen ? 'Sembunyikan Pembahasan' : 'Tampilkan Pembahasan';
+});
+
+/* ========== FINISH ========== */
+ $('btnFinish').addEventListener('click', () => {
+  const unanswered = state.checked.filter(c => !c).length;
+  if (unanswered > 0){
+    if (!confirm(`Masih ada ${unanswered} soal yang belum diperiksa. Yakin ingin selesai?`)) return;
+    // Stop timer if running
+    stopTimer();
+  } else {
+    stopTimer();
+  }
+  showResults();
+});
+
+ $('btnExit').addEventListener('click', () => {
+  stopTimer();
+  goToSlide('cover');
+});
+
+/* ========== RESULTS ========== */
+function showResults(){
+  goToSlide('results');
+  
+  const correctCount = state.checked.filter((c, i) => c && state.userAnswers[i] === questions[i].correct).length;
+  const wrongCount = state.checked.filter((c, i) => c && state.userAnswers[i] !== questions[i].correct).length;
+  const unansweredCount = state.checked.filter(c => !c).length;
+  const answeredTimes = state.times.filter(t => t !== null);
+  const avgTime = answeredTimes.length > 0 ? answeredTimes.reduce((a,b) => a+b, 0) / answeredTimes.length : 0;
+  
+  // Animate score
+  animateNumber($('gaugeScore'), 0, correctCount, 1200);
+  $('statCorrect').textContent = correctCount;
+  $('statWrong').textContent = wrongCount + unansweredCount;
+  $('statAvgTime').textContent = formatTime(avgTime);
+  
+  const total = questions.length;
+  $('statCorrectPct').textContent = `${Math.round(correctCount/total*100)}% dari total soal`;
+  $('statWrongPct').textContent = `${Math.round((wrongCount+unansweredCount)/total*100)}% dari total soal`;
+  
+  // Gauge
+  const gaugeProgress = $('gaugeProgress');
+  const ratio = correctCount / total;
+  setTimeout(() => {
+    gaugeProgress.style.strokeDashoffset = GAUGE_CIRCUMFERENCE * (1 - ratio);
+  }, 100);
+  
+  // Table
+  const tableBody = $('tableBody');
+  tableBody.innerHTML = '';
+  questions.forEach((q, i) => {
+    const row = document.createElement('div');
+    row.className = 'table-row';
+    const letters = ['A','B','C','D','E'];
+    const isAnswered = state.checked[i];
+    const isCorrect = isAnswered && state.userAnswers[i] === q.correct;
+    const userAnsText = isAnswered ? `${letters[state.userAnswers[i]]}. ${q.options[state.userAnswers[i]]}` : '—';
+    const correctAnsText = `${letters[q.correct]}. ${q.options[q.correct]}`;
+    const statusClass = isCorrect ? 'correct' : (isAnswered ? 'wrong' : 'unanswered');
+    const statusText = isCorrect ? 'Benar' : (isAnswered ? 'Salah' : 'Tidak Dijawab');
+    const timeText = state.times[i] !== null ? formatTime(state.times[i]) : '—';
+    const note = isCorrect ? 'Sesuai kunci' : (isAnswered ? 'Tinjau pembahasan' : 'Waktu habis/lewat');
+    
+    row.innerHTML = `
+      <div class="row-num">${String(i+1).padStart(2,'0')}</div>
+      <div class="row-answer">${userAnsText}</div>
+      <div class="row-answer col-answer">${correctAnsText}</div>
+      <div><span class="row-status ${statusClass}">${statusText}</span></div>
+      <div class="row-time col-correct ${state.times[i] === null ? 'no-data' : ''}">${timeText}</div>
+      <div class="row-time col-time">${note}</div>
+    `;
+    tableBody.appendChild(row);
+  });
+}
+
+function animateNumber(el, from, to, duration){
+  const start = performance.now();
+  function step(now){
+    const t = Math.min(1, (now - start) / duration);
+    const eased = 1 - Math.pow(1 - t, 3);
+    el.textContent = Math.round(from + (to - from) * eased);
+    if (t < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+ $('btnBackToQuiz').addEventListener('click', () => {
+  goToSlide('quiz');
+  loadQuestion(state.current);
+});
+
+ $('btnRestart').addEventListener('click', () => {
+  if (!confirm('Mulai latihan baru? Progress saat ini akan hilang.')) return;
+  goToSlide('cover');
+  nameInput.value = '';
+  btnStart.disabled = true;
+});
+
+ $('btnToFinal').addEventListener('click', () => goToSlide('final'));
+ $('btnRestartFinal').addEventListener('click', () => {
+  goToSlide('cover');
+  nameInput.value = '';
+  btnStart.disabled = true;
+});
+
+/* ========== KEYBOARD SHORTCUTS ========== */
+document.addEventListener('keydown', (e) => {
+  if (!document.querySelector('[data-slide="quiz"]').classList.contains('active')) return;
+  if (document.activeElement.tagName === 'INPUT') return;
+  
+  // 1-5 for options
+  if (e.key >= '1' && e.key <= '5'){
+    const idx = parseInt(e.key) - 1;
+    if (idx < questions[state.current].options.length && !state.checked[state.current]){
+      selectOption(idx);
+    }
+  }
+  // Arrow keys for navigation
+  if (e.key === 'ArrowLeft' && state.current > 0) loadQuestion(state.current - 1);
+  if (e.key === 'ArrowRight' && state.current < questions.length - 1) loadQuestion(state.current + 1);
+  // Enter for check
+  if (e.key === 'Enter' && !state.checked[state.current] && state.userAnswers[state.current] !== null){
+    $('btnCheck').click();
+  }
+});
+
+// Initial focus
+setTimeout(() => nameInput.focus(), 600);
+</script>
+</body>
+</html>
