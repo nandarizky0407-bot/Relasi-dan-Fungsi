@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Invers Fungsi · Presentasi Interaktif</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,800;0,9..144,900;1,9..144,400;1,9..144,700;1,9..144,900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script>
+  MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']], processEscapes: true },
+    options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] },
+    svg: { fontCache: 'global' },
+    startup: { typeset: false }
+  };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0a0e1a;
+  --bg-2: #131825;
+  --card: #1a2030;
+  --card-2: #232a3d;
+  --border: rgba(251, 191, 36, 0.15);
+  --border-soft: rgba(245, 241, 232, 0.08);
+  --fg: #f5f1e8;
+  --fg-soft: #d4ceb8;
+  --muted: #8b92a8;
+  --accent: #fbbf24;
+  --accent-2: #f59e0b;
+  --accent-glow: rgba(251, 191, 36, 0.35);
+  --teal: #2dd4bf;
+  --teal-glow: rgba(45, 212, 191, 0.25);
+  --coral: #f87171;
+  --green: #4ade80;
+  --red: #f87171;
+}
+
+html, body { height: 100%; }
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+  overflow: hidden;
+  position: relative;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Background atmosphere */
+.bg-atmosphere { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+.bg-atmosphere::before {
+  content: ''; position: absolute; inset: 0;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(251, 191, 36, 0.10), transparent 45%),
+    radial-gradient(circle at 88% 82%, rgba(45, 212, 191, 0.07), transparent 45%),
+    radial-gradient(circle at 50% 100%, rgba(248, 113, 113, 0.05), transparent 50%);
+}
+.bg-atmosphere::after {
+  content: ''; position: absolute; inset: 0;
+  background-image: 
+    linear-gradient(rgba(251, 191, 36, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(251, 191, 36, 0.025) 1px, transparent 1px);
+  background-size: 80px 80px;
+  mask-image: radial-gradient(ellipse 80% 60% at center, black 30%, transparent 90%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at center, black 30%, transparent 90%);
+}
+
+/* Floating math symbols */
+.math-particles { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.math-particles span {
+  position: absolute; font-family: 'Fraunces', serif; font-style: italic;
+  color: rgba(251, 191, 36, 0.06); font-weight: 300; user-select: none;
+  animation: drift linear infinite;
+}
+@keyframes drift {
+  from { transform: translateY(110vh) translateX(0) rotate(0deg); }
+  to { transform: translateY(-20vh) translateX(40px) rotate(360deg); }
+}
+
+/* Deck */
+.deck { position: relative; z-index: 2; height: 100vh; width: 100vw; }
+
+.slide {
+  position: absolute; inset: 0; padding: 3.5rem 5rem 5.5rem;
+  display: flex; flex-direction: column;
+  opacity: 0; pointer-events: none; transform: translateX(30px);
+  transition: opacity 0.6s cubic-bezier(.4,.2,.2,1), transform 0.6s cubic-bezier(.4,.2,.2,1);
+  overflow-y: auto; overflow-x: hidden;
+}
+.slide.active { opacity: 1; pointer-events: auto; transform: translateX(0); }
+.slide::-webkit-scrollbar { width: 6px; }
+.slide::-webkit-scrollbar-track { background: transparent; }
+.slide::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* Navigation */
+.nav-bar { position: fixed; bottom: 1.75rem; right: 2rem; z-index: 100; display: flex; gap: 0.5rem; align-items: center; }
+.nav-btn {
+  width: 46px; height: 46px; border-radius: 50%;
+  background: rgba(26, 32, 48, 0.85); backdrop-filter: blur(10px);
+  border: 1px solid var(--border); color: var(--fg); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.3s ease; font-size: 1.1rem; font-family: 'JetBrains Mono', monospace;
+}
+.nav-btn:hover:not(:disabled) {
+  background: var(--accent); color: var(--bg); transform: translateY(-2px);
+  box-shadow: 0 10px 30px var(--accent-glow); border-color: var(--accent);
+}
+.nav-btn:disabled { opacity: 0.25; cursor: not-allowed; }
+
+.indicator {
+  position: fixed; bottom: 2rem; left: 2rem; z-index: 100;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--muted);
+  padding: 0.6rem 1.1rem; background: rgba(26, 32, 48, 0.85); backdrop-filter: blur(10px);
+  border: 1px solid var(--border); border-radius: 999px; letter-spacing: 0.05em;
+}
+.indicator .current { color: var(--accent); font-weight: 700; }
+
+.progress {
+  position: fixed; top: 0; left: 0; height: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--teal));
+  z-index: 100; transition: width 0.6s cubic-bezier(.4,.2,.2,1);
+  box-shadow: 0 0 12px var(--accent-glow);
+}
+
+/* Typography */
+.eyebrow {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.75rem;
+  letter-spacing: 0.25em; text-transform: uppercase; color: var(--accent);
+  margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.75rem;
+}
+.eyebrow::before { content: ''; width: 32px; height: 1px; background: var(--accent); }
+
+h1, h2, h3, h4 { font-family: 'Fraunces', serif; font-weight: 800; line-height: 1.05; letter-spacing: -0.02em; color: var(--fg); }
+h1 { font-size: clamp(3rem, 7vw, 5.5rem); }
+h2 { font-size: clamp(2rem, 4.5vw, 3.5rem); }
+h3 { font-size: clamp(1.4rem, 2.5vw, 1.9rem); }
+p { line-height: 1.6; color: var(--fg-soft); }
+.lead { font-size: 1.15rem; color: var(--fg-soft); max-width: 70ch; line-height: 1.65; }
+
+/* Cover */
+.cover { justify-content: center; }
+.cover-hero {
+  display: grid; grid-template-columns: 1.3fr 1fr; gap: 4rem;
+  align-items: center; max-width: 1400px; margin: 0 auto; width: 100%;
+}
+.cover-title { font-size: clamp(3.5rem, 8vw, 7rem); font-weight: 900; letter-spacing: -0.04em; line-height: 0.95; margin-bottom: 1.5rem; }
+.cover-title em { font-style: italic; font-weight: 400; color: var(--accent); display: block; }
+.cover-subtitle { font-size: 1.15rem; color: var(--fg-soft); max-width: 50ch; line-height: 1.7; margin-bottom: 2rem; }
+.cover-meta { display: flex; gap: 2rem; flex-wrap: wrap; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--muted); margin-top: 2rem; }
+.cover-meta span { display: flex; align-items: center; gap: 0.5rem; }
+.cover-meta span::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+
+.cover-visual { position: relative; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; }
+.formula-display {
+  font-family: 'Fraunces', serif; font-style: italic;
+  font-size: clamp(4rem, 12vw, 9rem); font-weight: 300; color: var(--accent);
+  text-shadow: 0 0 60px var(--accent-glow); position: relative; z-index: 2;
+}
+.formula-display .sup { font-size: 0.4em; vertical-align: super; font-weight: 400; }
+.cover-visual::before { content: ''; position: absolute; inset: 0; border: 1px solid var(--border); border-radius: 50%; animation: spin 30s linear infinite; }
+.cover-visual::after { content: ''; position: absolute; inset: 15%; border: 1px dashed rgba(251, 191, 36, 0.2); border-radius: 50%; animation: spin 25s linear infinite reverse; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* TOC */
+.toc-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; margin-top: 2rem; max-width: 1200px; }
+.toc-item {
+  display: flex; gap: 1.5rem; padding: 1.5rem;
+  background: var(--card); border: 1px solid var(--border-soft);
+  border-radius: 14px; transition: all 0.3s ease; cursor: pointer;
+}
+.toc-item:hover { border-color: var(--accent); transform: translateY(-2px); background: var(--card-2); }
+.toc-num { font-family: 'Fraunces', serif; font-style: italic; font-size: 2.5rem; font-weight: 300; color: var(--accent); line-height: 1; }
+.toc-text h3 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.05rem; font-weight: 600; margin-bottom: 0.35rem; }
+.toc-text p { font-size: 0.85rem; color: var(--muted); }
+
+/* Content slides */
+.slide-header { margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border-soft); }
+
+.concept-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; margin-top: 1.5rem; }
+.concept-card {
+  background: var(--card); border: 1px solid var(--border-soft);
+  border-radius: 16px; padding: 1.75rem; position: relative; overflow: hidden;
+  transition: all 0.3s ease;
+}
+.concept-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+.concept-card::before {
+  content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%;
+  background: var(--accent); transform: scaleY(0); transform-origin: top; transition: transform 0.4s ease;
+}
+.concept-card:hover::before { transform: scaleY(1); }
+.concept-card h3 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.05rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--accent); }
+.concept-card p { font-size: 0.92rem; line-height: 1.65; }
+.concept-card .formula {
+  margin-top: 1rem; padding: 0.75rem 1rem; background: var(--bg-2);
+  border-radius: 8px; text-align: center; font-size: 1.05rem;
+}
+
+/* Steps */
+.steps-list { display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem; }
+.step-row {
+  display: flex; gap: 1.25rem; align-items: flex-start; padding: 1.1rem 1.4rem;
+  background: var(--card); border: 1px solid var(--border-soft); border-radius: 12px;
+  transition: all 0.3s ease;
+}
+.step-row:hover { border-color: var(--accent); transform: translateX(4px); }
+.step-num {
+  font-family: 'Fraunces', serif; font-style: italic; font-size: 2rem; font-weight: 600;
+  color: var(--accent); line-height: 1; flex-shrink: 0; min-width: 2.5rem;
+}
+.step-body h4 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1rem; font-weight: 700; margin-bottom: 0.3rem; }
+.step-body p { font-size: 0.9rem; line-height: 1.55; }
+
+/* Properties */
+.props-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 1.5rem; }
+.prop-card {
+  background: var(--card); border: 1px solid var(--border-soft); border-radius: 12px;
+  padding: 1.25rem 1.4rem; display: flex; align-items: center; gap: 1rem;
+}
+.prop-card .formula { font-family: 'Fraunces', serif; font-style: italic; font-size: 1.3rem; color: var(--accent); flex: 1; }
+.prop-card .desc { font-size: 0.85rem; color: var(--muted); }
+
+/* Applications */
+.app-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 2rem; }
+.app-card {
+  background: var(--card); border: 1px solid var(--border-soft); border-radius: 16px;
+  padding: 1.75rem; position: relative; transition: all 0.4s cubic-bezier(.4,.2,.2,1);
+  overflow: hidden;
+}
+.app-card:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+.app-icon {
+  width: 48px; height: 48px; border-radius: 12px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem;
+  color: var(--bg); font-family: 'Fraunces', serif; font-style: italic; font-weight: 700; font-size: 1.5rem;
+}
+.app-card h3 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; }
+.app-card p { font-size: 0.9rem; color: var(--fg-soft); line-height: 1.6; }
+.app-card .formula {
+  margin-top: 1rem; padding: 0.75rem; background: var(--bg-2); border-radius: 8px;
+  font-family: 'Fraunces', serif; font-style: italic; color: var(--teal); text-align: center; font-size: 0.95rem;
+}
+
+/* Example problems */
+.example-card {
+  background: var(--card); border: 1px solid var(--border-soft);
+  border-radius: 16px; padding: 2rem; margin-top: 1.5rem;
+}
+.example-badge {
+  display: inline-block; padding: 0.4rem 0.9rem; background: var(--accent);
+  color: var(--bg); font-family: 'JetBrains Mono', monospace; font-size: 0.75rem;
+  font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; border-radius: 6px; margin-bottom: 1rem;
+}
+.example-question { font-family: 'Fraunces', serif; font-size: 1.3rem; font-weight: 600; margin-bottom: 1.5rem; color: var(--fg); }
+.solution-steps { display: flex; flex-direction: column; gap: 0.85rem; margin-top: 1rem; }
+.step {
+  display: flex; gap: 1rem; align-items: flex-start; padding: 0.85rem 1rem;
+  background: var(--bg-2); border-radius: 10px; border-left: 3px solid var(--accent);
+}
+.step-num {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; font-weight: 700;
+  color: var(--accent); background: rgba(251, 191, 36, 0.1);
+  padding: 0.2rem 0.5rem; border-radius: 4px; flex-shrink: 0; letter-spacing: 0.05em;
+}
+.step-content { font-size: 0.95rem; line-height: 1.6; color: var(--fg-soft); }
+.answer-box {
+  margin-top: 1.5rem; padding: 1.25rem 1.5rem;
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(45, 212, 191, 0.05));
+  border: 1px solid var(--accent); border-radius: 12px; display: flex; align-items: center; gap: 1rem;
+}
+.answer-label { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+.answer-value { font-family: 'Fraunces', serif; font-style: italic; font-size: 1.4rem; color: var(--fg); font-weight: 600; }
+
+/* Question slides */
+.question-slide { padding: 3.5rem 4rem 5.5rem; }
+.question-header { display: flex; align-items: center; gap: 1.25rem; margin-bottom: 1.5rem; }
+.question-num { font-family: 'Fraunces', serif; font-style: italic; font-size: 3.5rem; font-weight: 300; color: var(--accent); line-height: 1; }
+.question-meta { flex: 1; }
+.question-meta .label { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.25rem; }
+.question-meta .topic { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.95rem; font-weight: 600; color: var(--fg); }
+.question-text {
+  font-family: 'Fraunces', serif; font-size: 1.35rem; font-weight: 500; line-height: 1.5;
+  margin-bottom: 1.5rem; color: var(--fg); padding: 1.25rem 1.5rem;
+  background: var(--card); border-radius: 12px; border-left: 3px solid var(--accent);
+}
+.options-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; margin-bottom: 1.25rem; }
+.option {
+  display: flex; align-items: center; gap: 1rem; padding: 0.9rem 1.1rem;
+  background: var(--card); border: 1px solid var(--border-soft);
+  border-radius: 10px; cursor: pointer; transition: all 0.25s ease;
+  font-size: 0.95rem; user-select: none;
+}
+.option:hover { border-color: var(--accent); background: var(--card-2); transform: translateX(2px); }
+.option.selected { border-color: var(--accent); background: rgba(251, 191, 36, 0.08); box-shadow: 0 0 0 1px var(--accent); }
+.option.correct { border-color: var(--green); background: rgba(74, 222, 128, 0.1); box-shadow: 0 0 0 1px var(--green); }
+.option.wrong { border-color: var(--red); background: rgba(248, 113, 113, 0.1); box-shadow: 0 0 0 1px var(--red); }
+.option.disabled { cursor: not-allowed; pointer-events: none; }
+.option-letter {
+  width: 28px; height: 28px; border-radius: 8px; background: var(--bg-2);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 0.85rem;
+  color: var(--muted); flex-shrink: 0; transition: all 0.25s ease;
+}
+.option.selected .option-letter { background: var(--accent); color: var(--bg); }
+.option.correct .option-letter { background: var(--green); color: var(--bg); }
+.option.wrong .option-letter { background: var(--red); color: var(--bg); }
+.option-text { flex: 1; color: var(--fg-soft); font-size: 0.95rem; }
+.option.correct .option-text { color: var(--green); }
+.option.wrong .option-text { color: var(--red); }
+
+.action-row { display: flex; gap: 1rem; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; }
+.btn {
+  padding: 0.75rem 1.5rem; border-radius: 10px;
+  font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600; font-size: 0.9rem;
+  cursor: pointer; border: 1px solid transparent; transition: all 0.25s ease;
+  display: inline-flex; align-items: center; gap: 0.5rem;
+}
+.btn-primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.btn-primary:hover:not(:disabled) { background: var(--accent-2); transform: translateY(-2px); box-shadow: 0 8px 20px var(--accent-glow); }
+.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-ghost { background: transparent; color: var(--fg-soft); border-color: var(--border-soft); }
+.btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+.status-pill {
+  padding: 0.5rem 1rem; border-radius: 999px;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.75rem;
+  font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  display: none; align-items: center; gap: 0.5rem;
+}
+.status-pill.show { display: inline-flex; }
+.status-pill.correct { background: rgba(74, 222, 128, 0.15); color: var(--green); border: 1px solid var(--green); }
+.status-pill.wrong { background: rgba(248, 113, 113, 0.15); color: var(--red); border: 1px solid var(--red); }
+
+.explanation {
+  background: var(--bg-2); border: 1px solid var(--border-soft);
+  border-radius: 12px; max-height: 0; overflow: hidden; opacity: 0;
+  transition: all 0.4s ease; padding: 0 1.5rem;
+}
+.explanation.show { max-height: 800px; opacity: 1; padding: 1.25rem 1.5rem; }
+.explanation-header {
+  display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.75rem;
+  font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent);
+}
+.explanation-body { font-size: 0.95rem; line-height: 1.7; color: var(--fg-soft); }
+
+/* Graph SVG */
+.graph-container {
+  background: var(--card); border: 1px solid var(--border-soft);
+  border-radius: 16px; padding: 1.5rem; margin-top: 1.5rem;
+}
+.graph-svg { width: 100%; height: auto; display: block; }
+
+/* Results */
+.results-hero { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; flex: 1; gap: 1.5rem; }
+.score-ring { position: relative; width: 260px; height: 260px; display: flex; align-items: center; justify-content: center; }
+.score-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.score-ring circle { fill: none; stroke-width: 12; stroke-linecap: round; }
+.score-ring .bg-circle { stroke: var(--card); }
+.score-ring .progress-circle {
+  stroke: url(#scoreGradient); stroke-dasharray: 754; stroke-dashoffset: 754;
+  transition: stroke-dashoffset 1.8s cubic-bezier(.4,.2,.2,1);
+  filter: drop-shadow(0 0 12px var(--accent-glow));
+}
+.score-value { position: absolute; display: flex; flex-direction: column; align-items: center; }
+.score-value .number { font-family: 'Fraunces', serif; font-size: 4.5rem; font-weight: 900; color: var(--accent); line-height: 1; }
+.score-value .label { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase; margin-top: 0.5rem; }
+
+.results-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin-top: 1rem; width: 100%; max-width: 700px; }
+.stat-card { background: var(--card); border: 1px solid var(--border-soft); border-radius: 14px; padding: 1.25rem; text-align: center; }
+.stat-card .stat-value { font-family: 'Fraunces', serif; font-size: 2.4rem; font-weight: 800; line-height: 1; margin-bottom: 0.4rem; }
+.stat-card .stat-label { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); }
+.stat-card.correct { border-color: rgba(74, 222, 128, 0.4); }
+.stat-card.correct .stat-value { color: var(--green); }
+.stat-card.wrong { border-color: rgba(248, 113, 113, 0.4); }
+.stat-card.wrong .stat-value { color: var(--red); }
+.stat-card.unanswered .stat-value { color: var(--muted); }
+
+.verdict { font-family: 'Fraunces', serif; font-style: italic; font-size: 1.4rem; color: var(--fg); text-align: center; max-width: 60ch; line-height: 1.5; }
+
+/* Conclusion */
+.conclusion-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 2rem; margin-top: 1.5rem; }
+.key-points { display: flex; flex-direction: column; gap: 0.9rem; }
+.point {
+  display: flex; gap: 1rem; padding: 1.1rem 1.25rem;
+  background: var(--card); border-radius: 12px;
+  border: 1px solid var(--border-soft); border-left: 3px solid var(--accent);
+}
+.point-icon { font-family: 'Fraunces', serif; font-style: italic; font-size: 1.4rem; color: var(--accent); font-weight: 600; flex-shrink: 0; min-width: 1.5rem; }
+.point-text { font-size: 0.92rem; line-height: 1.55; color: var(--fg-soft); }
+.point-text strong { color: var(--fg); font-weight: 700; }
+
+.reflection-box { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; }
+.reflection-box h3 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.05rem; font-weight: 700; color: var(--accent); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+.reflection-box ul { list-style: none; display: flex; flex-direction: column; gap: 0.85rem; }
+.reflection-box li { font-size: 0.9rem; line-height: 1.55; color: var(--fg-soft); padding-left: 1.5rem; position: relative; }
+.reflection-box li::before { content: '?'; position: absolute; left: 0; top: -2px; font-family: 'Fraunces', serif; font-style: italic; color: var(--accent); font-weight: 700; font-size: 1.1rem; }
+
+/* Thanks */
+.thanks { align-items: center; justify-content: center; text-align: center; }
+.thanks-title { font-family: 'Fraunces', serif; font-size: clamp(4rem, 11vw, 8.5rem); font-weight: 900; letter-spacing: -0.04em; line-height: 0.9; margin-bottom: 1.5rem; }
+.thanks-title em { font-style: italic; font-weight: 400; color: var(--accent); display: block; }
+.thanks-subtitle { font-size: 1.15rem; color: var(--fg-soft); max-width: 50ch; line-height: 1.6; margin-bottom: 2rem; }
+.thanks-decoration { display: flex; gap: 0.75rem; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--muted); letter-spacing: 0.15em; flex-wrap: wrap; justify-content: center; }
+.thanks-decoration span { padding: 0.5rem 1rem; border: 1px solid var(--border); border-radius: 999px; }
+
+/* MathJax tweaks */
+mjx-container { font-size: 1.02em !important; }
+mjx-container[display="true"] { margin: 0.4rem 0 !important; }
+
+/* Confetti */
+.confetti { position: fixed; inset: 0; pointer-events: none; z-index: 99; overflow: hidden; }
+.confetti-piece { position: absolute; width: 10px; height: 14px; top: -20px; animation: confettiFall linear forwards; }
+@keyframes confettiFall { to { transform: translateY(110vh) rotate(720deg); opacity: 0; } }
+
+/* Hint */
+.hint-pulse { animation: hintPulse 2s ease-in-out infinite; }
+@keyframes hintPulse {
+  0%, 100% { box-shadow: 0 0 0 0 var(--accent-glow); }
+  50% { box-shadow: 0 0 0 14px transparent; }
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .slide { padding: 3rem 1.5rem 5rem; }
+  .cover-hero { grid-template-columns: 1fr; gap: 2rem; }
+  .toc-grid, .concept-grid, .props-grid { grid-template-columns: 1fr; }
+  .options-grid { grid-template-columns: 1fr; }
+  .conclusion-grid { grid-template-columns: 1fr; }
+  .results-stats { grid-template-columns: 1fr; }
+  .question-slide { padding: 2.5rem 1.5rem 5rem; }
+  .question-num { font-size: 2.5rem; }
+  .question-text { font-size: 1.1rem; }
+}
+
+</style>
+</head>
+<body>
+  <div class="bg-atmosphere"></div>
+  <div class="math-particles" id="mathParticles"></div>
+  <div class="progress" id="progress" style="width: 3%"></div>
+  
+  <div class="indicator">
+    <span class="current" id="currentSlide">01</span> / <span id="totalSlides">33</span>
+  </div>
+  
+  <div class="nav-bar">
+    <button class="nav-btn" id="prevBtn" aria-label="Sebelumnya">←</button>
+    <button class="nav-btn" id="nextBtn" aria-label="Selanjutnya">→</button>
+  </div>
+  
+  <div class="deck" id="deck"></div>
+  <div class="confetti" id="confetti"></div>
+
+<script>
+// === Data Soal ===
+const questions = [
+  {
+    n: 1, topic: 'Fungsi Linear',
+    q: 'Invers dari fungsi $f(x) = 3x - 5$ adalah...',
+    options: [
+      '$f^{-1}(x) = \\dfrac{x-5}{3}$',
+      '$f^{-1}(x) = \\dfrac{x+5}{3}$',
+      '$f^{-1}(x) = 3x + 5$',
+      '$f^{-1}(x) = \\dfrac{3x-5}{3}$',
+      '$f^{-1}(x) = \\dfrac{x}{3} - 5$'
+    ],
+    correct: 1,
+    explanation: 'Misalkan $y = 3x - 5$. Maka $3x = y + 5$, sehingga $x = \\dfrac{y+5}{3}$. Jadi, $f^{-1}(x) = \\dfrac{x+5}{3}$.'
+  },
+  {
+    n: 2, topic: 'Fungsi Linear',
+    q: 'Jika $g(x) = 7 - 2x$, maka $g^{-1}(x) = ...$',
+    options: [
+      '$\\dfrac{x-7}{2}$',
+      '$\\dfrac{x+7}{2}$',
+      '$\\dfrac{7-x}{2}$',
+      '$2x - 7$',
+      '$7 + 2x$'
+    ],
+    correct: 2,
+    explanation: 'Misalkan $y = 7 - 2x$. Maka $2x = 7 - y$, sehingga $x = \\dfrac{7-y}{2}$. Jadi, $g^{-1}(x) = \\dfrac{7-x}{2}$.'
+  },
+  {
+    n: 3, topic: 'Fungsi Rasional',
+    q: 'Invers dari fungsi rasional $f(x) = \\dfrac{2x+3}{x-1}$, $x \\neq 1$ adalah...',
+    options: [
+      '$\\dfrac{x-3}{x-2}$',
+      '$\\dfrac{x+3}{x-2}$',
+      '$\\dfrac{x-2}{x+3}$',
+      '$\\dfrac{2x-1}{x+3}$',
+      '$\\dfrac{x+3}{2x-1}$'
+    ],
+    correct: 1,
+    explanation: 'Misalkan $y = \\dfrac{2x+3}{x-1}$. Kalikan silang: $y(x-1) = 2x+3 \\Rightarrow xy - y = 2x + 3 \\Rightarrow xy - 2x = y + 3 \\Rightarrow x(y-2) = y+3 \\Rightarrow x = \\dfrac{y+3}{y-2}$. Jadi, $f^{-1}(x) = \\dfrac{x+3}{x-2}$.'
+  },
+  {
+    n: 4, topic: 'Fungsi Rasional',
+    q: 'Diketahui $f(x) = \\dfrac{4x-1}{2x+5}$, $x \\neq -\\dfrac{5}{2}$. Fungsi invers dari $f(x)$ adalah...',
+    options: [
+      '$\\dfrac{5x+1}{4-2x}$',
+      '$\\dfrac{5x-1}{2x-4}$',
+      '$\\dfrac{-5x-1}{2x-4}$',
+      '$\\dfrac{4x+1}{5-2x}$',
+      '$\\dfrac{2x+5}{4x-1}$'
+    ],
+    correct: 2,
+    explanation: 'Misalkan $y = \\dfrac{4x-1}{2x+5}$. Maka $y(2x+5) = 4x-1 \\Rightarrow 2xy + 5y = 4x - 1 \\Rightarrow 2xy - 4x = -5y - 1 \\Rightarrow x(2y-4) = -5y-1 \\Rightarrow x = \\dfrac{-5y-1}{2y-4}$. Jadi, $f^{-1}(x) = \\dfrac{-5x-1}{2x-4}$.'
+  },
+  {
+    n: 5, topic: 'Nilai Invers',
+    q: 'Jika $f(x) = 5x + 2$, maka nilai dari $f^{-1}(17)$ adalah...',
+    options: ['2', '3', '4', '5', '6'],
+    correct: 1,
+    explanation: 'Cari nilai $x$ saat $f(x) = 17$. $5x + 2 = 17 \\Rightarrow 5x = 15 \\Rightarrow x = 3$. Maka $f^{-1}(17) = 3$.'
+  },
+  {
+    n: 6, topic: 'Nilai Invers',
+    q: 'Diketahui fungsi $f(x) = \\dfrac{3x+2}{x-4}$. Nilai dari $f^{-1}(5)$ adalah...',
+    options: ['9', '10', '11', '12', '13'],
+    correct: 2,
+    explanation: 'Cari nilai $x$ saat $f(x) = 5$. $\\dfrac{3x+2}{x-4} = 5 \\Rightarrow 3x+2 = 5(x-4) \\Rightarrow 3x+2 = 5x-20 \\Rightarrow 2x = 22 \\Rightarrow x = 11$. Maka $f^{-1}(5) = 11$.'
+  },
+  {
+    n: 7, topic: 'Fungsi Kuadrat',
+    q: 'Invers dari fungsi $f(x) = x^2 - 4x + 4$ untuk $x \\geq 2$ adalah...',
+    options: [
+      '$\\sqrt{x} - 2$',
+      '$\\sqrt{x} + 2$',
+      '$\\sqrt{x+2}$',
+      '$\\sqrt{x-2}$',
+      '$\\sqrt{x+4} - 2$'
+    ],
+    correct: 1,
+    explanation: 'Fungsi $f(x) = x^2 - 4x + 4$ dapat ditulis $f(x) = (x-2)^2$. Misal $y = (x-2)^2 \\Rightarrow \\sqrt{y} = x - 2 \\Rightarrow x = \\sqrt{y} + 2$. Karena syarat $x \\geq 2$, kita ambil akar positif. Jadi, $f^{-1}(x) = \\sqrt{x} + 2$.'
+  },
+  {
+    n: 8, topic: 'Fungsi Kuadrat',
+    q: 'Diketahui $f(x) = x^2 + 6x + 5$ dengan $x \\geq -3$. Invers dari $f(x)$ adalah...',
+    options: [
+      '$-3 + \\sqrt{x+4}$',
+      '$-3 - \\sqrt{x+4}$',
+      '$3 + \\sqrt{x-4}$',
+      '$-3 + \\sqrt{x-4}$',
+      '$3 - \\sqrt{x+4}$'
+    ],
+    correct: 0,
+    explanation: 'Lengkapkan kuadrat sempurna: $f(x) = x^2 + 6x + 9 - 4 = (x+3)^2 - 4$. Misal $y = (x+3)^2 - 4 \\Rightarrow y + 4 = (x+3)^2 \\Rightarrow \\sqrt{y+4} = x+3 \\Rightarrow x = -3 + \\sqrt{y+4}$. Jadi, $f^{-1}(x) = -3 + \\sqrt{x+4}$.'
+  },
+  {
+    n: 9, topic: 'Fungsi Akar',
+    q: 'Invers dari fungsi bentuk akar $f(x) = \\sqrt{2x-1}$ untuk $x \\geq \\dfrac{1}{2}$ adalah...',
+    options: [
+      '$\\dfrac{x^2-1}{2}$',
+      '$\\dfrac{x^2+1}{2}$',
+      '$2x^2 + 1$',
+      '$2x^2 - 1$',
+      '$\\dfrac{x^2}{2} + 1$'
+    ],
+    correct: 1,
+    explanation: 'Misalkan $y = \\sqrt{2x-1}$. Kuadratkan kedua ruas: $y^2 = 2x - 1 \\Rightarrow 2x = y^2 + 1 \\Rightarrow x = \\dfrac{y^2+1}{2}$. Jadi, $f^{-1}(x) = \\dfrac{x^2+1}{2}$.'
+  },
+  {
+    n: 10, topic: 'Fungsi Akar',
+    q: 'Jika $f(x) = \\sqrt[3]{x+2}$, maka $f^{-1}(x) = ...$',
+    options: [
+      '$x^3 + 2$',
+      '$x^3 - 2$',
+      '$(x+2)^3$',
+      '$(x-2)^3$',
+      '$x^2 - \\dfrac{3}{2}$'
+    ],
+    correct: 1,
+    explanation: 'Misalkan $y = \\sqrt[3]{x+2}$. Pangkat tigakan kedua ruas: $y^3 = x + 2 \\Rightarrow x = y^3 - 2$. Jadi, $f^{-1}(x) = x^3 - 2$.'
+  },
+  {
+    n: 11, topic: 'Fungsi Pangkat',
+    q: 'Invers dari fungsi $f(x) = x^3 - 8$ adalah...',
+    options: [
+      '$\\sqrt[3]{x+2}$',
+      '$\\sqrt[3]{x+8}$',
+      '$\\sqrt[3]{x-8}$',
+      '$\\sqrt[3]{x-2}$',
+      '$\\sqrt{x+8}$'
+    ],
+    correct: 1,
+    explanation: 'Misalkan $y = x^3 - 8$. Maka $x^3 = y + 8 \\Rightarrow x = \\sqrt[3]{y+8}$. Jadi, $f^{-1}(x) = \\sqrt[3]{x+8}$.'
+  },
+  {
+    n: 12, topic: 'Fungsi Eksponen',
+    q: 'Diketahui $f(x) = 2^x + 3$. Invers dari fungsi tersebut adalah...',
+    options: [
+      '${}^2\\!\\log(x-3)$',
+      '${}^2\\!\\log(x+3)$',
+      '${}^3\\!\\log(x-2)$',
+      '${}^2\\!\\log(x) - 3$',
+      '${}^2\\!\\log(x) + 3$'
+    ],
+    correct: 0,
+    explanation: 'Misalkan $y = 2^x + 3$. Maka $2^x = y - 3$. Dengan definisi logaritma ($a^c = b \\Rightarrow {}^a\\!\\log b = c$), diperoleh $x = {}^2\\!\\log(y - 3)$. Jadi, $f^{-1}(x) = {}^2\\!\\log(x - 3)$.'
+  },
+  {
+    n: 13, topic: 'Fungsi Logaritma',
+    q: 'Invers dari fungsi logaritma $f(x) = {}^3\\!\\log(x - 1)$ adalah...',
+    options: [
+      '$3x - 1$',
+      '$3^{x-1}$',
+      '$3^x + 1$',
+      '$3^{x+1}$',
+      '$x^3 + 1$'
+    ],
+    correct: 2,
+    explanation: 'Misalkan $y = {}^3\\!\\log(x - 1)$. Menurut definisi logaritma, $3^y = x - 1 \\Rightarrow x = 3^y + 1$. Jadi, $f^{-1}(x) = 3^x + 1$.'
+  },
+  {
+    n: 14, topic: 'Komposisi Fungsi',
+    q: 'Diketahui $f(x) = 2x + 1$ dan $g(x) = \\dfrac{x}{x-1}$. Fungsi $(g \\circ f)^{-1}(x)$ adalah...',
+    options: [
+      '$\\dfrac{x}{2x-2}$',
+      '$\\dfrac{x-1}{2x}$',
+      '$\\dfrac{1}{2x-2}$',
+      '$\\dfrac{-1}{2x-2}$',
+      '$\\dfrac{2x-1}{x}$'
+    ],
+    correct: 2,
+    explanation: 'Cari komposisi $(g \\circ f)(x) = g(2x + 1) = \\dfrac{2x+1}{(2x+1)-1} = \\dfrac{2x+1}{2x}$. Misalkan $y = \\dfrac{2x+1}{2x} \\Rightarrow 2xy = 2x + 1 \\Rightarrow 2xy - 2x = 1 \\Rightarrow x(2y - 2) = 1 \\Rightarrow x = \\dfrac{1}{2y-2}$. Jadi, $(g \\circ f)^{-1}(x) = \\dfrac{1}{2x-2}$.'
+  },
+  {
+    n: 15, topic: 'Komposisi Fungsi',
+    q: 'Diketahui $f(x) = x - 3$ dan $g(x) = 2x + 4$. Nilai dari $(f \\circ g)^{-1}(3)$ adalah...',
+    options: ['1', '2', '3', '4', '5'],
+    correct: 0,
+    explanation: 'Komposisi $(f \\circ g)(x) = f(2x + 4) = (2x + 4) - 3 = 2x + 1$. Misalkan $h(x) = 2x + 1$. Cari $x$ saat $h(x) = 3$: $2x + 1 = 3 \\Rightarrow 2x = 2 \\Rightarrow x = 1$. Maka $(f \\circ g)^{-1}(3) = 1$.'
+  },
+  {
+    n: 16, topic: 'Invers dari Invers',
+    q: 'Jika fungsi $f^{-1}(x) = 4x - 5$, maka fungsi asalnya, $f(x)$ adalah...',
+    options: [
+      '$\\dfrac{x-5}{4}$',
+      '$\\dfrac{x+5}{4}$',
+      '$4x + 5$',
+      '$\\dfrac{4x-5}{4}$',
+      '$\\dfrac{x}{4} + 5$'
+    ],
+    correct: 1,
+    explanation: 'Fungsi $f(x)$ adalah invers dari $f^{-1}(x)$. Misal $y = 4x - 5 \\Rightarrow 4x = y + 5 \\Rightarrow x = \\dfrac{y+5}{4}$. Jadi, $f(x) = \\dfrac{x+5}{4}$.'
+  },
+  {
+    n: 17, topic: 'Fungsi Rasional',
+    q: 'Diketahui $f(x) = \\dfrac{3-x}{2x+5}$. Fungsi invers dari $f(x)$ adalah...',
+    options: [
+      '$\\dfrac{5x-3}{2x+1}$',
+      '$\\dfrac{3-5x}{2x+1}$',
+      '$\\dfrac{5x+3}{2x-1}$',
+      '$\\dfrac{3+5x}{1-2x}$',
+      '$\\dfrac{5x-3}{1-2x}$'
+    ],
+    correct: 1,
+    explanation: 'Misalkan $y = \\dfrac{3-x}{2x+5}$. Maka $y(2x + 5) = 3 - x \\Rightarrow 2xy + 5y = 3 - x \\Rightarrow 2xy + x = 3 - 5y \\Rightarrow x(2y + 1) = 3 - 5y \\Rightarrow x = \\dfrac{3-5y}{2y+1}$. Jadi, $f^{-1}(x) = \\dfrac{3-5x}{2x+1}$.'
+  },
+  {
+    n: 18, topic: 'Fungsi Rasional',
+    q: 'Invers dari fungsi $f(x) = \\dfrac{4}{x-1}$ adalah...',
+    options: [
+      '$\\dfrac{x-4}{x}$',
+      '$\\dfrac{x+4}{x}$',
+      '$\\dfrac{4-x}{x}$',
+      '$\\dfrac{x}{x-4}$',
+      '$\\dfrac{x}{x+4}$'
+    ],
+    correct: 1,
+    explanation: 'Misalkan $y = \\dfrac{4}{x-1}$. Maka $y(x - 1) = 4 \\Rightarrow xy - y = 4 \\Rightarrow xy = y + 4 \\Rightarrow x = \\dfrac{y+4}{y}$. Jadi, $f^{-1}(x) = \\dfrac{x+4}{x}$.'
+  },
+  {
+    n: 19, topic: 'Nilai Invers',
+    q: 'Jika $f(x) = (x-2)^3 + 1$, maka $f^{-1}(9)$ adalah...',
+    options: ['1', '2', '3', '4', '5'],
+    correct: 3,
+    explanation: 'Cari nilai $x$ sedemikian sehingga $f(x) = 9$. $(x-2)^3 + 1 = 9 \\Rightarrow (x-2)^3 = 8$. Karena $2^3 = 8$, maka $x - 2 = 2 \\Rightarrow x = 4$.'
+  },
+  {
+    n: 20, topic: 'Invers dari Invers',
+    q: 'Suatu fungsi $f(x)$ memiliki invers $f^{-1}(x) = \\dfrac{3x+1}{x-2}$. Nilai dari $f(4)$ adalah...',
+    options: ['7', '9', '11', '13', '15'],
+    correct: 1,
+    explanation: 'Untuk mencari nilai $f(4)$, kita mencari nilai $y$ di mana $f^{-1}(y) = 4$. $\\dfrac{3y+1}{y-2} = 4 \\Rightarrow 3y + 1 = 4(y - 2) \\Rightarrow 3y + 1 = 4y - 8 \\Rightarrow 1 + 8 = 4y - 3y \\Rightarrow y = 9$. Jadi, $f(4) = 9$.'
+  }
+];
+
+// === State ===
+let currentSlide = 0;
+const totalSlides = 33;
+const answers = {};     // questionIndex -> selectedOptionIndex
+const results = {};      // questionIndex -> 'correct' | 'wrong'
+
+// === Build slides ===
+function buildCover() {
+  return `
+    <section class="slide cover active" data-index="0">
+      <div class="cover-hero">
+        <div>
+          <div class="eyebrow">Presentasi Matematika Interaktif</div>
+          <h1 class="cover-title">Invers<em>Fungsi</em></h1>
+          <p class="cover-subtitle">Memahami konsep kebalikan fungsi, dari definisi hingga penerapan dalam kehidupan sehari-hari, dilengkapi 20 soal latihan interaktif.</p>
+          <div class="cover-meta">
+            <span>Kelas XI · Matematika</span>
+            <span>20 Soal Latihan</span>
+            <span>Pembahasan Lengkap</span>
+          </div>
+        </div>
+        <div class="cover-visual">
+          <div class="formula-display">f<span class="sup">−1</span>(x)</div>
+        </div>
+      </div>
+    </section>`;
+}
+
+function buildTOC() {
+  const items = [
+    { n: '01', title: 'Pengertian Invers Fungsi', desc: 'Definisi dasar dan konsep kebalikan' },
+    { n: '02', title: 'Syarat & Notasi', desc: 'Fungsi satu-satu dan lambang f⁻¹' },
+    { n: '03', title: 'Cara Mencari Invers', desc: 'Empat langkah menentukan invers' },
+    { n: '04', title: 'Sifat-sifat Invers', desc: 'Identitas dan komposisi invers' },
+    { n: '05', title: 'Aplikasi Sehari-hari', desc: 'Penerapan invers dalam dunia nyata' },
+    { n: '06', title: 'Contoh Soal', desc: 'Tiga contoh dengan pembahasan' },
+    { n: '07', title: 'Latihan Soal', desc: '20 soal pilihan ganda interaktif' },
+    { n: '08', title: 'Kesimpulan & Refleksi', desc: 'Ringkasan dan pertanyaan reflektif' }
+  ];
+  const itemsHTML = items.map(it => `
+    <div class="toc-item">
+      <div class="toc-num">${it.n}</div>
+      <div class="toc-text">
+        <h3>${it.title}</h3>
+        <p>${it.desc}</p>
+      </div>
+    </div>`).join('');
+  return `
+    <section class="slide" data-index="1">
+      <div class="eyebrow">Daftar Isi</div>
+      <h2>Materi yang akan dipelajari</h2>
+      <div class="toc-grid">${itemsHTML}</div>
+    </section>`;
+}
+
+function buildMateri1() {
+  return `
+    <section class="slide" data-index="2">
+      <div class="slide-header">
+        <div class="eyebrow">Bab 01 · Pengertian</div>
+        <h2>Apa itu Invers Fungsi?</h2>
+      </div>
+      <p class="lead">Invers fungsi adalah kebalikan dari suatu fungsi. Jika fungsi $f$ memetakan $x$ ke $y$, maka invers $f^{-1}$ memetakan $y$ kembali ke $x$. Dengan kata lain, invers fungsi "membalik" apa yang dilakukan oleh fungsi aslinya.</p>
+      <div class="concept-grid">
+        <div class="concept-card">
+          <h3>Definisi Formal</h3>
+          <p>Jika $f: A \\to B$ adalah fungsi satu-satu (bijektif), maka inversnya $f^{-1}: B \\to A$ didefinisikan sebagai:</p>
+          <div class="formula">$$f^{-1}(y) = x \\iff f(x) = y$$</div>
+        </div>
+        <div class="concept-card">
+          <h3>Bayangan Cermin</h3>
+          <p>Grafik $y = f^{-1}(x)$ adalah pencerminan dari grafik $y = f(x)$ terhadap garis $y = x$. Setiap titik $(a, b)$ pada $f$ berubah menjadi $(b, a)$ pada $f^{-1}$.</p>
+          <div class="formula">$$(a, b) \\xrightarrow{\\,f^{-1}\\,} (b, a)$$</div>
+        </div>
+      </div>
+    </section>`;
+}
+
+function buildMateri2() {
+  return `
+    <section class="slide" data-index="3">
+      <div class="slide-header">
+        <div class="eyebrow">Bab 02 · Syarat & Notasi</div>
+        <h2>Syarat Suatu Fungsi Memiliki Invers</h2>
+      </div>
+      <p class="lead">Tidak semua fungsi memiliki invers. Syarat utama: fungsi harus <strong>satu-satu (injektif)</strong>, yaitu setiap elemen pada kodomain memiliki tepat satu pre-image pada domain.</p>
+      <div class="concept-grid">
+        <div class="concept-card">
+          <h3>Tes Garis Horizontal</h3>
+          <p>Jika setiap garis horizontal memotong grafik fungsi paling banyak satu titik, maka fungsi tersebut satu-satu dan memiliki invers.</p>
+        </div>
+        <div class="concept-card">
+          <h3>Domain & Kodomain</h3>
+          <p>Domain $f^{-1}$ = Kodomain $f$<br>Kodomain $f^{-1}$ = Domain $f$</p>
+        </div>
+        <div class="concept-card">
+          <h3>Notasi $f^{-1}(x)$</h3>
+          <p>Dibaca "f invers x". <strong>Bukan</strong> berarti $\\dfrac{1}{f(x)}$. Tanda minus di sini menunjukkan invers, bukan pangkat negatif.</p>
+          <div class="formula">$$f^{-1}(x) \\neq \\frac{1}{f(x)}$$</div>
+        </div>
+        <div class="concept-card">
+          <h3>Syarat Domain</h3>
+          <p>Untuk fungsi kuadrat, perlu pembatasan domain (misal $x \\geq$ nilai puncak) agar fungsi menjadi satu-satu dan inversnya berupa fungsi.</p>
+        </div>
+      </div>
+    </section>`;
+}
+
+function buildMateri3() {
+  return `
+    <section class="slide" data-index="4">
+      <div class="slide-header">
+        <div class="eyebrow">Bab 03 · Metode</div>
+        <h2>Cara Mencari Invers Fungsi</h2>
+      </div>
+      <p class="lead">Empat langkah sederhana untuk menentukan invers dari suatu fungsi $f(x)$:</p>
+      <div class="steps-list">
+        <div class="step-row">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4>Misalkan $y = f(x)$</h4>
+            <p>Tuliskan fungsi dalam bentuk $y = \\dots$ sebagai titik awal. Contoh: $y = 3x - 5$</p>
+          </div>
+        </div>
+        <div class="step-row">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h4>Tukar variabel $x$ dan $y$</h4>
+            <p>Atau, selesaikan persamaan untuk $x$ dalam variabel $y$. Tujuannya: mengisolasi variabel input.</p>
+          </div>
+        </div>
+        <div class="step-row">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h4>Nyatakan $x$ dalam $y$</h4>
+            <p>Selesaikan aljabar hingga diperoleh bentuk $x = \\dots$ dalam $y$. Untuk fungsi kuadrat/akar, ingat syarat domainnya.</p>
+          </div>
+        </div>
+        <div class="step-row">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h4>Ganti $y$ menjadi $x$</h4>
+            <p>Substitusi kembali $y$ menjadi $x$ untuk memperoleh $f^{-1}(x)$ dalam notasi standar.</p>
+          </div>
+        </div>
+      </div>
+    </section>`;
+}
+
+function buildMateri4() {
+  return `
+    <section class="slide" data-index="5">
+      <div class="slide-header">
+        <div class="eyebrow">Bab 04 · Sifat</div>
+        <h2>Sifat-sifat Invers Fungsi</h2>
+      </div>
+      <p class="lead">Invers fungsi memiliki beberapa sifat penting yang mempermudah perhitungan komposisi dan verifikasi hasil.</p>
+      <div class="props-grid">
+        <div class="prop-card">
+          <div class="formula">$(f^{-1} \\circ f)(x) = x$</div>
+          <div class="desc">Komposisi fungsi dengan inversnya menghasilkan identitas</div>
+        </div>
+        <div class="prop-card">
+          <div class="formula">$(f \\circ f^{-1})(x) = x$</div>
+          <div class="desc">Berlaku kedua arah, baik dari kiri maupun kanan</div>
+        </div>
+        <div class="prop-card">
+          <div class="formula">$(f^{-1})^{-1} = f$</div>
+          <div class="desc">Invers dari invers fungsi adalah fungsi aslinya</div>
+        </div>
+        <div class="prop-card">
+          <div class="formula">$(g \\circ f)^{-1} = f^{-1} \\circ g^{-1}$</div>
+          <div class="desc">Invers komposisi = komposisi invers (urutan dibalik)</div>
+        </div>
+      </div>
+      <div class="graph-container">
+        <div class="eyebrow" style="margin-top:0;">Visualisasi Pencerminan</div>
+        <svg class="graph-svg" viewBox="0 0 400 280" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L9,3 z" fill="#8b92a8"/>
+            </marker>
+          </defs>
+          <!-- Grid -->
+          <g stroke="rgba(245,241,232,0.04)" stroke-width="1">
+            ${Array.from({length:9}, (_,i) => `<line x1="${i*40+20}" y1="20" x2="${i*40+20}" y2="240"/>`).join('')}
+            ${Array.from({length:6}, (_,i) => `<line x1="20" y1="${i*40+20}" x2="380" y2="${i*40+20}"/>`).join('')}
+          </g>
+          <!-- Axes -->
+          <line x1="20" y1="130" x2="380" y2="130" stroke="#8b92a8" stroke-width="1.2" marker-end="url(#arrow)"/>
+          <line x1="200" y1="240" x2="200" y2="20" stroke="#8b92a8" stroke-width="1.2" marker-end="url(#arrow)"/>
+          <text x="370" y="148" fill="#8b92a8" font-size="11" font-family="JetBrains Mono">x</text>
+          <text x="206" y="28" fill="#8b92a8" font-size="11" font-family="JetBrains Mono">y</text>
+          <!-- y = x line -->
+          <line x1="20" y1="230" x2="380" y2="40" stroke="rgba(245,241,232,0.2)" stroke-width="1" stroke-dasharray="4,4"/>
+          <text x="340" y="55" fill="#d4ceb8" font-size="10" font-family="JetBrains Mono">y = x</text>
+          <!-- f(x) = 2x + 1, through (0,1) -> (200, 130) offset, scale 40 -->
+          <line x1="20" y1="170" x2="280" y2="50" stroke="#fbbf24" stroke-width="2.5"/>
+          <text x="270" y="48" fill="#fbbf24" font-size="11" font-family="Fraunces" font-style="italic">f(x)</text>
+          <!-- f^-1(x) = (x-1)/2, reflection -->
+          <line x1="20" y1="230" x2="280" y2="110" stroke="#2dd4bf" stroke-width="2.5"/>
+          <text x="60" y="225" fill="#2dd4bf" font-size="11" font-family="Fraunces" font-style="italic">f⁻¹(x)</text>
+          <!-- Points -->
+          <circle cx="120" cy="110" r="4" fill="#fbbf24"/>
+          <circle cx="110" cy="120" r="4" fill="#2dd4bf"/>
+          <line x1="120" y1="110" x2="110" y2="120" stroke="rgba(245,241,232,0.3)" stroke-width="1" stroke-dasharray="2,2"/>
+        </svg>
+      </div>
+    </section>`;
+}
+
+function buildAplikasi() {
+  return `
+    <section class="slide" data-index="6">
+      <div class="slide-header">
+        <div class="eyebrow">Bab 05 · Aplikasi</div>
+        <h2>Penggunaan dalam Kehidupan Sehari-hari</h2>
+      </div>
+      <p class="lead">Konsep invers fungsi hadir di banyak situasi nyata, sering tanpa kita sadari. Berikut beberapa contoh penerapannya:</p>
+      <div class="app-grid">
+        <div class="app-card">
+          <div class="app-icon">°</div>
+          <h3>Konversi Suhu</h3>
+          <p>Rumus $C = \\dfrac{5}{9}(F - 32)$ mengubah Fahrenheit ke Celsius. Inversnya $F = \\dfrac{9}{5}C + 32$ mengembalikan Celsius ke Fahrenheit.</p>
+          <div class="formula">$C \\xleftrightarrow{\\,f^{-1}\\,} F$</div>
+        </div>
+        <div class="app-card">
+          <div class="app-icon">$</div>
+          <h3>Kurs Mata Uang</h3>
+          <p>Jika 1 USD = Rp 15.000, maka $f(x) = 15000x$ mengubah USD ke IDR. Inversnya $f^{-1}(x) = \\dfrac{x}{15000}$ untuk IDR ke USD.</p>
+          <div class="formula">USD $\\leftrightarrow$ IDR</div>
+        </div>
+        <div class="app-card">
+          <div class="app-icon">⚡</div>
+          <h3>Kriptografi</h3>
+          <p>Pesan terenkripsi melalui fungsi $f$, dan didekripsi dengan invers $f^{-1}$. Hanya pemilik kunci invers yang bisa membaca pesan asli.</p>
+          <div class="formula">pesan $\\to f \\to f^{-1} \\to$ pesan</div>
+        </div>
+        <div class="app-card">
+          <div class="app-icon">↔</div>
+          <h3>Konversi Satuan</h3>
+          <p>Konversi km ke mil dan sebaliknya, kg ke pon, detik ke menit—semuanya merupakan pasangan fungsi dan inversnya.</p>
+          <div class="formula">km $\\leftrightarrow$ mil</div>
+        </div>
+        <div class="app-card">
+          <div class="app-icon">∇</div>
+          <h3>Fisika & Teknik</h3>
+          <p>Hubungan kecepatan, jarak, dan waktu; tegangan, arus, dan resistansi—banyak rumus fisika memiliki invers praktis.</p>
+          <div class="formula">$V = IR \\leftrightarrow I = V/R$</div>
+        </div>
+        <div class="app-card">
+          <div class="app-icon">Σ</div>
+          <h3>Ekonomi</h3>
+          <p>Fungsi permintaan $Q = f(P)$ dan penawaran; untuk mencari harga dari kuantitas, digunakan fungsi invers permintaan.</p>
+          <div class="formula">$P = f^{-1}(Q)$</div>
+        </div>
+      </div>
+    </section>`;
+}
+
+function buildExample(n, topic, question, steps, answer) {
+  const stepsHTML = steps.map((s, i) => `
+    <div class="step">
+      <div class="step-num">${String(i+1).padStart(2,'0')}</div>
+      <div class="step-content">${s}</div>
+    </div>`).join('');
+  return `
+    <section class="slide" data-index="${6+n}">
+      <div class="slide-header">
+        <div class="eyebrow">Contoh Soal ${n} · ${topic}</div>
+        <h2>Penyelesaian Step-by-Step</h2>
+      </div>
+      <div class="example-card">
+        <span class="example-badge">Soal ${n}</span>
+        <div class="example-question">${question}</div>
+        <div class="solution-steps">${stepsHTML}</div>
+        <div class="answer-box">
+          <span class="answer-label">Jawaban</span>
+          <span class="answer-value">${answer}</span>
+        </div>
+      </div>
+    </section>`;
+}
+
+function buildExamples() {
+  const ex1 = buildExample(1, 'Fungsi Linear',
+    'Tentukan invers dari fungsi $f(x) = 2x + 6$',
+    [
+      'Misalkan $y = f(x)$, sehingga $y = 2x + 6$.',
+      'Pisahkan variabel $x$: $2x = y - 6$.',
+      'Bagi kedua ruas dengan 2: $x = \\dfrac{y - 6}{2} = \\dfrac{y}{2} - 3$.',
+      'Ganti $y$ dengan $x$ untuk memperoleh invers: $f^{-1}(x) = \\dfrac{x - 6}{2}$.'
+    ],
+    '$f^{-1}(x) = \\dfrac{x - 6}{2}$');
+
+  const ex2 = buildExample(2, 'Fungsi Rasional',
+    'Tentukan invers dari $f(x) = \\dfrac{x+1}{x-2}$, $x \\neq 2$',
+    [
+      'Misalkan $y = \\dfrac{x+1}{x-2}$.',
+      'Kalikan silang: $y(x - 2) = x + 1 \\Rightarrow xy - 2y = x + 1$.',
+      'Kumpulkan suku $x$: $xy - x = 2y + 1 \\Rightarrow x(y - 1) = 2y + 1$.',
+      'Bagi kedua ruas dengan $(y - 1)$: $x = \\dfrac{2y + 1}{y - 1}$.',
+      'Ganti $y$ dengan $x$: $f^{-1}(x) = \\dfrac{2x + 1}{x - 1}$.'
+    ],
+    '$f^{-1}(x) = \\dfrac{2x + 1}{x - 1}$');
+
+  const ex3 = buildExample(3, 'Fungsi Kuadrat',
+    'Tentukan invers dari $f(x) = x^2 - 4x + 3$ untuk $x \\geq 2$',
+    [
+      'Lengkapkan kuadrat sempurna: $f(x) = (x^2 - 4x + 4) - 1 = (x - 2)^2 - 1$.',
+      'Misalkan $y = (x - 2)^2 - 1$, maka $y + 1 = (x - 2)^2$.',
+      'Akar kuadrat kedua ruas: $\\sqrt{y + 1} = x - 2$ (ambil positif karena $x \\geq 2$).',
+      'Pisahkan $x$: $x = 2 + \\sqrt{y + 1}$.',
+      'Ganti $y$ dengan $x$: $f^{-1}(x) = 2 + \\sqrt{x + 1}$.'
+    ],
+    '$f^{-1}(x) = 2 + \\sqrt{x + 1}$');
+
+  return ex1 + ex2 + ex3;
+}
+
+function buildQuestion(q) {
+  const slideIndex = 9 + q.n; // slides 10..29 → index 9..28
+  const opts = q.options.map((opt, i) => `
+    <div class="option" data-q="${q.n}" data-opt="${i}" onclick="selectOption(${q.n}, ${i})">
+      <div class="option-letter">${String.fromCharCode(65 + i)}</div>
+      <div class="option-text">${opt}</div>
+    </div>`).join('');
+  return `
+    <section class="slide question-slide" data-index="${slideIndex}">
+      <div class="question-header">
+        <div class="question-num">${String(q.n).padStart(2,'0')}</div>
+        <div class="question-meta">
+          <div class="label">Latihan Soal · ${q.topic}</div>
+          <div class="topic">Soal nomor ${q.n} dari 20</div>
+        </div>
+      </div>
+      <div class="question-text">${q.q}</div>
+      <div class="options-grid">${opts}</div>
+      <div class="action-row">
+        <button class="btn btn-primary" id="checkBtn-${q.n}" onclick="checkAnswer(${q.n})" disabled>Cek Jawaban</button>
+        <button class="btn btn-ghost" onclick="resetQuestion(${q.n})">Reset</button>
+        <div class="status-pill" id="status-${q.n}"></div>
+      </div>
+      <div class="explanation" id="explanation-${q.n}">
+        <div class="explanation-header">▸ Pembahasan</div>
+        <div class="explanation-body">${q.explanation}</div>
+      </div>
+    </section>`;
+}
+
+function buildQuestions() {
+  return questions.map(buildQuestion).join('');
+}
+
+function buildResults() {
+  return `
+    <section class="slide" data-index="29">
+      <div class="slide-header">
+        <div class="eyebrow">Hasil Kuis · Invers Fungsi</div>
+        <h2>Skor & Statistik</h2>
+      </div>
+      <div class="results-hero">
+        <div class="score-ring">
+          <svg viewBox="0 0 280 280">
+            <defs>
+              <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#fbbf24"/>
+                <stop offset="100%" stop-color="#2dd4bf"/>
+              </linearGradient>
+            </defs>
+            <circle class="bg-circle" cx="140" cy="140" r="120"/>
+            <circle class="progress-circle" id="progressCircle" cx="140" cy="140" r="120"/>
+          </svg>
+          <div class="score-value">
+            <div class="number" id="scoreNumber">0</div>
+            <div class="label">dari 100</div>
+          </div>
+        </div>
+        <div class="verdict" id="verdict">Selesaikan soal untuk melihat hasil</div>
+        <div class="results-stats">
+          <div class="stat-card correct">
+            <div class="stat-value" id="correctCount">0</div>
+            <div class="stat-label">Jawaban Benar</div>
+          </div>
+          <div class="stat-card wrong">
+            <div class="stat-value" id="wrongCount">0</div>
+            <div class="stat-label">Jawaban Salah</div>
+          </div>
+          <div class="stat-card unanswered">
+            <div class="stat-value" id="unansweredCount">20</div>
+            <div class="stat-label">Belum Dijawab</div>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="goToSlide(29)">Lihat Kesimpulan →</button>
+      </div>
+    </section>`;
+}
+
+function buildConclusion() {
+  return `
+    <section class="slide" data-index="30">
+      <div class="slide-header">
+        <div class="eyebrow">Bab 08 · Penutup</div>
+        <h2>Kesimpulan & Refleksi</h2>
+      </div>
+      <div class="conclusion-grid">
+        <div>
+          <h3 style="font-family:'Plus Jakarta Sans';font-size:1.1rem;color:var(--accent);margin-bottom:1rem;">Poin Kunci</h3>
+          <div class="key-points">
+            <div class="point">
+              <div class="point-icon">i</div>
+              <div class="point-text">Invers fungsi <strong>membalikkan</strong> pemetaan dari $f$. Jika $f(a) = b$, maka $f^{-1}(b) = a$.</div>
+            </div>
+            <div class="point">
+              <div class="point-icon">ii</div>
+              <div class="point-text">Syarat utama: fungsi harus <strong>satu-satu (injektif)</strong>. Fungsi kuadrat perlu pembatasan domain.</div>
+            </div>
+            <div class="point">
+              <div class="point-icon">iii</div>
+              <div class="point-text">Metode: misal $y = f(x)$, tukar/selesaikan untuk $x$, ganti $y$ jadi $x$.</div>
+            </div>
+            <div class="point">
+              <div class="point-icon">iv</div>
+              <div class="point-text">Sifat identitas: $(f^{-1} \\circ f)(x) = x$ dan $(f \\circ f^{-1})(x) = x$.</div>
+            </div>
+            <div class="point">
+              <div class="point-icon">v</div>
+              <div class="point-text">Invers komposisi: $(g \\circ f)^{-1} = f^{-1} \\circ g^{-1}$ — urutan dibalik.</div>
+            </div>
+            <div class="point">
+              <div class="point-icon">vi</div>
+              <div class="point-text">Aplikasi nyata: konversi satuan, kriptografi, ekonomi, dan fisika.</div>
+            </div>
+          </div>
+        </div>
+        <div class="reflection-box">
+          <h3>Refleksi Diri</h3>
+          <ul>
+            <li>Bagian materi mana yang paling menantang untuk dipahami? Mengapa?</li>
+            <li>Apakah saya sudah dapat menentukan invers fungsi tanpa melihat rumus?</li>
+            <li>Bagaimana konsep invers fungsi membantu saya memahami dunia di sekitar?</li>
+            <li>Strategi apa yang paling efektif saat menemui kesulitan dalam soal?</li>
+            <li>Apakah saya sudah memanfaatkan pembahasan untuk belajar dari kesalahan?</li>
+            <li>Apa yang akan saya lakukan untuk meningkatkan pemahaman ke depannya?</li>
+          </ul>
+        </div>
+      </div>
+    </section>`;
+}
+
+function buildThanks() {
+  return `
+    <section class="slide thanks" data-index="31">
+      <div class="eyebrow" style="justify-content:center;">Penutup</div>
+      <h1 class="thanks-title">Thank You<em>for today</em></h1>
+      <p class="thanks-subtitle">Terima kasih sudah mengikuti presentasi sampai selesai. Semoga materi invers fungsi ini bermanfaat dan menjadi bekal untuk pembelajaran berikutnya.</p>
+      <div class="thanks-decoration">
+        <span>Invers Fungsi</span>
+        <span>20 Soal Latihan</span>
+        <span>Matematika Kelas XI</span>
+        <span>Sampai Jumpa Lagi</span>
+      </div>
+    </section>`;
+}
+
+// Final slide: extra "summary" slide
+function buildSummary() {
+  return `
+    <section class="slide thanks" data-index="32">
+      <div class="eyebrow" style="justify-content:center;">Ringkasan Akhir</div>
+      <h1 class="thanks-title">Sampai Jumpa<em>di Pertemuan Berikutnya</em></h1>
+      <p class="thanks-subtitle">Pertahankan rasa ingin tahu. Matematika bukan tentang menghafal rumus, tetapi tentang memahami pola dan logika di baliknya.</p>
+      <div class="thanks-decoration">
+        <span>$f(x) \\circ f^{-1}(x) = x$</span>
+        <span>Keep Learning</span>
+        <span>Stay Curious</span>
+      </div>
+    </section>`;
+}
+
+// === Math particles ===
+function initParticles() {
+  const symbols = ['f', 'f⁻¹', 'x', 'y', '∫', '∑', '√', '∞', 'π', 'log', 'dx', 'Σ'];
+  const container = document.getElementById('mathParticles');
+  for (let i = 0; i < 16; i++) {
+    const span = document.createElement('span');
+    span.textContent = symbols[i % symbols.length];
+    span.style.left = Math.random() * 100 + '%';
+    span.style.fontSize = (2 + Math.random() * 4) + 'rem';
+    span.style.animationDuration = (20 + Math.random() * 20) + 's';
+    span.style.animationDelay = -(Math.random() * 30) + 's';
+    container.appendChild(span);
+  }
+}
+
+// === Navigation ===
+function goToSlide(index) {
+  if (index < 0 || index >= totalSlides) return;
+  const slides = document.querySelectorAll('.slide');
+  slides.forEach((s, i) => {
+    s.classList.remove('active');
+    if (i === index) s.classList.add('active');
+  });
+  currentSlide = index;
+  updateUI();
+  if (index === 29) {
+    setTimeout(renderResults, 200);
+  }
+  // Re-typeset MathJax on the active slide
+  if (window.MathJax && MathJax.typesetPromise) {
+    MathJax.typesetPromise([slides[index]]).catch(()=>{});
+  }
+}
+
+function nextSlide() { goToSlide(currentSlide + 1); }
+function prevSlide() { goToSlide(currentSlide - 1); }
+
+function updateUI() {
+  document.getElementById('currentSlide').textContent = String(currentSlide + 1).padStart(2, '0');
+  document.getElementById('totalSlides').textContent = String(totalSlides).padStart(2, '0');
+  document.getElementById('progress').style.width = ((currentSlide + 1) / totalSlides * 100) + '%';
+  document.getElementById('prevBtn').disabled = currentSlide === 0;
+  document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+}
+
+// === Quiz logic ===
+function selectOption(qNum, optIndex) {
+  if (results[qNum]) return; // already answered
+  answers[qNum] = optIndex;
+  const opts = document.querySelectorAll(`.option[data-q="${qNum}"]`);
+  opts.forEach((o, i) => {
+    o.classList.remove('selected');
+    if (i === optIndex) o.classList.add('selected');
+  });
+  document.getElementById(`checkBtn-${qNum}`).disabled = false;
+  document.getElementById(`checkBtn-${qNum}`).classList.add('hint-pulse');
+}
+
+function checkAnswer(qNum) {
+  if (results[qNum] || answers[qNum] === undefined) return;
+  const q = questions[qNum - 1];
+  const selected = answers[qNum];
+  const isCorrect = selected === q.correct;
+  results[qNum] = isCorrect ? 'correct' : 'wrong';
+  
+  const opts = document.querySelectorAll(`.option[data-q="${qNum}"]`);
+  opts.forEach((o, i) => {
+    o.classList.add('disabled');
+    o.classList.remove('selected');
+    if (i === q.correct) o.classList.add('correct');
+    else if (i === selected) o.classList.add('wrong');
+  });
+  
+  const status = document.getElementById(`status-${qNum}`);
+  status.className = 'status-pill show ' + (isCorrect ? 'correct' : 'wrong');
+  status.innerHTML = isCorrect ? '✓ Jawaban Benar' : '✗ Jawaban Salah';
+  
+  document.getElementById(`explanation-${qNum}`).classList.add('show');
+  document.getElementById(`checkBtn-${qNum}`).disabled = true;
+  document.getElementById(`checkBtn-${qNum}`).classList.remove('hint-pulse');
+}
+
+function resetQuestion(qNum) {
+  if (results[qNum]) {
+    delete results[qNum];
+    delete answers[qNum];
+    const opts = document.querySelectorAll(`.option[data-q="${qNum}"]`);
+    opts.forEach(o => {
+      o.classList.remove('selected', 'correct', 'wrong', 'disabled');
+    });
+    document.getElementById(`status-${qNum}`).className = 'status-pill';
+    document.getElementById(`status-${qNum}`).innerHTML = '';
+    document.getElementById(`explanation-${qNum}`).classList.remove('show');
+    document.getElementById(`checkBtn-${qNum}`).disabled = true;
+  } else {
+    delete answers[qNum];
+    const opts = document.querySelectorAll(`.option[data-q="${qNum}"]`);
+    opts.forEach(o => o.classList.remove('selected'));
+    document.getElementById(`checkBtn-${qNum}`).disabled = true;
+  }
+}
+
+// === Results ===
+function renderResults() {
+  const correctCount = Object.values(results).filter(r => r === 'correct').length;
+  const wrongCount = Object.values(results).filter(r => r === 'wrong').length;
+  const unanswered = 20 - correctCount - wrongCount;
+  const score = Math.round((correctCount / 20) * 100);
+  
+  document.getElementById('correctCount').textContent = correctCount;
+  document.getElementById('wrongCount').textContent = wrongCount;
+  document.getElementById('unansweredCount').textContent = unanswered;
+  
+  // Animate score number
+  const numEl = document.getElementById('scoreNumber');
+  let current = 0;
+  const target = score;
+  const inc = target / 60;
+  const timer = setInterval(() => {
+    current += inc;
+    if (current >= target) { current = target; clearInterval(timer); }
+    numEl.textContent = Math.round(current);
+  }, 20);
+  
+  // Animate progress circle
+  const circumference = 2 * Math.PI * 120;
+  const offset = circumference - (score / 100) * circumference;
+  document.getElementById('progressCircle').style.strokeDashoffset = offset;
+  
+  // Verdict
+  let verdict;
+  if (score >= 85) verdict = 'Luar biasa! Anda menguasai materi invers fungsi dengan sangat baik. 🌟';
+  else if (score >= 70) verdict = 'Bagus! Pemahaman Anda sudah baik. Tingkatkan lagi untuk hasil maksimal.';
+  else if (score >= 50) verdict = 'Cukup baik. Review kembali materi dan coba ulang soal yang masih salah.';
+  else verdict = 'Jangan menyerah! Pelajari kembali materi dari awal dan kerjakan ulang dengan tenang.';
+  document.getElementById('verdict').textContent = verdict;
+  
+  // Confetti if high score
+  if (score >= 80) launchConfetti();
+}
+
+function launchConfetti() {
+  const colors = ['#fbbf24', '#2dd4bf', '#f87171', '#4ade80', '#f59e0b'];
+  const container = document.getElementById('confetti');
+  for (let i = 0; i < 80; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.left = Math.random() * 100 + '%';
+    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.animationDuration = (2 + Math.random() * 3) + 's';
+    piece.style.animationDelay = Math.random() * 1 + 's';
+    piece.style.transform = `rotate(${Math.random() * 360}deg)`;
+    container.appendChild(piece);
+    setTimeout(() => piece.remove(), 5000);
+  }
+}
+
+// === Init ===
+function init() {
+  const deck = document.getElementById('deck');
+  deck.innerHTML = 
+    buildCover() +
+    buildTOC() +
+    buildMateri1() +
+    buildMateri2() +
+    buildMateri3() +
+    buildMateri4() +
+    buildAplikasi() +
+    buildExamples() +
+    buildQuestions() +
+    buildResults() +
+    buildConclusion() +
+    buildThanks() +
+    buildSummary();
+  
+  initParticles();
+  updateUI();
+  
+  // Navigation buttons
+  document.getElementById('prevBtn').addEventListener('click', prevSlide);
+  document.getElementById('nextBtn').addEventListener('click', nextSlide);
+  
+  // Keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextSlide(); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); prevSlide(); }
+  });
+  
+  // TOC click navigation
+  document.querySelectorAll('.toc-item').forEach((item, i) => {
+    item.addEventListener('click', () => goToSlide(i + 2));
+  });
+  
+  // Initial MathJax typeset
+  window.addEventListener('load', () => {
+    if (window.MathJax && MathJax.typesetPromise) {
+      MathJax.typesetPromise().catch(()=>{});
+    }
+  });
+  
+  // Also try when MathJax becomes available
+  const checkMJ = setInterval(() => {
+    if (window.MathJax && MathJax.typesetPromise) {
+      MathJax.typesetPromise().catch(()=>{});
+      clearInterval(checkMJ);
+    }
+  }, 500);
+  setTimeout(() => clearInterval(checkMJ), 10000);
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
