@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Latihan Soal — Fungsi Genap & Ganjil</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700;9..144,900&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  :root{
+    --bg:#0a0c0a;
+    --bg-2:#0f1311;
+    --card:#14181600;
+    --ink:#f5f3ee;
+    --muted:#8a958f;
+    --line:rgba(245,243,238,0.09);
+    --even:#5ee2a0;   /* hijau mint */
+    --odd:#ffb86b;    /* oranye */
+    --gold:#f4d35e;
+    --danger:#ff6b6b;
+    --border-even:rgba(94,226,160,0.35);
+    --border-odd:rgba(255,184,107,0.35);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:'Space Grotesk',sans-serif;-webkit-font-smoothing:antialiased}
+  body{
+    min-height:100vh;
+    background:
+      radial-gradient(1200px 600px at 85% -10%, rgba(94,226,160,0.10), transparent 60%),
+      radial-gradient(900px 500px at -10% 30%, rgba(255,184,107,0.08), transparent 55%),
+      radial-gradient(700px 400px at 60% 100%, rgba(244,211,94,0.06), transparent 60%),
+      var(--bg);
+    overflow-x:hidden;
+  }
+  /* grid backdrop */
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    background-image:
+      linear-gradient(rgba(245,243,238,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(245,243,238,0.025) 1px, transparent 1px);
+    background-size:60px 60px;
+    pointer-events:none;
+    z-index:0;
+    mask-image:radial-gradient(circle at 50% 40%, black 0%, transparent 75%);
+  }
+
+  /* floating math symbols */
+  .floating{
+    position:fixed;
+    pointer-events:none;
+    font-family:'Fraunces',serif;
+    color:rgba(245,243,238,0.04);
+    z-index:0;
+    user-select:none;
+    font-weight:900;
+  }
+
+  .wrap{position:relative; z-index:1; max-width:1180px; margin:0 auto; padding:36px 24px 120px}
+
+  /* header */
+  header.hero{
+    border:1px solid var(--line);
+    border-radius:28px;
+    padding:42px 40px 36px;
+    background:linear-gradient(135deg, rgba(20,24,22,0.7), rgba(10,12,10,0.4));
+    backdrop-filter:blur(8px);
+    position:relative;
+    overflow:hidden;
+    margin-bottom:28px;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute; inset:-1px;
+    border-radius:28px;
+    background:linear-gradient(135deg, rgba(94,226,160,0.5), transparent 30%, transparent 70%, rgba(255,184,107,0.4));
+    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor; mask-composite:exclude;
+    padding:1px; pointer-events:none;
+  }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:10px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px; letter-spacing:0.18em; text-transform:uppercase;
+    color:var(--muted);
+    padding:6px 14px;
+    border:1px solid var(--line);
+    border-radius:999px;
+    background:rgba(255,255,255,0.02);
+  }
+  .eyebrow .dot{width:7px; height:7px; border-radius:50%; background:var(--even); box-shadow:0 0 12px var(--even); animation:pulse 2.2s infinite}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.4)}}
+
+  h1.title{
+    font-family:'Fraunces',serif;
+    font-weight:900;
+    font-size:clamp(38px, 6vw, 72px);
+    line-height:0.95;
+    letter-spacing:-0.02em;
+    margin:18px 0 14px;
+  }
+  h1.title .accent{
+    background:linear-gradient(120deg, var(--even) 0%, var(--gold) 60%, var(--odd) 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    font-style:italic;
+  }
+  .sub{color:var(--muted); font-size:15px; max-width:640px; line-height:1.55}
+
+  /* theory card */
+  .theory{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:14px;
+    margin-top:28px;
+  }
+  .theory-card{
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:18px 20px;
+    background:rgba(255,255,255,0.02);
+    position:relative;
+  }
+  .theory-card.even{border-color:var(--border-even)}
+  .theory-card.odd{border-color:var(--border-odd)}
+  .theory-card h3{
+    margin:0 0 8px;
+    font-family:'Fraunces',serif;
+    font-size:22px;
+    font-weight:700;
+    display:flex; align-items:center; gap:10px;
+  }
+  .theory-card.even h3{color:var(--even)}
+  .theory-card.odd h3{color:var(--odd)}
+  .theory-card .formula{
+    font-family:'JetBrains Mono',monospace;
+    font-size:13px;
+    background:rgba(0,0,0,0.3);
+    padding:6px 10px;
+    border-radius:8px;
+    display:inline-block;
+    margin-bottom:8px;
+    border:1px solid var(--line);
+  }
+  .theory-card p{margin:0; font-size:13px; color:var(--muted); line-height:1.5}
+  .tag{
+    display:inline-block;
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px; letter-spacing:0.1em;
+    padding:3px 8px; border-radius:6px;
+    margin-right:4px; margin-top:6px;
+    background:rgba(255,255,255,0.05);
+    color:var(--ink);
+  }
+
+  /* progress & controls bar */
+  .control-bar{
+    position:sticky; top:14px; z-index:50;
+    margin:24px 0 30px;
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:14px 18px;
+    background:rgba(12,15,13,0.85);
+    backdrop-filter:blur(14px);
+    display:flex; align-items:center; gap:18px;
+    flex-wrap:wrap;
+  }
+  .progress-wrap{flex:1; min-width:200px}
+  .progress-label{
+    display:flex; justify-content:space-between;
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px; color:var(--muted);
+    margin-bottom:6px; letter-spacing:0.08em; text-transform:uppercase;
+  }
+  .progress-track{
+    height:8px; background:rgba(255,255,255,0.05); border-radius:99px; overflow:hidden;
+    border:1px solid var(--line);
+  }
+  .progress-fill{
+    height:100%; width:0%;
+    background:linear-gradient(90deg, var(--even), var(--gold), var(--odd));
+    border-radius:99px;
+    transition:width .5s cubic-bezier(.2,.8,.2,1);
+    box-shadow:0 0 14px rgba(94,226,160,0.5);
+  }
+  .stat-mini{
+    display:flex; gap:14px;
+    font-family:'JetBrains Mono',monospace; font-size:12px;
+  }
+  .stat-mini span{color:var(--muted)}
+  .stat-mini b{font-weight:700}
+  .stat-mini .correct{color:var(--even)}
+  .stat-mini .wrong{color:var(--danger)}
+  .stat-mini .answered{color:var(--gold)}
+
+  .btn{
+    border:1px solid var(--line);
+    background:rgba(255,255,255,0.03);
+    color:var(--ink);
+    padding:10px 18px;
+    border-radius:12px;
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    font-size:14px;
+    cursor:pointer;
+    display:inline-flex; align-items:center; gap:8px;
+    transition:all .2s ease;
+  }
+  .btn:hover{transform:translateY(-1px); background:rgba(255,255,255,0.06)}
+  .btn-primary{
+    background:linear-gradient(135deg, var(--even), #2bbf7d);
+    color:#0a0c0a; border:none;
+    box-shadow:0 6px 20px rgba(94,226,160,0.3);
+  }
+  .btn-primary:hover{transform:translateY(-2px); box-shadow:0 10px 26px rgba(94,226,160,0.45)}
+  .btn-finish{
+    background:linear-gradient(135deg, var(--gold), #e0a93a);
+    color:#1a1300; border:none;
+    box-shadow:0 6px 20px rgba(244,211,94,0.3);
+  }
+  .btn-finish:hover{transform:translateY(-2px); box-shadow:0 10px 26px rgba(244,211,94,0.45)}
+  .btn-ghost{background:transparent}
+
+  /* questions grid */
+  .questions{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(340px, 1fr));
+    gap:20px;
+  }
+  .q-card{
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:22px;
+    background:linear-gradient(160deg, rgba(20,24,22,0.6), rgba(10,12,10,0.3));
+    position:relative;
+    transition:all .25s ease;
+    overflow:hidden;
+  }
+  .q-card::before{
+    content:"";
+    position:absolute; left:0; top:0; bottom:0; width:3px;
+    background:linear-gradient(180deg, var(--even), var(--odd));
+    opacity:0; transition:opacity .3s;
+  }
+  .q-card.answered::before{opacity:1}
+  .q-card.correct{border-color:var(--border-even); box-shadow:0 0 0 1px var(--border-even), 0 10px 30px rgba(94,226,160,0.12)}
+  .q-card.wrong{border-color:rgba(255,107,107,0.4); box-shadow:0 0 0 1px rgba(255,107,107,0.3), 0 10px 30px rgba(255,107,107,0.1)}
+
+  .q-head{
+    display:flex; align-items:flex-start; justify-content:space-between;
+    margin-bottom:14px;
+  }
+  .q-num{
+    font-family:'Fraunces',serif;
+    font-weight:900; font-size:34px;
+    line-height:1;
+    color:var(--ink);
+    opacity:0.95;
+  }
+  .q-num .slash{color:var(--muted); font-weight:500; font-size:18px; margin-left:2px}
+  .q-badge{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px; letter-spacing:0.1em;
+    padding:4px 10px; border-radius:6px;
+    border:1px solid var(--line);
+    color:var(--muted);
+    text-transform:uppercase;
+  }
+
+  .q-prompt{
+    color:var(--muted); font-size:12px;
+    font-family:'JetBrains Mono',monospace;
+    letter-spacing:0.06em; text-transform:uppercase;
+    margin-bottom:6px;
+  }
+  .q-fn{
+    font-family:'JetBrains Mono',monospace;
+    font-size:17px;
+    background:rgba(0,0,0,0.35);
+    padding:12px 14px;
+    border-radius:10px;
+    border:1px solid var(--line);
+    margin-bottom:16px;
+    word-break:break-word;
+    color:var(--ink);
+  }
+
+  .options{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+  .opt{
+    border:1px solid var(--line);
+    background:rgba(255,255,255,0.02);
+    padding:12px 14px;
+    border-radius:12px;
+    cursor:pointer;
+    display:flex; align-items:center; gap:10px;
+    transition:all .2s;
+    font-size:14px;
+  }
+  .opt:hover{border-color:rgba(245,243,238,0.25); background:rgba(255,255,255,0.04)}
+  .opt input{display:none}
+  .opt .radio{
+    width:18px; height:18px; border-radius:50%;
+    border:2px solid var(--muted);
+    flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    transition:all .2s;
+  }
+  .opt input:checked + .radio{
+    border-color:var(--gold);
+  }
+  .opt input:checked + .radio::after{
+    content:""; width:9px; height:9px; border-radius:50%;
+    background:var(--gold);
+    box-shadow:0 0 8px var(--gold);
+  }
+  .opt:has(input:checked){
+    background:rgba(244,211,94,0.08);
+    border-color:rgba(244,211,94,0.4);
+  }
+  .opt .lbl-odd{color:var(--odd)}
+  .opt .lbl-even{color:var(--even)}
+
+  .q-actions{
+    display:flex; gap:8px; margin-top:14px;
+    flex-wrap:wrap;
+  }
+  .btn-sm{
+    padding:7px 12px; font-size:12px; border-radius:9px;
+    border:1px solid var(--line); background:rgba(255,255,255,0.02);
+    color:var(--ink); cursor:pointer;
+    display:inline-flex; align-items:center; gap:6px;
+    transition:all .2s;
+    font-family:'Space Grotesk',sans-serif; font-weight:500;
+  }
+  .btn-sm:hover{background:rgba(255,255,255,0.06); transform:translateY(-1px)}
+  .btn-sm i{font-size:10px}
+
+  .feedback{
+    margin-top:14px;
+    border-radius:12px;
+    padding:0;
+    max-height:0;
+    overflow:hidden;
+    transition:all .35s ease;
+    border:1px solid transparent;
+  }
+  .feedback.show{
+    max-height:600px;
+    padding:14px 16px;
+    margin-top:14px;
+  }
+  .feedback.correct{
+    background:rgba(94,226,160,0.06);
+    border-color:var(--border-even);
+  }
+  .feedback.wrong{
+    background:rgba(255,107,107,0.06);
+    border-color:rgba(255,107,107,0.3);
+  }
+  .feedback .fb-head{
+    display:flex; align-items:center; gap:8px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px; letter-spacing:0.08em; text-transform:uppercase;
+    margin-bottom:6px;
+  }
+  .feedback.correct .fb-head{color:var(--even)}
+  .feedback.wrong .fb-head{color:var(--danger)}
+  .feedback .fb-ans{
+    font-family:'Fraunces',serif;
+    font-size:18px;
+    font-weight:700;
+    margin-bottom:8px;
+  }
+  .feedback .fb-explain{
+    font-size:13px; color:var(--muted);
+    line-height:1.6;
+    font-family:'JetBrains Mono',monospace;
+    white-space:pre-wrap;
+  }
+
+  /* result modal */
+  .modal-bg{
+    position:fixed; inset:0;
+    background:rgba(5,7,5,0.85);
+    backdrop-filter:blur(10px);
+    display:none;
+    align-items:center; justify-content:center;
+    z-index:100;
+    padding:20px;
+    animation:fadeIn .3s ease;
+  }
+  .modal-bg.show{display:flex}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  .modal{
+    max-width:560px; width:100%;
+    border:1px solid var(--line);
+    border-radius:24px;
+    padding:36px 32px;
+    background:linear-gradient(160deg, rgba(20,24,22,0.95), rgba(10,12,10,0.95));
+    position:relative;
+    overflow:hidden;
+    animation:slideUp .4s cubic-bezier(.2,.8,.2,1);
+  }
+  @keyframes slideUp{from{transform:translateY(30px); opacity:0}to{transform:translateY(0); opacity:1}}
+  .modal::before{
+    content:""; position:absolute; inset:0;
+    background:radial-gradient(400px 200px at 50% -20%, rgba(244,211,94,0.15), transparent 70%);
+    pointer-events:none;
+  }
+  .modal .label{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px; letter-spacing:0.2em; text-transform:uppercase;
+    color:var(--muted); text-align:center;
+  }
+  .modal .score{
+    font-family:'Fraunces',serif;
+    font-weight:900;
+    font-size:96px;
+    line-height:1;
+    text-align:center;
+    margin:10px 0 4px;
+    background:linear-gradient(135deg, var(--even), var(--gold), var(--odd));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .modal .score .max{font-size:32px; color:var(--muted); -webkit-text-fill-color:var(--muted)}
+  .modal .grade-label{
+    text-align:center;
+    font-family:'Fraunces',serif;
+    font-style:italic;
+    font-size:20px;
+    color:var(--ink);
+    margin-bottom:24px;
+  }
+  .modal-stats{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:10px;
+    margin-bottom:24px;
+  }
+  .modal-stat{
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:14px;
+    text-align:center;
+    background:rgba(255,255,255,0.02);
+  }
+  .modal-stat .num{
+    font-family:'Fraunces',serif;
+    font-weight:700;
+    font-size:28px;
+    line-height:1;
+  }
+  .modal-stat .desc{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-top:6px;
+  }
+  .modal-stat.correct .num{color:var(--even)}
+  .modal-stat.wrong .num{color:var(--danger)}
+  .modal-stat.unanswered .num{color:var(--muted)}
+  .modal-actions{display:flex; gap:10px; justify-content:center; flex-wrap:wrap}
+
+  /* review section */
+  .review{
+    margin-top:50px;
+    border-top:1px solid var(--line);
+    padding-top:30px;
+    display:none;
+  }
+  .review.show{display:block}
+  .review h2{
+    font-family:'Fraunces',serif;
+    font-weight:900;
+    font-size:34px;
+    margin:0 0 6px;
+  }
+  .review .desc{color:var(--muted); margin-bottom:24px; font-size:14px}
+  .review-list{display:grid; gap:10px}
+  .review-item{
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:12px 16px;
+    display:flex; align-items:center; gap:14px;
+    background:rgba(255,255,255,0.02);
+  }
+  .review-item .rnum{
+    font-family:'Fraunces',serif;
+    font-weight:700;
+    font-size:18px;
+    width:32px;
+  }
+  .review-item .rfn{
+    font-family:'JetBrains Mono',monospace;
+    font-size:13px;
+    flex:1;
+    color:var(--muted);
+  }
+  .review-item .rresult{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    padding:5px 10px;
+    border-radius:6px;
+    letter-spacing:0.06em; text-transform:uppercase;
+  }
+  .review-item .rresult.correct{background:rgba(94,226,160,0.12); color:var(--even); border:1px solid var(--border-even)}
+  .review-item .rresult.wrong{background:rgba(255,107,107,0.1); color:var(--danger); border:1px solid rgba(255,107,107,0.3)}
+  .review-item .rresult.skip{background:rgba(255,255,255,0.04); color:var(--muted); border:1px solid var(--line)}
+
+  /* footer */
+  footer{
+    margin-top:60px;
+    padding-top:24px;
+    border-top:1px solid var(--line);
+    color:var(--muted);
+    font-size:12px;
+    font-family:'JetBrains Mono',monospace;
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;
+  }
+
+  /* toast */
+  .toast{
+    position:fixed; bottom:30px; left:50%; transform:translateX(-50%) translateY(20px);
+    background:rgba(20,24,22,0.95);
+    border:1px solid var(--line);
+    color:var(--ink);
+    padding:12px 20px;
+    border-radius:12px;
+    font-size:13px;
+    z-index:200;
+    opacity:0; pointer-events:none;
+    transition:all .3s;
+    backdrop-filter:blur(10px);
+    box-shadow:0 10px 30px rgba(0,0,0,0.4);
+  }
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+
+  @media (max-width:640px){
+    .wrap{padding:20px 14px 80px}
+    header.hero{padding:28px 22px}
+    .q-card{padding:18px}
+    .options{grid-template-columns:1fr}
+    .modal .score{font-size:72px}
+    .control-bar{position:relative; top:0}
+  }
+
+  /* scrollbar */
+  ::-webkit-scrollbar{width:10px; height:10px}
+  ::-webkit-scrollbar-track{background:var(--bg)}
+  ::-webkit-scrollbar-thumb{background:rgba(245,243,238,0.1); border-radius:5px}
+  ::-webkit-scrollbar-thumb:hover{background:rgba(245,243,238,0.2)}
+</style>
+</head>
+<body>
+
+<!-- floating math symbols -->
+<div class="floating" style="top:8%; left:5%; font-size:280px; transform:rotate(-15deg)">ƒ</div>
+<div class="floating" style="top:60%; right:3%; font-size:240px; transform:rotate(12deg)">∑</div>
+<div class="floating" style="bottom:5%; left:30%; font-size:200px">π</div>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <header class="hero">
+    <span class="eyebrow"><span class="dot"></span>Matematika · Aljabar &amp; Trigonometri</span>
+    <h1 class="title">Fungsi <span class="accent">Genap</span><br>&amp; Fungsi <span class="accent">Ganjil</span></h1>
+    <p class="sub">Latihan 20 soal pilihan ganda. Tentukan apakah setiap fungsi bersifat genap, ganjil, atau keduanya. Setiap soal dilengkapi tombol cek jawaban dan pembahasan langkah-langkah.</p>
+
+    <div class="theory">
+      <div class="theory-card even">
+        <h3><i class="fa-solid fa-mirror"></i> Fungsi Genap</h3>
+        <span class="formula">f(-x) = f(x)</span>
+        <p>Grafik simetris terhadap sumbu-y (pencerminan).</p>
+        <div>
+          <span class="tag">x²</span><span class="tag">x⁴</span><span class="tag">cos(x)</span><span class="tag">|x|</span>
+        </div>
+      </div>
+      <div class="theory-card odd">
+        <h3><i class="fa-solid fa-rotate"></i> Fungsi Ganjil</h3>
+        <span class="formula">f(-x) = -f(x)</span>
+        <p>Grafik simetris terhadap titik pusat (0,0) — rotasi 180°.</p>
+        <div>
+          <span class="tag">x</span><span class="tag">x³</span><span class="tag">sin(x)</span><span class="tag">tan(x)</span>
+        </div>
+      </div>
+      <div class="theory-card">
+        <h3 style="color:var(--gold)"><i class="fa-solid fa-table-cells"></i> Kaidah Aljabar</h3>
+        <p style="margin-bottom:6px"><b style="color:var(--even)">Genap × Genap = Genap</b></p>
+        <p style="margin-bottom:6px"><b style="color:var(--odd)">Ganjil × Ganjil = Genap</b></p>
+        <p style="margin-bottom:6px"><b style="color:var(--odd)">Ganjil × Genap = Ganjil</b></p>
+        <p><b style="color:var(--even)">Genap / Genap = Genap</b></p>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTROL BAR -->
+  <div class="control-bar">
+    <div class="progress-wrap">
+      <div class="progress-label">
+        <span>Progress Penyelesaian</span>
+        <span><b id="answeredCount">0</b> / 20</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+    <div class="stat-mini">
+      <span>Benar: <b class="correct" id="correctMini">0</b></span>
+      <span>Salah: <b class="wrong" id="wrongMini">0</b></span>
+    </div>
+    <button class="btn btn-finish" id="finishBtn"><i class="fa-solid fa-flag-checkered"></i> Finish Exam</button>
+    <button class="btn btn-ghost" id="resetBtn"><i class="fa-solid fa-arrow-rotate-left"></i> Reset</button>
+  </div>
+
+  <!-- QUESTIONS -->
+  <div class="questions" id="questions"></div>
+
+  <!-- REVIEW -->
+  <section class="review" id="reviewSection">
+    <h2>Ringkasan Jawaban</h2>
+    <p class="desc">Tinjauan singkat setiap soal — bandingkan jawabanmu dengan kunci.</p>
+    <div class="review-list" id="reviewList"></div>
+  </section>
+
+  <footer>
+    <span>Latihan Soal · Fungsi Ganjil &amp; Genap</span>
+    <span>20 Soal Pilihan Ganda</span>
+  </footer>
+</div>
+
+<!-- RESULT MODAL -->
+<div class="modal-bg" id="modalBg">
+  <div class="modal">
+    <div class="label">Hasil Akhir</div>
+    <div class="score"><span id="finalScore">0</span><span class="max">/100</span></div>
+    <div class="grade-label" id="gradeLabel">—</div>
+    <div class="modal-stats">
+      <div class="modal-stat correct">
+        <div class="num" id="finalCorrect">0</div>
+        <div class="desc">Benar</div>
+      </div>
+      <div class="modal-stat wrong">
+        <div class="num" id="finalWrong">0</div>
+        <div class="desc">Salah</div>
+      </div>
+      <div class="modal-stat unanswered">
+        <div class="num" id="finalSkip">0</div>
+        <div class="desc">Kosong</div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" onclick="closeModal()"><i class="fa-solid fa-book-open"></i> Tinjau Pembahasan</button>
+      <button class="btn btn-ghost" onclick="resetAll()"><i class="fa-solid fa-arrow-rotate-left"></i> Ulangi Latihan</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== DATA SOAL =====
+const questions = [
+  { fn:"f(x) = x⁴ − 3x² + 5", answer:"B", explain:"f(-x) = (-x)⁴ − 3(-x)² + 5 = x⁴ − 3x² + 5 = f(x).\nKarena f(-x) = f(x), maka fungsi terbukti genap." },
+  { fn:"f(x) = 2x⁵ − 7x³ + 4x", answer:"A", explain:"f(-x) = 2(-x)⁵ − 7(-x)³ + 4(-x)\n     = -2x⁵ + 7x³ − 4x\n     = -(2x⁵ − 7x³ + 4x) = -f(x).\nKarena f(-x) = -f(x), maka fungsi ganjil." },
+  { fn:"f(x) = cos(3x)", answer:"B", explain:"Gunakan identitas cos(-θ) = cos(θ):\nf(-x) = cos(3(-x)) = cos(-3x) = cos(3x) = f(x).\nMaka fungsi genap." },
+  { fn:"f(x) = sin(5x)", answer:"A", explain:"Gunakan identitas sin(-θ) = -sin(θ):\nf(-x) = sin(5(-x)) = sin(-5x) = -sin(5x) = -f(x).\nMaka fungsi ganjil." },
+  { fn:"f(x) = x · sin(x)", answer:"B", explain:"Perkalian dua fungsi ganjil (x dan sin x):\nf(-x) = (-x) · sin(-x) = (-x)(-sin x) = x · sin(x) = f(x).\nMaka fungsi genap." },
+  { fn:"f(x) = x · cos(x)", answer:"A", explain:"Perkalian fungsi ganjil (x) dan genap (cos x):\nf(-x) = (-x) · cos(-x) = (-x) · cos(x) = -x cos(x) = -f(x).\nMaka fungsi ganjil." },
+  { fn:"f(x) = x³ / (x² + 1)", answer:"A", explain:"Pembagian fungsi ganjil oleh genap:\nf(-x) = (-x)³ / ((-x)² + 1) = -x³ / (x² + 1) = -f(x).\nMaka fungsi ganjil." },
+  { fn:"f(x) = (x⁴ + 2) / (x² + 4)", answer:"B", explain:"Pembagian dua fungsi genap:\nf(-x) = ((-x)⁴ + 2) / ((-x)² + 4) = (x⁴ + 2) / (x² + 4) = f(x).\nMaka fungsi genap." },
+  { fn:"f(x) = |x| + 3", answer:"B", explain:"Sifat nilai mutlak |-x| = |x|:\nf(-x) = |-x| + 3 = |x| + 3 = f(x).\nMaka fungsi genap." },
+  { fn:"f(x) = x · |x|", answer:"A", explain:"Perkalian ganjil (x) dan genap (|x|):\nf(-x) = (-x) · |-x| = (-x) · |x| = -(x · |x|) = -f(x).\nMaka fungsi ganjil." },
+  { fn:"f(x) = tan(2x)", answer:"A", explain:"Sifat tangen tan(-θ) = -tan(θ):\nf(-x) = tan(2(-x)) = tan(-2x) = -tan(2x) = -f(x).\nMaka fungsi ganjil." },
+  { fn:"f(x) = sin(x) / x  (x ≠ 0)", answer:"B", explain:"Pembagian dua fungsi ganjil:\nf(-x) = sin(-x) / (-x) = (-sin(x)) / (-x) = sin(x) / x = f(x).\nMaka fungsi genap." },
+  { fn:"f(x) = x³ − 5x", answer:"A", explain:"Substitusi -x:\nf(-x) = (-x)³ − 5(-x) = -x³ + 5x = -(x³ − 5x) = -f(x).\nTerbukti ganjil." },
+  { fn:"f(x) = 3x⁶ + 2x² − 7", answer:"B", explain:"Substitusi -x:\nf(-x) = 3(-x)⁶ + 2(-x)² − 7 = 3x⁶ + 2x² − 7 = f(x).\nTerbukti genap." },
+  { fn:"f(x) = ³√x", answer:"A", explain:"Akar pangkat ganjil:\nf(-x) = ³√(-x) = ³√(-1 · x) = -³√x = -f(x).\nMaka fungsi ganjil." },
+  { fn:"f(x) = √(x² + 9)", answer:"B", explain:"Substitusi -x:\nf(-x) = √((-x)² + 9) = √(x² + 9) = f(x).\nMaka fungsi genap." },
+  { fn:"f(x) = x / (|x| + 2)", answer:"A", explain:"Pembagian fungsi ganjil (x) oleh genap (|x| + 2):\nf(-x) = (-x) / (|-x| + 2) = -x / (|x| + 2) = -f(x).\nTerbukti ganjil." },
+  { fn:"f(x) = x² · sin²(x)", answer:"B", explain:"Perkalian fungsi genap:\nf(-x) = (-x)² · [sin(-x)]² = x² · (-sin x)² = x² · sin²(x) = f(x).\nMaka fungsi genap." },
+  { fn:"f(x) = tan(x) / (x² + 1)", answer:"A", explain:"Pembagian fungsi ganjil dan genap:\nf(-x) = tan(-x) / ((-x)² + 1) = -tan(x) / (x² + 1) = -f(x).\nMaka fungsi ganjil." },
+  { fn:"f(x) = (x² · cos x) / (|x| + 1)", answer:"B", explain:"Komposisi aljabar genap:\nf(-x) = ((-x)² · cos(-x)) / (|-x| + 1)\n     = (x² · cos x) / (|x| + 1) = f(x).\nMaka fungsi genap." },
+];
+
+// ===== STATE =====
+const userAnswers = new Array(questions.length).fill(null);
+const checkedState = new Array(questions.length).fill(false);
+
+// ===== RENDER QUESTIONS =====
+const container = document.getElementById('questions');
+
+questions.forEach((q, i) => {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  card.id = `qcard-${i}`;
+  card.innerHTML = `
+    <div class="q-head">
+      <div class="q-num">${String(i+1).padStart(2,'0')}<span class="slash">/20</span></div>
+      <div class="q-badge">Soal ${i+1}</div>
+    </div>
+    <div class="q-prompt">Tentukan jenis fungsi</div>
+    <div class="q-fn">${q.fn}</div>
+    <div class="options">
+      <label class="opt">
+        <input type="radio" name="q${i}" value="A">
+        <span class="radio"></span>
+        <span><span class="lbl-odd">A.</span> Fungsi Ganjil</span>
+      </label>
+      <label class="opt">
+        <input type="radio" name="q${i}" value="B">
+        <span class="radio"></span>
+        <span><span class="lbl-even">B.</span> Fungsi Genap</span>
+      </label>
+    </div>
+    <div class="q-actions">
+      <button class="btn-sm" onclick="checkAnswer(${i})"><i class="fa-solid fa-check"></i> Cek Jawaban</button>
+      <button class="btn-sm" onclick="toggleExplain(${i})"><i class="fa-solid fa-lightbulb"></i> Pembahasan</button>
+    </div>
+    <div class="feedback" id="fb-${i}"></div>
+  `;
+  container.appendChild(card);
+
+  // Listen for answer changes
+  card.querySelectorAll(`input[name="q${i}"]`).forEach(input => {
+    input.addEventListener('change', () => {
+      userAnswers[i] = input.value;
+      card.classList.add('answered');
+      updateProgress();
+      // If previously checked, reset feedback
+      if (checkedState[i]) {
+        checkedState[i] = false;
+        document.getElementById(`fb-${i}`).classList.remove('show','correct','wrong');
+        card.classList.remove('correct','wrong');
+      }
+    });
+  });
+});
+
+// ===== CHECK ANSWER =====
+function checkAnswer(i){
+  const fb = document.getElementById(`fb-${i}`);
+  const card = document.getElementById(`qcard-${i}`);
+  if (!userAnswers[i]) {
+    showToast('Pilih jawaban terlebih dahulu ⚠');
+    return;
+  }
+  checkedState[i] = true;
+  const correct = userAnswers[i] === questions[i].answer;
+  const userText = userAnswers[i] === 'A' ? 'Fungsi Ganjil' : 'Fungsi Genap';
+  const correctText = questions[i].answer === 'A' ? 'Fungsi Ganjil' : 'Fungsi Genap';
+
+  card.classList.remove('correct','wrong');
+  fb.classList.remove('correct','wrong');
+
+  if (correct) {
+    card.classList.add('correct');
+    fb.classList.add('correct','show');
+    fb.innerHTML = `
+      <div class="fb-head"><i class="fa-solid fa-circle-check"></i> Jawaban Benar</div>
+      <div class="fb-ans">${questions[i].answer}. ${correctText}</div>
+      <div class="fb-explain">${questions[i].explain}</div>
+    `;
+  } else {
+    card.classList.add('wrong');
+    fb.classList.add('wrong','show');
+    fb.innerHTML = `
+      <div class="fb-head"><i class="fa-solid fa-circle-xmark"></i> Jawaban Kurang Tepat</div>
+      <div class="fb-ans">Jawabanmu: ${userAnswers[i]}. ${userText}</div>
+      <div class="fb-ans" style="color:var(--even)">Jawaban benar: ${questions[i].answer}. ${correctText}</div>
+      <div class="fb-explain">${questions[i].explain}</div>
+    `;
+  }
+  updateProgress();
+}
+
+function toggleExplain(i){
+  const fb = document.getElementById(`fb-${i}`);
+  if (fb.classList.contains('show')) {
+    fb.classList.remove('show');
+    setTimeout(()=>fb.innerHTML='', 350);
+  } else {
+    if (!checkedState[i]) {
+      // Just show explanation without judging
+      const correctText = questions[i].answer === 'A' ? 'Fungsi Ganjil' : 'Fungsi Genap';
+      fb.classList.remove('correct','wrong');
+      fb.classList.add('show');
+      fb.innerHTML = `
+        <div class="fb-head" style="color:var(--gold)"><i class="fa-solid fa-lightbulb"></i> Pembahasan</div>
+        <div class="fb-ans" style="color:var(--gold)">${questions[i].answer}. ${correctText}</div>
+        <div class="fb-explain">${questions[i].explain}</div>
+      `;
+    } else {
+      // Already checked — toggle
+      fb.classList.remove('show');
+      setTimeout(()=>fb.innerHTML='', 350);
+      checkedState[i] = false;
+      document.getElementById(`qcard-${i}`).classList.remove('correct','wrong');
+    }
+  }
+}
+
+// ===== PROGRESS =====
+function updateProgress(){
+  const answered = userAnswers.filter(a => a !== null).length;
+  const correct = userAnswers.filter((a,i) => a !== null && a === questions[i].answer && checkedState[i]).length;
+  const wrong = userAnswers.filter((a,i) => a !== null && a !== questions[i].answer && checkedState[i]).length;
+  document.getElementById('answeredCount').textContent = answered;
+  document.getElementById('correctMini').textContent = correct;
+  document.getElementById('wrongMini').textContent = wrong;
+  document.getElementById('progressFill').style.width = (answered/20*100) + '%';
+}
+
+// ===== FINISH EXAM =====
+document.getElementById('finishBtn').addEventListener('click', finishExam);
+
+function finishExam(){
+  const answered = userAnswers.filter(a => a !== null).length;
+  if (answered === 0) {
+    showToast('Jawab setidaknya satu soal dulu ⚠');
+    return;
+  }
+  const correct = userAnswers.filter((a,i) => a === questions[i].answer).length;
+  const wrong = answered - correct;
+  const skip = 20 - answered;
+  const score = Math.round(correct / 20 * 100);
+
+  document.getElementById('finalScore').textContent = score;
+  document.getElementById('finalCorrect').textContent = correct;
+  document.getElementById('finalWrong').textContent = wrong;
+  document.getElementById('finalSkip').textContent = skip;
+
+  let grade;
+  if (score >= 90) grade = "Luar biasa! Penguasaan materimu sangat baik.";
+  else if (score >= 75) grade = "Bagus! Kamu sudah memahami konsep dengan baik.";
+  else if (score >= 60) grade = "Cukup baik. Tinjau kembali soal yang belum tepat.";
+  else if (score >= 40) grade = "Perlu latihan lagi. Pelajari kembali kaidah dasarnya.";
+  else grade = "Jangan menyerah! Ulangi teori dan coba lagi.";
+  document.getElementById('gradeLabel').textContent = grade;
+
+  document.getElementById('modalBg').classList.add('show');
+  renderReview();
+  document.getElementById('reviewSection').classList.add('show');
+}
+
+function closeModal(){
+  document.getElementById('modalBg').classList.remove('show');
+}
+
+// ===== REVIEW =====
+function renderReview(){
+  const list = document.getElementById('reviewList');
+  list.innerHTML = '';
+  questions.forEach((q, i) => {
+    const userAns = userAnswers[i];
+    const correct = userAns === q.answer;
+    const item = document.createElement('div');
+    item.className = 'review-item';
+    let resultClass, resultText;
+    if (!userAns) { resultClass='skip'; resultText='Kosong'; }
+    else if (correct) { resultClass='correct'; resultText='Benar'; }
+    else { resultClass='wrong'; resultText='Salah'; }
+    const userDisplay = userAns ? (userAns === 'A' ? 'Ganjil' : 'Genap') : '—';
+    const correctDisplay = q.answer === 'A' ? 'Ganjil' : 'Genap';
+    item.innerHTML = `
+      <div class="rnum">${i+1}</div>
+      <div class="rfn">${q.fn}</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted)">Jawaban: <b style="color:var(--ink)">${userDisplay}</b> · Kunci: <b style="color:var(--gold)">${correctDisplay}</b></div>
+      <div class="rresult ${resultClass}">${resultText}</div>
+    `;
+    list.appendChild(item);
+  });
+}
+
+// ===== RESET =====
+document.getElementById('resetBtn').addEventListener('click', resetAll);
+
+function resetAll(){
+  userAnswers.fill(null);
+  checkedState.fill(false);
+  document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+  document.querySelectorAll('.q-card').forEach(c => c.classList.remove('answered','correct','wrong'));
+  document.querySelectorAll('.feedback').forEach(f => { f.classList.remove('show','correct','wrong'); f.innerHTML=''; });
+  document.getElementById('reviewSection').classList.remove('show');
+  document.getElementById('modalBg').classList.remove('show');
+  updateProgress();
+  showToast('Latihan direset — semangat mengerjakan ulang!');
+}
+
+// ===== TOAST =====
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(()=> t.classList.remove('show'), 2400);
+}
+
+// init
+updateProgress();
+</script>
+</body>
+</html>
