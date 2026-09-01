@@ -1,0 +1,1932 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relasi & Fungsi — Latihan Interaktif</title>
+
+<!-- KaTeX untuk rendering persamaan -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,800;9..144,900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg: #0c0a08;
+  --surface: #15110d;
+  --card: #1c1813;
+  --card-elev: #25201a;
+  --border: #2e2820;
+  --border-strong: #3d362b;
+  --accent: #e8b04b;
+  --accent-bright: #f5c46d;
+  --accent-soft: rgba(232, 176, 75, 0.12);
+  --accent-glow: rgba(232, 176, 75, 0.35);
+  --correct: #5cc88a;
+  --correct-soft: rgba(92, 200, 138, 0.14);
+  --wrong: #e76b6b;
+  --wrong-soft: rgba(231, 107, 107, 0.14);
+  --info: #6db4d6;
+  --fg: #f5ede0;
+  --fg-soft: #d4c9b5;
+  --muted: #8a8170;
+  --muted-dim: #5a5347;
+  --display: 'Fraunces', Georgia, serif;
+  --ui: 'Space Grotesk', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+
+body {
+  font-family: var(--ui);
+  background: var(--bg);
+  color: var(--fg);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+  line-height: 1.6;
+  font-size: 16px;
+}
+
+/* Lapisan atmosfer latar */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 15% 0%, rgba(232, 176, 75, 0.10) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 100% 100%, rgba(92, 200, 138, 0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 30% at 50% 50%, rgba(231, 107, 107, 0.04) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(245, 237, 224, 0.012) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(245, 237, 224, 0.012) 1px, transparent 1px);
+  background-size: 56px 56px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.bg-symbols {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+.bg-symbols span {
+  position: absolute;
+  font-family: var(--display);
+  font-style: italic;
+  color: rgba(232, 176, 75, 0.045);
+  font-size: 7rem;
+  animation: float 30s linear infinite;
+  white-space: nowrap;
+  font-weight: 300;
+}
+@keyframes float {
+  0% { transform: translateY(110vh) rotate(-8deg); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-25vh) rotate(8deg); opacity: 0; }
+}
+
+main {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 2rem 1.5rem;
+}
+
+.slide {
+  width: 100%;
+  max-width: 1080px;
+  display: none;
+  animation: slideIn 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.slide.active { display: block; }
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== TOMBOL ===== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.9rem 1.6rem;
+  border: none;
+  border-radius: 10px;
+  font-family: var(--ui);
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+}
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.btn-primary {
+  background: var(--accent);
+  color: #1a1308;
+  box-shadow: 0 4px 24px var(--accent-glow);
+}
+.btn-primary:hover:not(:disabled) {
+  background: var(--accent-bright);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px var(--accent-glow);
+}
+
+.btn-secondary {
+  background: var(--card-elev);
+  color: var(--fg);
+  border: 1px solid var(--border-strong);
+}
+.btn-secondary:hover:not(:disabled) {
+  background: var(--card-elev);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--fg-soft);
+  border: 1px solid var(--border);
+}
+.btn-ghost:hover:not(:disabled) {
+  background: var(--card);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.btn-danger {
+  background: var(--wrong);
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(231, 107, 107, 0.3);
+}
+.btn-danger:hover:not(:disabled) {
+  background: #f47c7c;
+  transform: translateY(-2px);
+}
+
+.btn-add-time {
+  background: transparent;
+  color: var(--accent);
+  border: 1px dashed var(--accent);
+}
+.btn-add-time:hover:not(:disabled) { background: var(--accent-soft); }
+.btn-add-time:disabled {
+  color: var(--muted);
+  border-color: var(--border);
+}
+
+/* ===== COVER ===== */
+.cover {
+  text-align: center;
+  padding: 3rem 1rem 4rem;
+}
+.cover-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 1rem;
+  background: var(--accent-soft);
+  border: 1px solid rgba(232, 176, 75, 0.3);
+  border-radius: 100px;
+  font-size: 0.75rem;
+  color: var(--accent);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 500;
+  margin-bottom: 2rem;
+}
+.cover-badge::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 12px var(--accent-glow);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.6); }
+}
+
+.cover h1 {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: clamp(2.8rem, 7vw, 5.5rem);
+  line-height: 0.95;
+  letter-spacing: -0.025em;
+  margin-bottom: 1.2rem;
+  color: var(--fg);
+}
+.cover h1 .accent {
+  color: var(--accent);
+  font-style: italic;
+  font-weight: 300;
+}
+.cover h1 .ampersand {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--accent), #f5c46d 50%, var(--accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.cover-subtitle {
+  font-size: 1.05rem;
+  color: var(--fg-soft);
+  max-width: 580px;
+  margin: 0 auto 2.5rem;
+  line-height: 1.7;
+}
+
+.cover-meta {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+}
+.cover-meta-item {
+  text-align: left;
+  border-left: 2px solid var(--accent);
+  padding-left: 0.9rem;
+  min-width: 110px;
+}
+.cover-meta-item .label {
+  font-size: 0.7rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 0.2rem;
+}
+.cover-meta-item .value {
+  font-family: var(--display);
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: var(--fg);
+}
+
+.name-form {
+  max-width: 480px;
+  margin: 0 auto;
+}
+.name-input-wrap { position: relative; margin-bottom: 1.2rem; }
+.name-input {
+  width: 100%;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.15rem 1.4rem;
+  color: var(--fg);
+  font-family: var(--ui);
+  font-size: 1.05rem;
+  transition: all 0.25s;
+}
+.name-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+  background: var(--card-elev);
+}
+.name-input::placeholder { color: var(--muted-dim); }
+
+/* ===== QUIZ HEADER ===== */
+.quiz-header {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.2rem;
+  padding: 1rem 1.4rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+.quiz-info-left, .quiz-info-right {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.85rem;
+  color: var(--fg-soft);
+}
+.quiz-info-right { justify-content: flex-end; }
+.student-badge {
+  background: var(--accent-soft);
+  color: var(--accent);
+  padding: 0.3rem 0.8rem;
+  border-radius: 100px;
+  font-weight: 500;
+  font-size: 0.82rem;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.timer-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  padding-bottom: 8px;
+}
+.timer-display {
+  font-family: var(--mono);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.04em;
+  text-shadow: 0 0 24px var(--accent-glow);
+  transition: color 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.timer-display.warning { color: var(--wrong); text-shadow: 0 0 20px rgba(231, 107, 107, 0.4); }
+.timer-display.stopped { color: var(--muted); text-shadow: none; }
+.timer-display .live-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+  animation: pulse 1.5s infinite;
+  display: none;
+}
+.timer-display.running .live-dot { display: inline-block; }
+.timer-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--muted);
+  margin-top: 0.3rem;
+}
+.timer-bar-wrap {
+  position: absolute;
+  bottom: 0;
+  left: 0; right: 0;
+  height: 3px;
+  background: var(--border);
+  border-radius: 100px;
+  overflow: hidden;
+}
+.timer-bar {
+  height: 100%;
+  background: var(--accent);
+  width: 100%;
+  transition: width 0.5s linear, background 0.3s;
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+.timer-bar.warning { background: var(--wrong); box-shadow: 0 0 8px rgba(231,107,107,0.4); }
+
+/* Progress bar */
+.progress-bar {
+  width: 100%;
+  height: 3px;
+  background: var(--border);
+  border-radius: 100px;
+  margin-bottom: 1.2rem;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-bright));
+  border-radius: 100px;
+  transition: width 0.5s;
+  box-shadow: 0 0 12px var(--accent-glow);
+}
+
+/* Question navigator */
+.q-navigator {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.2rem 1.4rem;
+  margin-bottom: 1.2rem;
+}
+.q-navigator-title {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--muted);
+  margin-bottom: 0.9rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+}
+.q-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+  gap: 0.45rem;
+}
+.q-cell {
+  aspect-ratio: 1;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--fg-soft);
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+.q-cell:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-2px);
+}
+.q-cell.current {
+  background: var(--accent);
+  color: #1a1308;
+  border-color: var(--accent);
+  box-shadow: 0 0 14px var(--accent-glow);
+}
+.q-cell.answered {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.q-cell.checked-correct {
+  background: var(--correct);
+  color: #082414;
+  border-color: var(--correct);
+}
+.q-cell.checked-wrong {
+  background: var(--wrong);
+  color: #2a0808;
+  border-color: var(--wrong);
+}
+
+/* Question card */
+.question-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 2.2rem 2.4rem;
+  margin-bottom: 1.2rem;
+  position: relative;
+  overflow: hidden;
+}
+.question-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, var(--accent), transparent 70%);
+}
+.q-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.q-number {
+  font-family: var(--display);
+  font-style: italic;
+  font-size: 1.1rem;
+  color: var(--accent);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+.q-category {
+  font-size: 0.7rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  padding: 0.35rem 0.85rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  font-weight: 600;
+}
+.q-text {
+  font-size: 1.18rem;
+  line-height: 1.7;
+  color: var(--fg);
+  margin-bottom: 1.8rem;
+  font-weight: 400;
+}
+
+.options { display: grid; gap: 0.7rem; }
+.option {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.95rem;
+  padding: 0.95rem 1.2rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+.option:hover {
+  background: var(--card-elev);
+  border-color: var(--accent);
+  transform: translateX(4px);
+}
+.option input { display: none; }
+.option-letter {
+  width: 30px; height: 30px;
+  border-radius: 8px;
+  background: var(--card);
+  border: 1px solid var(--border-strong);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: var(--fg-soft);
+  flex-shrink: 0;
+  transition: all 0.2s;
+  font-family: var(--ui);
+}
+.option-text {
+  flex: 1;
+  padding-top: 4px;
+  color: var(--fg);
+  line-height: 1.55;
+}
+.option.selected {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+.option.selected .option-letter {
+  background: var(--accent);
+  color: #1a1308;
+  border-color: var(--accent);
+}
+.option.correct {
+  background: var(--correct-soft);
+  border-color: var(--correct);
+}
+.option.correct .option-letter {
+  background: var(--correct);
+  color: #082414;
+  border-color: var(--correct);
+}
+.option.wrong {
+  background: var(--wrong-soft);
+  border-color: var(--wrong);
+}
+.option.wrong .option-letter {
+  background: var(--wrong);
+  color: #fff;
+  border-color: var(--wrong);
+}
+.option.disabled { cursor: default; }
+.option.disabled:hover { transform: none; background: var(--surface); }
+.option.selected.disabled:hover,
+.option.correct:hover,
+.option.wrong:hover { transform: none; }
+
+/* Action buttons row */
+.q-actions {
+  display: flex;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
+}
+.q-actions .btn { flex: 1; min-width: 140px; padding: 0.85rem 1.1rem; font-size: 0.92rem; }
+
+/* Explanation */
+.explanation {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent);
+  border-radius: 12px;
+  padding: 1.4rem 1.6rem;
+  margin-top: 1.2rem;
+  display: none;
+  animation: slideDown 0.4s ease-out;
+}
+.explanation.show { display: block; }
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.explanation-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--display);
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--accent);
+  margin-bottom: 0.7rem;
+  font-weight: 500;
+}
+.explanation-body {
+  color: var(--fg-soft);
+  line-height: 1.8;
+  font-size: 0.98rem;
+}
+.explanation-body p { margin-bottom: 0.4rem; }
+.explanation-body .katex { font-size: 1.05em; color: var(--fg); }
+
+/* Navigation */
+.q-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+.q-nav .btn { padding: 0.85rem 1.4rem; }
+
+/* ===== RESULTS ===== */
+.results-hero { text-align: center; margin-bottom: 2.5rem; padding: 1rem 0; }
+.results-hero h2 {
+  font-family: var(--display);
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  font-weight: 900;
+  line-height: 1;
+  margin-bottom: 0.6rem;
+  letter-spacing: -0.02em;
+}
+.results-hero h2 .accent { color: var(--accent); font-style: italic; font-weight: 300; }
+.results-hero p { color: var(--fg-soft); font-size: 1.02rem; }
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.stat-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.4rem 1rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50%;
+  height: 2px;
+  background: var(--accent);
+}
+.stat-card.correct::before { background: var(--correct); }
+.stat-card.wrong::before { background: var(--wrong); }
+.stat-card.time::before { background: var(--info); }
+.stat-value {
+  font-family: var(--display);
+  font-size: 2.6rem;
+  font-weight: 900;
+  line-height: 1;
+  margin-bottom: 0.4rem;
+  letter-spacing: -0.02em;
+}
+.stat-card.correct .stat-value { color: var(--correct); }
+.stat-card.wrong .stat-value { color: var(--wrong); }
+.stat-card.time .stat-value { color: var(--info); font-family: var(--mono); font-size: 2.1rem; }
+.stat-label {
+  font-size: 0.72rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  font-weight: 600;
+}
+.stat-sub { font-size: 0.72rem; color: var(--muted-dim); margin-top: 0.25rem; }
+
+.results-table {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+.results-table-header,
+.results-row {
+  display: grid;
+  grid-template-columns: 50px 1fr 180px 110px 90px;
+  padding: 0.9rem 1.3rem;
+  align-items: center;
+  gap: 0.5rem;
+}
+.results-table-header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  color: var(--muted);
+  font-weight: 700;
+}
+.results-row {
+  border-bottom: 1px solid var(--border);
+  transition: background 0.2s;
+  font-size: 0.88rem;
+}
+.results-row:hover { background: var(--surface); }
+.results-row:last-child { border-bottom: none; }
+.results-row .q-num {
+  font-family: var(--mono);
+  color: var(--accent);
+  font-weight: 700;
+}
+.results-row .q-cat { color: var(--fg-soft); font-size: 0.82rem; }
+.results-row .q-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 100px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  width: fit-content;
+}
+.results-row .q-status.correct { background: var(--correct-soft); color: var(--correct); }
+.results-row .q-status.wrong { background: var(--wrong-soft); color: var(--wrong); }
+.results-row .q-status.unanswered { background: var(--surface); color: var(--muted); }
+.results-row .q-answer {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  color: var(--fg-soft);
+}
+.results-row .q-answer .your-correct { color: var(--correct); }
+.results-row .q-answer .your-wrong { color: var(--wrong); }
+.results-row .q-time { font-family: var(--mono); color: var(--fg-soft); }
+
+@media (max-width: 720px) {
+  .results-table-header, .results-row {
+    grid-template-columns: 40px 1fr 80px;
+    font-size: 0.82rem;
+  }
+  .results-table-header > :nth-child(4),
+  .results-table-header > :nth-child(5),
+  .results-row > :nth-child(4),
+  .results-row > :nth-child(5) { display: none; }
+}
+
+/* ===== CLOSING ===== */
+.closing { max-width: 820px; margin: 0 auto; padding: 1rem 0 3rem; text-align: center; }
+.closing .cover-badge { margin-bottom: 1.5rem; }
+
+.closing-section {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.8rem 2rem;
+  margin-bottom: 1.2rem;
+  text-align: left;
+  position: relative;
+}
+.closing-section-label {
+  font-family: var(--display);
+  font-style: italic;
+  font-size: 0.92rem;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  letter-spacing: 0.03em;
+}
+.closing-section-label::before {
+  content: '';
+  width: 24px;
+  height: 1px;
+  background: var(--accent);
+}
+.closing-section h3 {
+  font-family: var(--display);
+  font-size: 1.55rem;
+  font-weight: 700;
+  margin-bottom: 0.7rem;
+  color: var(--fg);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+.closing-section p {
+  color: var(--fg-soft);
+  line-height: 1.75;
+  font-size: 0.98rem;
+}
+.closing-section ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 0.8rem;
+}
+.closing-section ul li {
+  padding: 0.45rem 0 0.45rem 1.4rem;
+  color: var(--fg-soft);
+  position: relative;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+.closing-section ul li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.85rem;
+  width: 6px; height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+}
+
+.thank-you {
+  margin-top: 2rem;
+  padding: 3rem 2rem;
+  background: linear-gradient(135deg, var(--card) 0%, var(--surface) 100%);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  position: relative;
+  overflow: hidden;
+}
+.thank-you::before {
+  content: '';
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(circle, var(--accent-glow) 0%, transparent 45%);
+  opacity: 0.5;
+  animation: rotate 25s linear infinite;
+}
+@keyframes rotate { to { transform: rotate(360deg); } }
+.thank-you h2 {
+  position: relative;
+  font-family: var(--display);
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  font-weight: 300;
+  font-style: italic;
+  color: var(--accent);
+  margin-bottom: 0.6rem;
+  letter-spacing: -0.01em;
+}
+.thank-you p {
+  position: relative;
+  color: var(--fg-soft);
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+.brand-footer {
+  text-align: center;
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.78rem;
+  color: var(--muted);
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(120px);
+  background: var(--card-elev);
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  padding: 0.9rem 1.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.92rem;
+  color: var(--fg);
+  z-index: 1000;
+  opacity: 0;
+  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+  max-width: 90vw;
+}
+.toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+.toast.success { border-color: var(--correct); color: var(--correct); }
+.toast.error { border-color: var(--wrong); color: var(--wrong); }
+.toast.info { border-color: var(--accent); color: var(--accent); }
+
+@media (max-width: 720px) {
+  main { padding: 1rem 0.8rem; }
+  .quiz-header { grid-template-columns: 1fr; text-align: center; gap: 0.5rem; padding: 1rem; }
+  .quiz-info-left, .quiz-info-right { justify-content: center; }
+  .question-card { padding: 1.4rem 1.3rem; border-radius: 14px; }
+  .q-text { font-size: 1.05rem; }
+  .timer-display { font-size: 1.6rem; }
+  .q-actions .btn { flex: 1 1 100%; }
+  .q-nav { flex-direction: column-reverse; }
+  .q-nav .btn { width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-symbols" aria-hidden="true">
+  <span style="left: 5%; animation-delay: 0s;">f(x)</span>
+  <span style="left: 22%; animation-delay: 7s; font-size: 5rem;">√x</span>
+  <span style="left: 42%; animation-delay: 14s; font-size: 9rem;">f∘g</span>
+  <span style="left: 62%; animation-delay: 4s;">x²</span>
+  <span style="left: 82%; animation-delay: 11s; font-size: 6rem;">f⁻¹</span>
+</div>
+
+<main>
+
+  <!-- ========== COVER ========== -->
+  <section id="cover" class="slide active">
+    <div class="cover">
+      <div class="cover-badge">Matematika SMA · Kelas 11</div>
+      <h1>Relasi <span class="ampersand">&</span> <span class="accent">Fungsi</span></h1>
+      <p class="cover-subtitle">
+        Latihan soal interaktif pilihan ganda berisi 40 soal lengkap dengan pembahasan,
+        timer per soal, dan analisis performa di akhir sesi.
+      </p>
+
+      <div class="cover-meta">
+        <div class="cover-meta-item">
+          <div class="label">Jumlah Soal</div>
+          <div class="value">40 PG</div>
+        </div>
+        <div class="cover-meta-item">
+          <div class="label">Waktu / Soal</div>
+          <div class="value">3 Menit</div>
+        </div>
+        <div class="cover-meta-item">
+          <div class="label">Sub-bab</div>
+          <div class="value">8 Topik</div>
+        </div>
+      </div>
+
+      <form class="name-form" id="nameForm">
+        <div class="name-input-wrap">
+          <input
+            type="text"
+            class="name-input"
+            id="studentName"
+            placeholder="Masukkan nama lengkap kamu..."
+            autocomplete="off"
+            required
+            maxlength="40"
+          >
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">
+          Mulai Latihan
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ========== QUIZ ========== -->
+  <section id="quiz" class="slide">
+    <div class="quiz-header">
+      <div class="quiz-info-left">
+        <span style="color: var(--muted); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.1em;">Siswa</span>
+        <span class="student-badge" id="studentBadge">—</span>
+      </div>
+      <div class="timer-wrap">
+        <div class="timer-display" id="timerDisplay">
+          <span class="live-dot"></span>
+          <span id="timerText">03:00</span>
+        </div>
+        <div class="timer-label">Sisa Waktu</div>
+        <div class="timer-bar-wrap">
+          <div class="timer-bar" id="timerBar"></div>
+        </div>
+      </div>
+      <div class="quiz-info-right">
+        <span style="color: var(--muted); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.1em;">Soal</span>
+        <span class="student-badge" id="qCounter">1 / 40</span>
+      </div>
+    </div>
+
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill" style="width: 2.5%"></div>
+    </div>
+
+    <div class="q-navigator">
+      <div class="q-navigator-title">
+        <span>Peta Soal</span>
+        <span id="navigatorStats">0 dari 40 dijawab</span>
+      </div>
+      <div class="q-grid" id="qGrid"></div>
+    </div>
+
+    <div class="question-card" id="questionCard">
+      <div class="q-meta">
+        <span class="q-number" id="qNumber">Soal 01</span>
+        <span class="q-category" id="qCategory">Konsep Fungsi dan Relasi</span>
+      </div>
+      <div class="q-text" id="qText"></div>
+      <div class="options" id="optionsContainer"></div>
+
+      <div class="q-actions">
+        <button class="btn btn-secondary" id="checkBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Cek Jawaban
+        </button>
+        <button class="btn btn-ghost" id="explanationBtn" disabled>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          Pembahasan
+        </button>
+        <button class="btn btn-add-time" id="addTimeBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          +15 Detik
+        </button>
+      </div>
+
+      <div class="explanation" id="explanationBox">
+        <div class="explanation-header">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          Pembahasan Lengkap
+        </div>
+        <div class="explanation-body" id="explanationBody"></div>
+      </div>
+    </div>
+
+    <div class="q-nav">
+      <button class="btn btn-ghost" id="prevBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Sebelumnya
+      </button>
+      <button class="btn btn-danger" id="finishBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        Selesai & Lihat Hasil
+      </button>
+      <button class="btn btn-ghost" id="nextBtn">
+        Selanjutnya
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- ========== RESULTS ========== -->
+  <section id="results" class="slide">
+    <div class="results-hero">
+      <div class="cover-badge">Hasil Latihan</div>
+      <h2>Halo, <span class="accent" id="resultName">Siswa</span></h2>
+      <p>Berikut rangkuman performamu pada latihan Relasi &amp; Fungsi.</p>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card correct">
+        <div class="stat-value" id="correctCount">0</div>
+        <div class="stat-label">Jawaban Benar</div>
+      </div>
+      <div class="stat-card wrong">
+        <div class="stat-value" id="wrongCount">0</div>
+        <div class="stat-label">Jawaban Salah</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="unansweredCount">0</div>
+        <div class="stat-label">Tidak Dijawab</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="scorePercent">0%</div>
+        <div class="stat-label">Skor Akhir</div>
+      </div>
+      <div class="stat-card time">
+        <div class="stat-value" id="avgTime">0:00</div>
+        <div class="stat-label">Rata-rata Waktu</div>
+        <div class="stat-sub">per soal</div>
+      </div>
+      <div class="stat-card time">
+        <div class="stat-value" id="totalTime">0:00</div>
+        <div class="stat-label">Total Waktu</div>
+        <div class="stat-sub">pengerjaan</div>
+      </div>
+    </div>
+
+    <div class="results-table">
+      <div class="results-table-header">
+        <div>No</div>
+        <div>Topik</div>
+        <div>Jawaban</div>
+        <div>Status</div>
+        <div>Waktu</div>
+      </div>
+      <div id="resultsBody"></div>
+    </div>
+
+    <div style="text-align: center; margin: 2rem 0;">
+      <button class="btn btn-primary" id="goToClosingBtn" style="padding: 1rem 2.4rem;">
+        Lanjut ke Refleksi
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- ========== CLOSING ========== -->
+  <section id="closing" class="slide">
+    <div class="closing">
+      <div class="cover-badge">Penutup Sesi</div>
+
+      <div class="closing-section">
+        <div class="closing-section-label">Kesimpulan</div>
+        <h3>Apa yang Sudah Kamu Pelajari?</h3>
+        <p>
+          Melalui latihan ini, kamu telah mengeksplorasi konsep relasi dan fungsi secara menyeluruh.
+          Materi yang kamu kerjakan mencakup ranah Kompetensi Dasar Matematika SMA kelas 11:
+        </p>
+        <ul>
+          <li>Definisi fungsi, relasi, dan uji garis vertikal pada sistem koordinat Kartesius.</li>
+          <li>Klasifikasi fungsi berdasarkan sifatnya: surjektif, injektif, dan bijektif.</li>
+          <li>Penentuan domain alami fungsi, khususnya yang memuat bentuk akar dan pecahan.</li>
+          <li>Operasi aljabar pada fungsi: penjumlahan, pengurangan, perkalian, dan pembagian.</li>
+          <li>Sifat simetri fungsi ganjil dan fungsi genap.</li>
+          <li>Komposisi fungsi, baik menentukan hasil komposisi maupun menyusun fungsi pembentuknya.</li>
+          <li>Invers fungsi, termasuk invers dari hasil komposisi fungsi.</li>
+        </ul>
+      </div>
+
+      <div class="closing-section">
+        <div class="closing-section-label">Refleksi Diri</div>
+        <h3>Coba Tanyakan pada Diri Sendiri</h3>
+        <p>
+          Ambil sejenak untuk merenungkan pengalaman belajarmu hari ini. Pertanyaan-pertanyaan
+          berikut dapat membantumu mengukur pemahaman dan menyusun strategi belajar selanjutnya:
+        </p>
+        <ul>
+          <li>Sub-bab mana yang paling terasa menantang? Mengapa begitu?</li>
+          <li>Apakah waktu tiga menit per soal cukup, atau ada soal yang membuatmu tersendat?</li>
+          <li>Apakah kamu lebih sering salah pada soal konseptual atau soal hitungan?</li>
+          <li>Strategi apa yang bisa kamu coba lain kali untuk meningkatkan kecepatan dan ketepatan?</li>
+          <li>Apakah ada konsep yang perlu kamu pelajari ulang atau diskusikan dengan guru?</li>
+        </ul>
+      </div>
+
+      <div class="thank-you">
+        <h2>Thank You for Today</h2>
+        <p>Setiap langkah kecil membentuk pemahaman besar. Sampai jumpa di petualangan matematika berikutnya.</p>
+      </div>
+
+      <div style="text-align: center; margin-top: 2rem;">
+        <button class="btn btn-secondary" id="restartBtn" style="padding: 0.9rem 2rem;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+          Kerjakan Ulang
+        </button>
+      </div>
+
+      <div class="brand-footer">— Modul Latihan Matematika · Relasi &amp; Fungsi —</div>
+    </div>
+  </section>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===== DATA SOAL ===== */
+const questions = [
+  // A. Konsep Fungsi dan Relasi
+  { n:1, cat:"Konsep Fungsi dan Relasi",
+    q:"Suatu relasi dari himpunan A ke himpunan B disebut fungsi apabila...",
+    opts:["Setiap anggota B dipasangkan dengan tepat satu anggota A",
+          "Setiap anggota A dipasangkan dengan sekurang-kurangnya satu anggota B",
+          "Setiap anggota A dipasangkan dengan tepat satu anggota B",
+          "Ada anggota A yang memiliki lebih dari satu pasangan di B",
+          "Setiap anggota A tidak harus memiliki pasangan di B"],
+    correct:2,
+    exp:"Definisi fungsi dari himpunan A ke B adalah suatu relasi yang memasangkan setiap anggota himpunan A (domain) dengan tepat satu anggota di himpunan B (kodomain)." },
+  { n:2, cat:"Konsep Fungsi dan Relasi",
+    q:"Di antara himpunan pasangan berurutan berikut, manakah yang merupakan fungsi?",
+    opts:["$\\{(1, a), (1, b), (2, c), (3, d)\\}$",
+          "$\\{(1, a), (2, b), (3, c), (4, c)\\}$",
+          "$\\{(1, a), (2, a), (2, b), (3, c)\\}$",
+          "$\\{(1, a), (2, b), (1, c), (3, d)\\}$",
+          "$\\{(1, a), (2, b), (3, c), (3, d)\\}$"],
+    correct:1,
+    exp:"Syarat fungsi dalam pasangan berurutan adalah elemen pertama (domain) tidak boleh berulang. Pada pilihan B, elemen pertamanya adalah 1, 2, 3, dan 4 yang semuanya unik dan dipasangkan ke kodomain dengan tepat satu nilai." },
+  { n:3, cat:"Konsep Fungsi dan Relasi",
+    q:"Dari persamaan-persamaan berikut, manakah yang mendefinisikan $y$ sebagai fungsi dari $x$?",
+    opts:["$x^2 + y^2 = 25$","$x = y^2 + 2$","$y = x^2 - 3x + 4$","$|y| = x + 1$","$y^2 = x$"],
+    correct:2,
+    exp:"$y$ sebagai fungsi dari $x$ berarti untuk setiap nilai $x$ hanya menghasilkan tepat satu nilai $y$. Persamaan $y = x^2 - 3x + 4$ (pilihan C) memenuhi syarat ini, sedangkan persamaan seperti $x^2 + y^2 = 25$ menghasilkan $y = \\pm\\sqrt{25 - x^2}$ yang memberikan dua nilai $y$." },
+  { n:4, cat:"Konsep Fungsi dan Relasi",
+    q:"Diketahui fungsi $f(x) = 3x - 1$ dengan daerah asal (domain) $D_f = \\{x \\mid -1 \\leq x \\leq 2,\\ x \\in \\mathbb{Z}\\}$. Daerah hasil (range) fungsi tersebut adalah...",
+    opts:["$\\{-4, -1, 2, 5\\}$","$\\{-4, -2, 1, 4\\}$","$\\{-1, 0, 1, 2\\}$","$\\{-2, 1, 4, 7\\}$","$\\{-4, -1, 3, 5\\}$"],
+    correct:0,
+    exp:"Domain $D_f = \\{-1, 0, 1, 2\\}$. Substitusi ke $f(x)$: $f(-1) = 3(-1) - 1 = -4$; $f(0) = 3(0) - 1 = -1$; $f(1) = 3(1) - 1 = 2$; $f(2) = 3(2) - 1 = 5$. Maka Range $= \\{-4, -1, 2, 5\\}$." },
+  { n:5, cat:"Konsep Fungsi dan Relasi",
+    q:"Pada sistem koordinat Kartesius, uji garis vertikal digunakan untuk menentukan apakah suatu grafik adalah fungsi. Sebuah grafik dikatakan mewakili fungsi jika dan hanya jika...",
+    opts:["Garis vertikal memotong grafik di dua titik",
+          "Tidak ada garis vertikal yang memotong grafik lebih dari satu titik",
+          "Garis vertikal memotong grafik di tepat dua titik",
+          "Garis horizontal memotong grafik di tepat satu titik",
+          "Garis horizontal tidak memotong grafik"],
+    correct:1,
+    exp:"Uji garis vertikal memverifikasi bahwa satu nilai $x$ hanya memiliki satu nilai $y$. Jika ada garis vertikal yang memotong grafik lebih dari satu titik, maka itu bukan fungsi." },
+
+  // B. Sifat-Sifat Fungsi
+  { n:6, cat:"Sifat-Sifat Fungsi",
+    q:"Fungsi $f : A \\to B$ disebut fungsi surjektif (onto) jika memenuhi syarat...",
+    opts:["Setiap anggota A memiliki pasangan yang berbeda di B",
+          "Range dari f merupakan himpunan bagian sejati dari kodomain",
+          "Daerah hasil (range) fungsi f sama dengan kodomain fungsi tersebut",
+          "Setiap anggota B memiliki tepat satu prapeta di A",
+          "Domain fungsi f sama dengan kodomainnya"],
+    correct:2,
+    exp:"Fungsi surjektif (onto) adalah fungsi di mana seluruh anggota kodomain memiliki pasangan di domain. Dengan kata lain, himpunan daerah hasil (range) persis sama dengan himpunan kodomain." },
+  { n:7, cat:"Sifat-Sifat Fungsi",
+    q:"Fungsi $f : \\mathbb{R} \\to \\mathbb{R}$ yang didefinisikan dengan $f(x) = x^2$ merupakan fungsi...",
+    opts:["Injektif dan surjektif","Injektif tetapi tidak surjektif","Surjektif tetapi tidak injektif","Bukan injektif dan bukan surjektif","Bijektif"],
+    correct:3,
+    exp:"$f(x) = x^2$ pada $\\mathbb{R} \\to \\mathbb{R}$. Bukan injektif karena $f(-1) = f(1) = 1$ (satu hasil, prapetanya lebih dari satu). Bukan surjektif karena tidak ada $x \\in \\mathbb{R}$ yang memenuhi $x^2 = -1$ (range hanya $y \\geq 0$)." },
+  { n:8, cat:"Sifat-Sifat Fungsi",
+    q:"Suatu fungsi $f(x) = 2x + 5$ dengan domain bilangan real ($\\mathbb{R}$) dan kodomain bilangan real ($\\mathbb{R}$) termasuk jenis fungsi...",
+    opts:["Bijektif","Konstan","Genap","Ganjil","Hanya injektif (tidak surjektif)"],
+    correct:0,
+    exp:"Fungsi linear $f(x) = 2x + 5$ adalah fungsi satu-satu (injektif) dan daerah hasilnya meliputi semua bilangan real (surjektif). Karena memenuhi keduanya, disebut fungsi bijektif." },
+  { n:9, cat:"Sifat-Sifat Fungsi",
+    q:"Suatu fungsi disebut fungsi injektif apabila...",
+    opts:["Daerah asalnya sama dengan daerah hasilnya",
+          "Untuk setiap $x_1, x_2$ di domain, jika $f(x_1) = f(x_2)$ maka $x_1 = x_2$",
+          "Daerah hasil fungsi tersebut sama dengan kodomainnya",
+          "Grafiknya selalu naik",
+          "Grafiknya simetris terhadap sumbu Y"],
+    correct:1,
+    exp:"Definisi dari fungsi injektif (satu-satu) adalah jika $f(x_1) = f(x_2)$ maka haruslah $x_1 = x_2$. Anggota kodomain tidak boleh memiliki lebih dari satu prapeta." },
+  { n:10, cat:"Sifat-Sifat Fungsi",
+    q:"Di antara fungsi-fungsi dengan pemetaan $f : \\mathbb{R} \\to \\mathbb{R}$ berikut, manakah yang merupakan fungsi bijektif?",
+    opts:["$f(x) = x^2 - 1$","$f(x) = |x|$","$f(x) = \\cos(x)$","$f(x) = x^3$","$f(x) = x^4$"],
+    correct:3,
+    exp:"Fungsi $f(x) = x^3$ memetakan setiap $x \\in \\mathbb{R}$ ke nilai $y$ yang unik (injektif) dan mencakup seluruh bilangan real (surjektif), sehingga termasuk fungsi bijektif." },
+
+  // C. Domain Fungsi
+  { n:11, cat:"Domain Fungsi",
+    q:"Daerah asal (domain) dari fungsi $f(x) = \\sqrt{x^2 - 16}$ agar terdefinisi di bilangan real adalah...",
+    opts:["$\\{x \\mid -4 \\leq x \\leq 4\\}$",
+          "$\\{x \\mid x < -4 \\text{ atau } x > 4\\}$",
+          "$\\{x \\mid x \\leq -4 \\text{ atau } x \\geq 4\\}$",
+          "$\\{x \\mid x \\neq 4\\}$",
+          "$\\{x \\mid x \\geq 16\\}$"],
+    correct:2,
+    exp:"Syarat agar akar terdefinisi secara real adalah bilangan di dalam akar $\\geq 0$. $x^2 - 16 \\geq 0 \\Rightarrow (x-4)(x+4) \\geq 0$. Himpunan penyelesaian: $x \\leq -4$ atau $x \\geq 4$." },
+  { n:12, cat:"Domain Fungsi",
+    q:"Domain alami dari fungsi $g(x) = \\sqrt{25 - x^2}$ adalah...",
+    opts:["$\\{x \\mid x \\leq -5 \\text{ atau } x \\geq 5\\}$",
+          "$\\{x \\mid -5 < x < 5\\}$",
+          "$\\{x \\mid -25 \\leq x \\leq 25\\}$",
+          "$\\{x \\mid -5 \\leq x \\leq 5\\}$",
+          "$\\{x \\mid x \\geq 0\\}$"],
+    correct:3,
+    exp:"$25 - x^2 \\geq 0 \\Rightarrow x^2 - 25 \\leq 0 \\Rightarrow (x-5)(x+5) \\leq 0$. Penyelesaiannya adalah $-5 \\leq x \\leq 5$." },
+  { n:13, cat:"Domain Fungsi",
+    q:"Syarat agar fungsi $h(x) = \\sqrt{x^2 - 7x + 10}$ terdefinisi pada himpunan bilangan real adalah...",
+    opts:["$\\{x \\mid 2 \\leq x \\leq 5\\}$",
+          "$\\{x \\mid x \\leq 2 \\text{ atau } x \\geq 5\\}$",
+          "$\\{x \\mid x < 2 \\text{ atau } x > 5\\}$",
+          "$\\{x \\mid x \\leq -5 \\text{ atau } x \\geq -2\\}$",
+          "$\\{x \\mid -5 \\leq x \\leq -2\\}$"],
+    correct:1,
+    exp:"$x^2 - 7x + 10 \\geq 0 \\Rightarrow (x-2)(x-5) \\geq 0$. Penyelesaiannya: $x \\leq 2$ atau $x \\geq 5$." },
+  { n:14, cat:"Domain Fungsi",
+    q:"Domain dari fungsi $f(x) = \\sqrt{2x^2 + 5x - 3}$ adalah...",
+    opts:["$\\{x \\mid x \\leq -3 \\text{ atau } x \\geq \\tfrac{1}{2}\\}$",
+          "$\\{x \\mid -3 \\leq x \\leq \\tfrac{1}{2}\\}$",
+          "$\\{x \\mid x \\leq -\\tfrac{1}{2} \\text{ atau } x \\geq 3\\}$",
+          "$\\{x \\mid -\\tfrac{1}{2} \\leq x \\leq 3\\}$",
+          "$\\{x \\mid x \\geq \\tfrac{1}{2}\\}$"],
+    correct:0,
+    exp:"$2x^2 + 5x - 3 \\geq 0 \\Rightarrow (2x-1)(x+3) \\geq 0$. Akar-akarnya $x = \\tfrac{1}{2}$ dan $x = -3$. Penyelesaian pertidaksamaan: $x \\leq -3$ atau $x \\geq \\tfrac{1}{2}$." },
+  { n:15, cat:"Domain Fungsi",
+    q:"Agar fungsi $f(x) = \\dfrac{1}{\\sqrt{-x^2 + x + 6}}$ bernilai real, maka batas nilai $x$ yang memenuhi adalah...",
+    opts:["$x < -2 \\text{ atau } x > 3$",
+          "$x \\leq -2 \\text{ atau } x \\geq 3$",
+          "$-2 < x < 3$",
+          "$-2 \\leq x \\leq 3$",
+          "$-3 < x < 2$"],
+    correct:2,
+    exp:"Akar di posisi penyebut berarti nilainya harus lebih besar dari 0 (tidak boleh 0). $-x^2 + x + 6 > 0 \\Rightarrow x^2 - x - 6 < 0 \\Rightarrow (x-3)(x+2) < 0$. Penyelesaiannya: $-2 < x < 3$." },
+
+  // D. Operasi Fungsi
+  { n:16, cat:"Operasi Fungsi",
+    q:"Diketahui fungsi $f(x) = x^2 + 2x$ dan $g(x) = x - 3$. Hasil dari $(f + g)(x)$ adalah...",
+    opts:["$x^2 + 3x - 3$","$x^2 + x - 3$","$x^2 + 3x + 3$","$x^2 - 3x + 2$","$2x^2 - x$"],
+    correct:0,
+    exp:"$(f + g)(x) = f(x) + g(x) = (x^2 + 2x) + (x - 3) = x^2 + 3x - 3$." },
+  { n:17, cat:"Operasi Fungsi",
+    q:"Menggunakan fungsi yang sama pada soal sebelumnya ($f(x) = x^2 + 2x$ dan $g(x) = x - 3$), hasil dari $(f - g)(x)$ adalah...",
+    opts:["$x^2 + 3x - 3$","$x^2 + x + 3$","$x^2 - x - 3$","$x^2 + x - 3$","$x^2 - 3x + 3$"],
+    correct:1,
+    exp:"$(f - g)(x) = f(x) - g(x) = (x^2 + 2x) - (x - 3) = x^2 + 2x - x + 3 = x^2 + x + 3$." },
+  { n:18, cat:"Operasi Fungsi",
+    q:"Hasil operasi perkalian $(f \\cdot g)(x)$ dari $f(x) = x^2 + 2x$ dan $g(x) = x - 3$ adalah...",
+    opts:["$x^3 - x^2 - 6x$","$x^3 + 5x^2 - 6x$","$x^3 - 6x^2 - x$","$x^3 + x^2 - 6x$","$x^2 + 3x - 6$"],
+    correct:0,
+    exp:"$(f \\cdot g)(x) = (x^2 + 2x)(x - 3) = x^3 - 3x^2 + 2x^2 - 6x = x^3 - x^2 - 6x$." },
+  { n:19, cat:"Operasi Fungsi",
+    q:"Jika $f(x) = x^2 + 2x$ dan $g(x) = x - 3$, maka daerah asal (domain) dari fungsi pembagian $\\left(\\dfrac{f}{g}\\right)(x)$ adalah...",
+    opts:["$\\{x \\mid x \\in \\mathbb{R}\\}$","$\\{x \\mid x \\neq -2\\}$","$\\{x \\mid x \\neq 0\\}$","$\\{x \\mid x \\neq 3\\}$","$\\{x \\mid x \\neq -3\\}$"],
+    correct:3,
+    exp:"$\\left(\\dfrac{f}{g}\\right)(x) = \\dfrac{x^2 + 2x}{x - 3}$. Fungsi pecahan terdefinisi jika penyebut $\\neq 0$. $x - 3 \\neq 0 \\Rightarrow x \\neq 3$." },
+  { n:20, cat:"Operasi Fungsi",
+    q:"Diketahui $f(x) = 3x - 1$ dan $g(x) = 2x^2$. Nilai dari operasi $(f + g)(2)$ adalah...",
+    opts:["$13$","$14$","$15$","$16$","$17$"],
+    correct:0,
+    exp:"$f(2) = 3(2) - 1 = 5$. $g(2) = 2(2^2) = 8$. $(f + g)(2) = 5 + 8 = 13$." },
+
+  // E. Fungsi Ganjil dan Genap
+  { n:21, cat:"Fungsi Ganjil & Genap",
+    q:"Syarat sebuah fungsi $f(x)$ dikatakan sebagai fungsi genap adalah apabila untuk setiap $x$ di daerah asalnya berlaku...",
+    opts:["$f(-x) = -f(x)$","$f(-x) = f(x)$","$f(x) = -f(x)$","$f(x) = f(-x) = 0$","$f(x) \\neq f(-x)$"],
+    correct:1,
+    exp:"Definisi fungsi genap adalah jika fungsi tersebut simetris terhadap sumbu Y, sehingga $f(-x) = f(x)$." },
+  { n:22, cat:"Fungsi Ganjil & Genap",
+    q:"Di antara fungsi-fungsi berikut, manakah yang merupakan fungsi genap?",
+    opts:["$f(x) = 3x^3$","$f(x) = 2x - 1$","$f(x) = 4x^4 - x^2 + 1$","$f(x) = x^3 - x$","$f(x) = 5x$"],
+    correct:2,
+    exp:"$f(x) = 4x^4 - x^2 + 1$. $f(-x) = 4(-x)^4 - (-x)^2 + 1 = 4x^4 - x^2 + 1 = f(x)$. Ini adalah fungsi genap." },
+  { n:23, cat:"Fungsi Ganjil & Genap",
+    q:"Fungsi yang didefinisikan dengan $f(x) = 5x^3 - 2x$ merupakan...",
+    opts:["Fungsi Genap","Fungsi Ganjil","Fungsi Genap sekaligus Ganjil","Bukan Fungsi Genap maupun Ganjil","Fungsi Konstan"],
+    correct:1,
+    exp:"$f(-x) = 5(-x)^3 - 2(-x) = -5x^3 + 2x = -(5x^3 - 2x) = -f(x)$. Karena $f(-x) = -f(x)$, fungsi ini tergolong fungsi ganjil." },
+  { n:24, cat:"Fungsi Ganjil & Genap",
+    q:"Jika suatu fungsi $f(x)$ memenuhi sifat $f(-x) = -f(x)$, maka secara geometris grafik fungsi tersebut simetris terhadap...",
+    opts:["Sumbu X","Sumbu Y","Garis $y = x$","Garis $y = -x$","Titik asal $(0,0)$"],
+    correct:4,
+    exp:"Fungsi yang memenuhi $f(-x) = -f(x)$ disebut fungsi ganjil. Grafik fungsi ganjil selalu memiliki simetri putar sebesar 180 derajat terhadap titik asal $(0,0)$." },
+  { n:25, cat:"Fungsi Ganjil & Genap",
+    q:"Fungsi $f(x) = x^2 + x$ diklasifikasikan sebagai...",
+    opts:["Fungsi Genap","Fungsi Ganjil","Fungsi Linear","Bukan Fungsi Genap dan Bukan Fungsi Ganjil","Fungsi Konstan"],
+    correct:3,
+    exp:"$f(-x) = (-x)^2 + (-x) = x^2 - x$. Karena nilainya tidak sama dengan $f(x)$ dan juga tidak sama dengan $-f(x)$, maka fungsi tersebut bukan genap dan bukan ganjil." },
+
+  // F. Komposisi Fungsi
+  { n:26, cat:"Komposisi Fungsi",
+    q:"Diketahui fungsi $f(x) = 3x + 2$ dan $g(x) = x^2 - 1$. Rumus fungsi komposisi $(f \\circ g)(x)$ adalah...",
+    opts:["$3x^2 + 1$","$3x^2 - 1$","$9x^2 + 12x + 3$","$3x^2 - 3$","$x^2 + 3x + 1$"],
+    correct:1,
+    exp:"$(f \\circ g)(x) = f(g(x)) = 3(g(x)) + 2 = 3(x^2 - 1) + 2 = 3x^2 - 3 + 2 = 3x^2 - 1$." },
+  { n:27, cat:"Komposisi Fungsi",
+    q:"Menggunakan fungsi $f(x) = 3x + 2$ dan $g(x) = x^2 - 1$, rumus fungsi komposisi $(g \\circ f)(x)$ adalah...",
+    opts:["$3x^2 - 1$","$9x^2 + 12x + 4$","$9x^2 + 12x + 3$","$9x^2 - 12x + 3$","$9x^2 + 3$"],
+    correct:2,
+    exp:"$(g \\circ f)(x) = g(f(x)) = (f(x))^2 - 1 = (3x + 2)^2 - 1 = 9x^2 + 12x + 4 - 1 = 9x^2 + 12x + 3$." },
+  { n:28, cat:"Komposisi Fungsi",
+    q:"Jika $f(x) = 3x + 2$ dan $g(x) = x^2 - 1$, maka nilai dari $(f \\circ g)(2)$ adalah...",
+    opts:["$11$","$12$","$35$","$63$","$8$"],
+    correct:0,
+    exp:"Cara 1: $(f \\circ g)(2) = 3(2^2) - 1 = 3(4) - 1 = 11$. Cara 2: $g(2) = 2^2 - 1 = 3$, lalu $f(3) = 3(3) + 2 = 11$." },
+  { n:29, cat:"Komposisi Fungsi",
+    q:"Jika diberikan $h(x) = 2x$ dan $k(x) = x + 5$, maka komposisi fungsi $(h \\circ k)(x)$ adalah...",
+    opts:["$2x + 5$","$2x + 10$","$x + 10$","$2x^2 + 10x$","$x^2 + 5x$"],
+    correct:1,
+    exp:"$(h \\circ k)(x) = h(k(x)) = 2(k(x)) = 2(x + 5) = 2x + 10$." },
+  { n:30, cat:"Komposisi Fungsi",
+    q:"Diketahui $f(x) = 2x$, $g(x) = x + 1$, dan $h(x) = x^2$. Komposisi fungsi $(h \\circ g \\circ f)(x)$ adalah...",
+    opts:["$2x^2 + 1$","$4x^2 + 1$","$4x^2 + 4x + 1$","$2x^2 + 2x + 1$","$4x^2 + 2x + 1$"],
+    correct:2,
+    exp:"$g(f(x)) = g(2x) = 2x + 1$. Lalu $h(g(f(x))) = h(2x + 1) = (2x + 1)^2 = 4x^2 + 4x + 1$." },
+
+  // G. Menentukan f(x) atau g(x)
+  { n:31, cat:"Menentukan f(x)/g(x)",
+    q:"Diketahui $f(x) = 2x - 1$ dan $(f \\circ g)(x) = 4x + 5$. Rumus untuk fungsi $g(x)$ adalah...",
+    opts:["$2x + 2$","$2x + 3$","$2x - 3$","$4x + 6$","$x + 3$"],
+    correct:1,
+    exp:"$(f \\circ g)(x) = 2g(x) - 1 = 4x + 5$. Maka $2g(x) = 4x + 6$. Bagi 2 di kedua ruas menjadi $g(x) = 2x + 3$." },
+  { n:32, cat:"Menentukan f(x)/g(x)",
+    q:"Diketahui $g(x) = x + 2$ dan $(f \\circ g)(x) = x^2 + 4x + 4$. Rumus untuk fungsi $f(x)$ adalah...",
+    opts:["$x^2 - 2x$","$x^2 + 2x$","$x^2$","$x^2 - 4$","$x^2 + 4$"],
+    correct:2,
+    exp:"$(f \\circ g)(x) = f(x + 2) = x^2 + 4x + 4$. Misalkan $y = x + 2 \\Rightarrow x = y - 2$. $f(y) = (y-2)^2 + 4(y-2) + 4 = y^2 - 4y + 4 + 4y - 8 + 4 = y^2$. Jadi $f(x) = x^2$. (Atau langsung disadari bahwa $x^2 + 4x + 4 = (x+2)^2$.)" },
+  { n:33, cat:"Menentukan f(x)/g(x)",
+    q:"Jika $f(x) = 3x$ dan $(g \\circ f)(x) = 9x^2 - 6x$, maka fungsi $g(x) = \\ldots$",
+    opts:["$x^2 - 2x$","$3x^2 - 2x$","$x^2 - 3x$","$x^2 + 2x$","$3x^2 - 6x$"],
+    correct:0,
+    exp:"$(g \\circ f)(x) = g(3x) = 9x^2 - 6x$. Misalkan $3x = y \\Rightarrow x = \\tfrac{y}{3}$. $g(y) = 9\\left(\\tfrac{y}{3}\\right)^2 - 6\\left(\\tfrac{y}{3}\\right) = 9 \\cdot \\tfrac{y^2}{9} - 2y = y^2 - 2y$. Maka $g(x) = x^2 - 2x$." },
+  { n:34, cat:"Menentukan f(x)/g(x)",
+    q:"Diketahui $(f \\circ g)(x) = 2x - 3$ dan fungsi $g(x) = 2x + 1$. Rumus fungsi $f(x)$ adalah...",
+    opts:["$x - 2$","$x - 3$","$x - 4$","$2x - 4$","$x + 4$"],
+    correct:2,
+    exp:"$(f \\circ g)(x) = f(2x + 1) = 2x - 3$. Misal $y = 2x + 1 \\Rightarrow x = \\tfrac{y-1}{2}$. $f(y) = 2\\left(\\tfrac{y-1}{2}\\right) - 3 = y - 1 - 3 = y - 4$. Maka $f(x) = x - 4$." },
+  { n:35, cat:"Menentukan f(x)/g(x)",
+    q:"Diberikan $g(x) = x - 3$ dan $(f \\circ g)(x) = x^2 - 6x + 10$. Nilai dari $f(2)$ adalah...",
+    opts:["$2$","$3$","$4$","$5$","$6$"],
+    correct:3,
+    exp:"$(f \\circ g)(x) = f(x - 3) = x^2 - 6x + 10$. Misalkan $y = x - 3 \\Rightarrow x = y + 3$. $f(y) = (y+3)^2 - 6(y+3) + 10 = y^2 + 6y + 9 - 6y - 18 + 10 = y^2 + 1$. Jadi $f(x) = x^2 + 1$. Maka $f(2) = 2^2 + 1 = 5$." },
+
+  // H. Invers Fungsi
+  { n:36, cat:"Invers Fungsi",
+    q:"Invers dari fungsi $f(x) = 4x - 5$ dilambangkan dengan $f^{-1}(x)$. Rumus $f^{-1}(x)$ adalah...",
+    opts:["$\\dfrac{x - 5}{4}$","$\\dfrac{x + 5}{4}$","$4x + 5$","$\\dfrac{1}{4x - 5}$","$\\dfrac{x}{4} + 5$"],
+    correct:1,
+    exp:"$y = 4x - 5 \\Rightarrow 4x = y + 5 \\Rightarrow x = \\dfrac{y + 5}{4}$. Maka $f^{-1}(x) = \\dfrac{x + 5}{4}$." },
+  { n:37, cat:"Invers Fungsi",
+    q:"Diketahui fungsi $f(x) = \\dfrac{2x - 3}{x + 4}$ untuk $x \\neq -4$. Invers fungsi $f(x)$ adalah...",
+    opts:["$\\dfrac{4x + 3}{2 - x}$","$\\dfrac{-4x - 3}{x - 2}$","$\\dfrac{4x - 3}{x + 2}$","$\\dfrac{-4x + 3}{x + 2}$","Jawaban A dan B benar"],
+    correct:4,
+    exp:"Rumus cepat invers fungsi pecahan $f(x) = \\dfrac{ax + b}{cx + d}$ adalah $f^{-1}(x) = \\dfrac{-dx + b}{cx - a}$. Untuk $f(x) = \\dfrac{2x - 3}{x + 4}$, didapat $a = 2, b = -3, c = 1, d = 4$. Maka $f^{-1}(x) = \\dfrac{-4x - 3}{x - 2}$. Bentuk ekuivalen: dikalikan $\\tfrac{-1}{-1}$ menjadi $\\dfrac{4x + 3}{2 - x}$. (Jawaban A dan B benar)." },
+  { n:38, cat:"Invers Fungsi",
+    q:"Diberikan fungsi $f(x) = x^2 - 1$ yang terdefinisi untuk $x \\geq 0$. Rumus fungsi invers $f^{-1}(x)$ adalah...",
+    opts:["$\\sqrt{x} - 1$","$\\sqrt{x + 1}$","$x + 1$","$\\pm\\sqrt{x + 1}$","$1 - x^2$"],
+    correct:1,
+    exp:"$y = x^2 - 1 \\Rightarrow x^2 = y + 1 \\Rightarrow x = \\sqrt{y + 1}$ (diambil yang positif karena domain asal $x \\geq 0$). Maka $f^{-1}(x) = \\sqrt{x + 1}$." },
+  { n:39, cat:"Invers Fungsi",
+    q:"Jika $f(x) = \\sqrt[3]{x - 2}$, maka rumus invers fungsinya, $f^{-1}(x)$, adalah...",
+    opts:["$x^3 - 2$","$x^3 + 2$","$(x - 2)^3$","$(x + 2)^3$","$\\sqrt[3]{x + 2}$"],
+    correct:1,
+    exp:"$y = \\sqrt[3]{x - 2}$. Pangkatkan tiga kedua ruas: $y^3 = x - 2 \\Rightarrow x = y^3 + 2$. Maka $f^{-1}(x) = x^3 + 2$." },
+  { n:40, cat:"Invers Fungsi",
+    q:"Diketahui $f(x) = 2x + 1$ dan $g(x) = x - 3$. Rumus untuk fungsi $(f \\circ g)^{-1}(x)$ adalah...",
+    opts:["$\\dfrac{x + 5}{2}$","$\\dfrac{x - 5}{2}$","$\\dfrac{x + 2}{5}$","$\\dfrac{x - 2}{5}$","$2x - 5$"],
+    correct:0,
+    exp:"Cari komposisinya dulu: $(f \\circ g)(x) = 2(x - 3) + 1 = 2x - 6 + 1 = 2x - 5$. Invers dari $y = 2x - 5$ adalah $2x = y + 5 \\Rightarrow x = \\dfrac{y + 5}{2}$. Sehingga $(f \\circ g)^{-1}(x) = \\dfrac{x + 5}{2}$." }
+];
+
+/* ===== STATE ===== */
+const TIME_PER_QUESTION = 180;
+const TIME_BONUS = 15;
+const state = {
+  studentName: "",
+  currentIdx: 0,
+  answers: Array(questions.length).fill(null),
+  checked: Array(questions.length).fill(false),
+  timeSpent: Array(questions.length).fill(0),
+  frozenRemaining: Array(questions.length).fill(null),
+  addTimeUsed: Array(questions.length).fill(false),
+  startTime: 0,
+  timeRemaining: TIME_PER_QUESTION,
+  initialTime: TIME_PER_QUESTION,
+  timerId: null,
+  timerRunning: false
+};
+
+const $ = (id) => document.getElementById(id);
+const LETTERS = ['A','B','C','D','E'];
+
+/* ===== UTILITIES ===== */
+function showSlide(id) {
+  document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+  $(id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function toast(msg, type = 'info') {
+  const t = $('toast');
+  t.textContent = msg;
+  t.className = `toast show ${type}`;
+  clearTimeout(t._tm);
+  t._tm = setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+function formatTime(seconds) {
+  if (seconds < 0) seconds = 0;
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+}
+
+function renderMath() {
+  if (typeof renderMathInElement === 'function') {
+    try {
+      renderMathInElement(document.body, {
+        delimiters: [
+          { left: '$$', right: '$$', display: true },
+          { left: '$', right: '$', display: false },
+          { left: '\\(', right: '\\)', display: false },
+          { left: '\\[', right: '\\]', display: true }
+        ],
+        throwOnError: false,
+        ignoredTags: ['script','noscript','style','textarea','pre','code','input']
+      });
+    } catch (e) { /* ignore */ }
+  }
+}
+
+/* ===== COVER -> QUIZ ===== */
+ $('nameForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  state.studentName = $('studentName').value.trim();
+  if (!state.studentName) {
+    toast('Mohon masukkan nama terlebih dahulu.', 'error');
+    return;
+  }
+  $('studentBadge').textContent = state.studentName;
+  showSlide('quiz');
+  initQuiz();
+});
+
+/* ===== QUIZ ===== */
+function initQuiz() {
+  buildNavigator();
+  loadQuestion(0);
+}
+
+function buildNavigator() {
+  const grid = $('qGrid');
+  grid.innerHTML = '';
+  questions.forEach((q, i) => {
+    const cell = document.createElement('div');
+    cell.className = 'q-cell';
+    cell.textContent = i + 1;
+    cell.title = `Soal ${i + 1} — ${q.cat}`;
+    cell.addEventListener('click', () => loadQuestion(i));
+    grid.appendChild(cell);
+  });
+  updateNavigator();
+}
+
+function updateNavigator() {
+  const cells = document.querySelectorAll('.q-cell');
+  let answered = 0;
+  cells.forEach((cell, i) => {
+    cell.className = 'q-cell';
+    if (state.checked[i]) {
+      if (state.answers[i] === questions[i].correct) cell.classList.add('checked-correct');
+      else cell.classList.add('checked-wrong');
+      answered++;
+    } else if (state.answers[i] !== null) {
+      cell.classList.add('answered');
+      answered++;
+    }
+    if (i === state.currentIdx) cell.classList.add('current');
+  });
+  $('navigatorStats').textContent = `${answered} dari ${questions.length} dijawab`;
+}
+
+function loadQuestion(idx) {
+  // Simpan waktu soal sebelumnya jika belum diperiksa
+  if (state.timerRunning && !state.checked[state.currentIdx]) {
+    const elapsed = Math.floor((Date.now() - state.startTime) / 1000);
+    state.timeSpent[state.currentIdx] = elapsed;
+  }
+
+  stopTimer();
+  state.currentIdx = idx;
+  const q = questions[idx];
+
+  // Reset timer untuk soal baru (kecuali soal yang sudah diperiksa — tampilkan frozen time)
+  if (state.checked[idx] && state.frozenRemaining[idx] !== null) {
+    state.timeRemaining = state.frozenRemaining[idx];
+    state.initialTime = TIME_PER_QUESTION + (state.addTimeUsed[idx] ? TIME_BONUS : 0);
+  } else {
+    state.timeRemaining = TIME_PER_QUESTION + (state.addTimeUsed[idx] ? TIME_BONUS : 0);
+    state.initialTime = state.timeRemaining;
+    state.startTime = Date.now();
+  }
+
+  // Render header
+  $('qNumber').textContent = `Soal ${String(q.n).padStart(2, '0')}`;
+  $('qCategory').textContent = q.cat;
+  $('qCounter').textContent = `${idx + 1} / ${questions.length}`;
+  $('progressFill').style.width = `${((idx + 1) / questions.length) * 100}%`;
+
+  // Render question text & options
+  $('qText').innerHTML = q.q;
+  const oc = $('optionsContainer');
+  oc.innerHTML = '';
+  q.opts.forEach((opt, i) => {
+    const div = document.createElement('div');
+    div.className = 'option';
+    div.dataset.idx = i;
+    div.innerHTML = `
+      <input type="radio" name="q${idx}" value="${i}">
+      <div class="option-letter">${LETTERS[i]}</div>
+      <div class="option-text">${opt}</div>
+    `;
+    div.addEventListener('click', () => selectOption(i));
+    oc.appendChild(div);
+  });
+
+  // Restore state
+  if (state.answers[idx] !== null) {
+    const sel = oc.querySelector(`.option[data-idx="${state.answers[idx]}"]`);
+    if (sel) sel.classList.add('selected');
+  }
+
+  // Lock jika sudah diperiksa
+  if (state.checked[idx]) {
+    lockOptions(idx);
+    $('checkBtn').disabled = true;
+    $('checkBtn').innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Sudah Diperiksa`;
+    $('explanationBtn').disabled = false;
+  } else {
+    $('checkBtn').disabled = false;
+    $('checkBtn').innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Cek Jawaban`;
+    $('explanationBtn').disabled = true;
+  }
+
+  $('explanationBox').classList.remove('show');
+
+  // Tombol +15 detik
+  if (state.addTimeUsed[idx]) {
+    $('addTimeBtn').disabled = true;
+    $('addTimeBtn').innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> +15s Sudah Dipakai`;
+  } else if (state.checked[idx]) {
+    $('addTimeBtn').disabled = true;
+    $('addTimeBtn').innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> +15 Detik`;
+  } else {
+    $('addTimeBtn').disabled = false;
+    $('addTimeBtn').innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> +15 Detik`;
+  }
+
+  // Tombol nav
+  $('prevBtn').disabled = idx === 0;
+  $('nextBtn').disabled = idx === questions.length - 1;
+  $('prevBtn').style.opacity = idx === 0 ? '0.35' : '1';
+  $('nextBtn').style.opacity = idx === questions.length - 1 ? '0.35' : '1';
+
+  // Timer
+  if (!state.checked[idx]) {
+    startTimer();
+  } else {
+    $('timerDisplay').classList.add('stopped');
+    $('timerDisplay').classList.remove('running', 'warning');
+    $('timerBar').classList.remove('warning');
+    updateTimerDisplay();
+  }
+
+  updateNavigator();
+  renderMath();
+}
+
+function selectOption(i) {
+  if (state.checked[state.currentIdx]) return;
+  state.answers[state.currentIdx] = i;
+  document.querySelectorAll('#optionsContainer .option').forEach(o => o.classList.remove('selected'));
+  const sel = document.querySelector(`#optionsContainer .option[data-idx="${i}"]`);
+  if (sel) sel.classList.add('selected');
+  updateNavigator();
+}
+
+function lockOptions(idx) {
+  const q = questions[idx];
+  document.querySelectorAll('#optionsContainer .option').forEach((opt, i) => {
+    opt.classList.add('disabled');
+    if (i === q.correct) opt.classList.add('correct');
+    if (i === state.answers[idx] && i !== q.correct) opt.classList.add('wrong');
+  });
+}
+
+/* ===== TIMER ===== */
+function startTimer() {
+  if (state.timerId) clearInterval(state.timerId);
+  state.timerRunning = true;
+  $('timerDisplay').classList.add('running');
+  $('timerDisplay').classList.remove('stopped', 'warning');
+  $('timerBar').classList.remove('warning');
+  updateTimerDisplay();
+
+  state.timerId = setInterval(() => {
+    state.timeRemaining--;
+    updateTimerDisplay();
+    if (state.timeRemaining <= 0) {
+      stopTimer();
+      checkAnswer(true);
+      toast('Waktu habis! Jawaban otomatis diperiksa.', 'error');
+    }
+  }, 1000);
+}
+
+function stopTimer() {
+  if (state.timerId) clearInterval(state.timerId);
+  state.timerId = null;
+  state.timerRunning = false;
+  $('timerDisplay').classList.remove('running');
+}
+
+function updateTimerDisplay() {
+  $('timerText').textContent = formatTime(state.timeRemaining);
+  const pct = (state.timeRemaining / state.initialTime) * 100;
+  $('timerBar').style.width = `${Math.max(0, pct)}%`;
+  if (state.timeRemaining <= 30 && state.timeRemaining > 0 && state.timerRunning) {
+    $('timerDisplay').classList.add('warning');
+    $('timerBar').classList.add('warning');
+  }
+  if (!state.timerRunning && state.checked[state.currentIdx]) {
+    $('timerDisplay').classList.add('stopped');
+  }
+}
+
+function addTime() {
+  if (state.checked[state.currentIdx]) {
+    toast('Soal sudah diperiksa, tidak bisa menambah waktu.', 'info');
+    return;
+  }
+  if (state.addTimeUsed[state.currentIdx]) {
+    toast('Tombol +15 detik sudah digunakan untuk soal ini.', 'info');
+    return;
+  }
+  state.timeRemaining += TIME_BONUS;
+  state.initialTime += TIME_BONUS;
+  state.addTimeUsed[state.currentIdx] = true;
+  $('addTimeBtn').disabled = true;
+  $('addTimeBtn').innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> +15s Sudah Dipakai`;
+  updateTimerDisplay();
+  toast('+15 detik berhasil ditambahkan!', 'success');
+}
+
+function checkAnswer(auto = false) {
+  if (state.checked[state.currentIdx]) return;
+  if (state.answers[state.currentIdx] === null && !auto) {
+    toast('Pilih salah satu jawaban terlebih dahulu.', 'error');
+    return;
+  }
+
+  stopTimer();
+  const elapsed = Math.floor((Date.now() - state.startTime) / 1000);
+  state.timeSpent[state.currentIdx] = elapsed;
+  state.frozenRemaining[state.currentIdx] = state.timeRemaining;
+  state.checked[state.currentIdx] = true;
+
+  $('timerDisplay').classList.add('stopped');
+  $('timerDisplay').classList.remove('running', 'warning');
+  $('timerBar').classList.remove('warning');
+
+  lockOptions(state.currentIdx);
+
+  $('checkBtn').disabled = true;
+  $('checkBtn').innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Sudah Diperiksa`;
+  $('explanationBtn').disabled = false;
+
+  // Tampilkan pembahasan otomatis
+  showExplanation();
+
+  // Toast feedback
+  if (state.answers[state.currentIdx] !== null) {
+    const correct = state.answers[state.currentIdx] === questions[state.currentIdx].correct;
+    toast(correct ? 'Jawaban benar! Kerja bagus.' : 'Jawaban kurang tepat. Cek pembahasan.', correct ? 'success' : 'error');
+  } else {
+    toast('Waktu habis tanpa jawaban.', 'error');
+  }
+
+  updateNavigator();
+  renderMath();
+}
+
+function showExplanation() {
+  const q = questions[state.currentIdx];
+  $('explanationBody').innerHTML = `<p>${q.exp}</p>`;
+  $('explanationBox').classList.add('show');
+  renderMath();
+}
+
+function toggleExplanation() {
+  const box = $('explanationBox');
+  if (box.classList.contains('show')) {
+    box.classList.remove('show');
+  } else {
+    showExplanation();
+  }
+}
+
+function nextQuestion() {
+  if (state.currentIdx < questions.length - 1) loadQuestion(state.currentIdx + 1);
+}
+function prevQuestion() {
+  if (state.currentIdx > 0) loadQuestion(state.currentIdx - 1);
+}
+
+/* ===== EVENT LISTENERS ===== */
+ $('checkBtn').addEventListener('click', () => checkAnswer(false));
+ $('explanationBtn').addEventListener('click', toggleExplanation);
+ $('addTimeBtn').addEventListener('click', addTime);
+ $('nextBtn').addEventListener('click', nextQuestion);
+ $('prevBtn').addEventListener('click', prevQuestion);
+
+ $('finishBtn').addEventListener('click', () => {
+  const unanswered = state.checked.filter(c => !c).length;
+  if (unanswered > 0) {
+    if (!confirm(`Masih ada ${unanswered} soal yang belum diperiksa. Yakin ingin menyelesaikan latihan?`)) return;
+  }
+  finishQuiz();
+});
+
+/* ===== FINISH ===== */
+function finishQuiz() {
+  stopTimer();
+  // Simpan waktu soal terakhir jika belum diperiksa
+  if (!state.checked[state.currentIdx] && state.timerRunning) {
+    const elapsed = Math.floor((Date.now() - state.startTime) / 1000);
+    state.timeSpent[state.currentIdx] = elapsed;
+  }
+
+  let correct = 0, wrong = 0, unansweredC = 0;
+  questions.forEach((q, i) => {
+    if (!state.checked[i]) unansweredC++;
+    else if (state.answers[i] === q.correct) correct++;
+    else wrong++;
+  });
+
+  $('resultName').textContent = state.studentName;
+  $('correctCount').textContent = correct;
+  $('wrongCount').textContent = wrong;
+  $('unansweredCount').textContent = unansweredC;
+  const pct = Math.round((correct / questions.length) * 100);
+  $('scorePercent').textContent = pct + '%';
+
+  const checkedTimes = state.timeSpent.filter((t, i) => state.checked[i]);
+  const totalTime = checkedTimes.reduce((a, b) => a + b, 0);
+  const avgTime = checkedTimes.length > 0 ? Math.round(totalTime / checkedTimes.length) : 0;
+  $('avgTime').textContent = formatTime(avgTime);
+  $('totalTime').textContent = formatTime(totalTime);
+
+  // Tabel hasil per soal
+  const rb = $('resultsBody');
+  rb.innerHTML = '';
+  questions.forEach((q, i) => {
+    const row = document.createElement('div');
+    row.className = 'results-row';
+    let status, yourAns;
+    if (!state.checked[i]) {
+      status = '<span class="q-status unanswered">Tidak Dijawab</span>';
+      yourAns = '<span class="q-answer">—</span>';
+    } else {
+      const isCorrect = state.answers[i] === q.correct;
+      const correctLetter = LETTERS[q.correct];
+      const yourLetter = state.answers[i] !== null ? LETTERS[state.answers[i]] : '—';
+      status = isCorrect
+        ? '<span class="q-status correct">Benar</span>'
+        : '<span class="q-status wrong">Salah</span>';
+      yourAns = `<span class="q-answer">Jawaban: <span class="${isCorrect ? 'your-correct' : 'your-wrong'}">${yourLetter}</span> • Kunci: <span class="your-correct">${correctLetter}</span></span>`;
+    }
+    const timeSpent = state.checked[i] ? formatTime(state.timeSpent[i]) : '—';
+    row.innerHTML = `
+      <div class="q-num">${String(q.n).padStart(2,'0')}</div>
+      <div class="q-cat">${q.cat}</div>
+      <div>${yourAns}</div>
+      <div>${status}</div>
+      <div class="q-time">${timeSpent}</div>
+    `;
+    rb.appendChild(row);
+  });
+
+  renderMath();
+  showSlide('results');
+}
+
+ $('goToClosingBtn').addEventListener('click', () => showSlide('closing'));
+
+ $('restartBtn').addEventListener('click', () => {
+  state.currentIdx = 0;
+  state.answers = Array(questions.length).fill(null);
+  state.checked = Array(questions.length).fill(false);
+  state.timeSpent = Array(questions.length).fill(0);
+  state.frozenRemaining = Array(questions.length).fill(null);
+  state.addTimeUsed = Array(questions.length).fill(false);
+  state.timeRemaining = TIME_PER_QUESTION;
+  state.initialTime = TIME_PER_QUESTION;
+  stopTimer();
+  showSlide('cover');
+  $('studentName').value = '';
+  $('studentName').focus();
+});
+
+/* ===== KEYBOARD NAVIGATION ===== */
+document.addEventListener('keydown', (e) => {
+  if (!$('quiz').classList.contains('active')) return;
+  if (e.target.tagName === 'INPUT') return;
+  if (e.key === 'ArrowRight') nextQuestion();
+  else if (e.key === 'ArrowLeft') prevQuestion();
+  else if (['1','2','3','4','5'].includes(e.key)) {
+    selectOption(parseInt(e.key) - 1);
+  } else if (e.key === 'Enter' && !state.checked[state.currentIdx]) {
+    checkAnswer(false);
+  }
+});
+
+// Render math awal saat KaTeX siap
+window.addEventListener('load', () => {
+  setTimeout(renderMath, 300);
+});
+</script>
+</body>
+</html>
