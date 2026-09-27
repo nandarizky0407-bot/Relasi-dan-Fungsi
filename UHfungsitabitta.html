@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Latihan Interaktif — Komposisi, Invers & Penerapan Fungsi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --primary:#4f46e5; --primary2:#7c3aed; --ink:#1e293b; --muted:#64748b;
+    --ok:#16a34a; --bad:#dc2626; --line:#e2e8f0; --soft:#f8fafc;
+  }
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif; color:var(--ink);
+    background:
+      radial-gradient(1100px 600px at 85% -10%, #e0e7ff 0%, transparent 60%),
+      radial-gradient(900px 500px at -10% 110%, #ede9fe 0%, transparent 55%),
+      #f1f5f9;
+    min-height:100vh; padding:30px 14px 70px;
+  }
+  #progress{position:fixed;top:0;left:0;right:0;height:6px;background:#e2e8f0;z-index:50}
+  #progress-fill{height:100%;width:0;border-radius:0 4px 4px 0;
+    background:linear-gradient(90deg,var(--primary),var(--primary2));transition:width .4s ease}
+  .app{max-width:880px;margin:0 auto}
+
+  /* ---------- Sistem slide ---------- */
+  .slide{display:none}
+  .slide.active{display:block;animation:fadeUp .45s ease both}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+
+  .card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:30px;
+    box-shadow:0 18px 40px -18px rgba(30,41,59,.25)}
+  .card h2{margin:6px 0 16px;font-size:1.5rem}
+  .card h3{margin:6px 0 10px;font-size:1.08rem}
+  .mat-no{font-size:.75rem;letter-spacing:.15em;font-weight:800;color:var(--primary);text-transform:uppercase}
+  .muted{color:var(--muted);font-size:.88rem;margin-top:8px}
+
+  /* ---------- Tombol ---------- */
+  .btn{cursor:pointer;border:none;border-radius:12px;padding:12px 22px;font:inherit;font-weight:700;
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:.2s}
+  .btn.primary{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;
+    box-shadow:0 10px 22px -8px rgba(79,70,229,.6)}
+  .btn.primary:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 14px 26px -8px rgba(79,70,229,.7)}
+  .btn.primary:disabled{opacity:.55;cursor:not-allowed;transform:none;box-shadow:none}
+  .btn.ghost{background:#fff;border:1.5px solid var(--line);color:var(--ink)}
+  .btn.ghost:hover:not(:disabled){border-color:var(--primary);color:var(--primary)}
+  .btn.ghost:disabled{opacity:.5;cursor:not-allowed}
+  .btn.big{padding:16px 40px;font-size:1.08rem;border-radius:14px}
+  .btn.small{padding:8px 12px;font-size:.85rem;border-radius:10px}
+
+  /* ---------- Cover ---------- */
+  .cover{position:relative;overflow:hidden;text-align:center;color:#fff;border-radius:24px;
+    padding:70px 28px 60px;background:linear-gradient(135deg,#312e81 0%,#4f46e5 55%,#7c3aed 100%);
+    box-shadow:0 30px 60px -20px rgba(49,46,129,.55)}
+  .cover-badge{display:inline-block;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);
+    padding:7px 18px;border-radius:999px;font-size:.75rem;letter-spacing:.16em;font-weight:700}
+  .cover h1{font-size:clamp(1.7rem,4.6vw,2.7rem);line-height:1.22;margin:18px 0 12px;font-weight:800}
+  .cover-sub{max-width:580px;margin:0 auto;color:#e0e7ff;font-size:.98rem;line-height:1.6}
+  .cover-stats{display:flex;gap:14px;justify-content:center;margin:28px 0 26px;flex-wrap:wrap}
+  .cstat{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:14px;
+    padding:12px 22px;min-width:112px}
+  .cstat b{display:block;font-size:1.5rem}
+  .cstat span{font-size:.78rem;color:#e0e7ff}
+  .cover-hint{margin-top:16px;color:#c7d2fe;font-size:.85rem}
+  .float-syms span{position:absolute;font-weight:800;color:rgba(255,255,255,.13);user-select:none;
+    animation:float 7s ease-in-out infinite}
+  .float-syms span:nth-child(1){top:12%;left:7%;font-size:2.1rem}
+  .float-syms span:nth-child(2){top:16%;right:9%;font-size:2.5rem;animation-delay:1.2s}
+  .float-syms span:nth-child(3){bottom:24%;left:11%;font-size:2rem;animation-delay:2s}
+  .float-syms span:nth-child(4){bottom:14%;right:13%;font-size:2.3rem;animation-delay:.6s}
+  .float-syms span:nth-child(5){top:56%;left:4%;font-size:1.8rem;animation-delay:2.8s}
+  .float-syms span:nth-child(6){top:62%;right:5%;font-size:1.9rem;animation-delay:1.8s}
+  @keyframes float{0%,100%{transform:translateY(0) rotate(-6deg)}50%{transform:translateY(-22px) rotate(8deg)}}
+
+  /* ---------- Slide materi ---------- */
+  .formula-box{background:linear-gradient(135deg,#eef2ff,#f5f3ff);border:1.5px solid #c7d2fe;border-radius:14px;
+    padding:16px 20px;font-size:1.15rem;font-weight:800;text-align:center;margin-bottom:16px}
+  .formula-box small{display:block;font-weight:600;color:var(--muted);font-size:.82rem;margin-top:6px}
+  .points{list-style:none;display:grid;gap:10px;margin-bottom:16px}
+  .points li{background:var(--soft);border:1px solid var(--line);border-left:4px solid var(--primary);
+    border-radius:10px;padding:11px 14px;line-height:1.6;font-size:.95rem}
+  .example{background:#f0fdf4;border:1.5px solid #86efac;border-radius:12px;padding:14px 18px;line-height:1.9;font-size:.97rem}
+  .life-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-bottom:16px}
+  .life{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:14px;transition:.2s}
+  .life:hover{transform:translateY(-3px);border-color:#c7d2fe}
+  .life .ico{font-size:1.4rem}
+  .life b{display:block;margin:6px 0 4px}
+  .life p{font-size:.87rem;color:#475569;line-height:1.55}
+  .note{background:#fffbeb;border:1.5px solid #fde68a;border-radius:12px;padding:12px 16px;font-size:.93rem;line-height:1.6}
+  .nav-row{display:flex;justify-content:space-between;margin-top:22px;gap:10px;flex-wrap:wrap}
+
+  /* ---------- Slide soal ---------- */
+  .qtop{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+  .qmeta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .qnum{font-weight:800;font-size:1.05rem}
+  .of{color:var(--muted);font-weight:600}
+  .chip{font-size:.72rem;font-weight:700;padding:4px 10px;border-radius:999px}
+  .chip.mudah{background:#dcfce7;color:#15803d}
+  .chip.sedang{background:#fef3c7;color:#b45309}
+  .chip.sulit{background:#fee2e2;color:#b91c1c}
+  .chip.section{background:#eef2ff;color:#4338ca}
+  .timerwrap{display:flex;align-items:center;gap:8px}
+  .timer{font-weight:800;font-size:1.05rem;background:#ecfdf5;color:#047857;border:1.5px solid #a7f3d0;
+    padding:8px 14px;border-radius:12px;min-width:76px;text-align:center;font-variant-numeric:tabular-nums}
+  .timer.warn{background:#fffbeb;color:#b45309;border-color:#fde68a}
+  .timer.danger{background:#fef2f2;color:#b91c1c;border-color:#fecaca;animation:blink 1s infinite}
+  @keyframes blink{50%{opacity:.55}}
+  .timer.pulse{animation:pop .35s ease}
+  @keyframes pop{50%{transform:scale(1.12)}}
+
+  .qtext{font-size:1.04rem;line-height:1.8;background:var(--soft);border:1px solid var(--line);
+    border-radius:14px;padding:18px 20px;margin-bottom:18px}
+  .opts{display:grid;gap:10px}
+  .opt{display:flex;align-items:center;gap:12px;text-align:left;width:100%;background:#fff;
+    border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;font:inherit;font-size:.98rem;
+    cursor:pointer;transition:.15s}
+  .opt:hover:not(:disabled){border-color:#a5b4fc;background:#eef2ff}
+  .opt .letter{flex:0 0 30px;height:30px;display:grid;place-items:center;border-radius:9px;
+    background:#f1f5f9;color:#475569;font-weight:800;font-size:.85rem}
+  .opt .otext{flex:1;line-height:1.5}
+  .opt.selected{border-color:var(--primary);background:#eef2ff;box-shadow:0 0 0 3px rgba(79,70,229,.12)}
+  .opt.selected .letter{background:var(--primary);color:#fff}
+  .opt.correct{border-color:#86efac;background:#f0fdf4}
+  .opt.correct .letter{background:var(--ok);color:#fff}
+  .opt.wrong{border-color:#fca5a5;background:#fef2f2}
+  .opt.wrong .letter{background:var(--bad);color:#fff}
+  .opt.dim{opacity:.55}
+  .opt:disabled{cursor:default}
+  .qactions{display:flex;justify-content:space-between;gap:10px;margin-top:20px;flex-wrap:wrap}
+
+  .feedback{display:none;margin-top:16px;padding:13px 16px;border-radius:12px;font-size:.95rem;line-height:1.6}
+  .feedback.ok{display:block;background:#f0fdf4;border:1.5px solid #86efac;color:#166534}
+  .feedback.bad{display:block;background:#fef2f2;border:1.5px solid #fca5a5;color:#991b1b}
+  .feedback.timeout{display:block;background:#fffbeb;border:1.5px solid #fde68a;color:#92400e}
+  .discussion{display:none;margin-top:14px;background:var(--soft);border:1.5px dashed #c7d2fe;
+    border-radius:14px;padding:18px 20px;line-height:1.9;font-size:.97rem}
+  .discussion.show{display:block;animation:fadeUp .4s ease}
+  .dtitle{font-weight:800;color:var(--primary);margin-bottom:8px}
+
+  /* ---------- Notasi matematika ---------- */
+  .fr{display:inline-block;vertical-align:middle;text-align:center;line-height:1.15;margin:0 3px}
+  .fr .n{display:block;padding:0 5px;border-bottom:1.4px solid currentColor}
+  .fr .d{display:block;padding:0 5px}
+  .ov{border-top:1.6px solid currentColor;padding:0 2px}
+
+  /* ---------- Slide hasil ---------- */
+  .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:18px 0 6px}
+  .stat{border-radius:14px;padding:16px;text-align:center;border:1.5px solid var(--line);
+    background:var(--soft);animation:fadeUp .5s ease both}
+  .stat b{display:block;font-size:1.9rem}
+  .stat span{font-size:.78rem;font-weight:700;color:var(--muted)}
+  .stat.ok{background:#f0fdf4;border-color:#86efac}.stat.ok b{color:var(--ok)}
+  .stat.bad{background:#fef2f2;border-color:#fca5a5}.stat.bad b{color:var(--bad)}
+  .stat.pri{background:#eef2ff;border-color:#c7d2fe}.stat.pri b{color:var(--primary)}
+  .stat.pri2{background:#fdf4ff;border-color:#f0abfc}.stat.pri2 b{color:#a21caf}
+  .srow{display:flex;align-items:center;gap:10px;margin:9px 0;font-size:.92rem}
+  .srow .name{flex:0 0 200px;font-weight:700}
+  .srow .bar{flex:1;height:10px;background:#e2e8f0;border-radius:999px;overflow:hidden}
+  .srow .bar i{display:block;height:100%;border-radius:999px;
+    background:linear-gradient(90deg,var(--primary),var(--primary2));transition:width .8s ease}
+  .srow .val{flex:0 0 52px;text-align:right;font-weight:800;color:var(--primary)}
+  .qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(40px,1fr));gap:7px;margin:12px 0 16px}
+  .cell{height:38px;display:grid;place-items:center;border-radius:9px;font-weight:800;font-size:.85rem;color:#fff}
+  .cell.ok{background:var(--ok)}.cell.bad{background:var(--bad)}.cell.net{background:#cbd5e1;color:#475569}
+  .conclusion{background:linear-gradient(135deg,#eef2ff,#f5f3ff);border:1.5px solid #c7d2fe;
+    border-radius:14px;padding:16px 20px;line-height:1.7;margin:14px 0;font-size:.96rem}
+  .reflection{background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:16px 20px;margin-bottom:16px}
+  .reflection ul{padding-left:20px;display:grid;gap:7px;font-size:.93rem;line-height:1.6}
+  .thanks{text-align:center;background:linear-gradient(135deg,#312e81,#7c3aed);color:#fff;border-radius:16px;padding:28px 20px}
+  .thanks h3{font-size:1.3rem;margin-bottom:8px}
+  .thanks p{color:#e0e7ff;font-size:.95rem;margin-bottom:16px}
+  .thanks .btn{background:#fff;color:var(--primary)}
+
+  /* ---------- Toast ---------- */
+  #toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);
+    background:#1e293b;color:#fff;padding:11px 20px;border-radius:12px;font-size:.9rem;font-weight:600;
+    opacity:0;pointer-events:none;transition:.3s;z-index:99;max-width:90vw;text-align:center;
+    box-shadow:0 10px 30px -10px rgba(0,0,0,.4)}
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  @media (max-width:560px){
+    .card{padding:20px 16px}
+    .qactions .btn{flex:1}
+    .srow .name{flex-basis:128px;font-size:.8rem}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"><div id="progress-fill"></div></div>
+
+<div class="app">
+
+  <!-- ================= SLIDE 1 : COVER ================= -->
+  <section class="slide cover active">
+    <div class="float-syms">
+      <span>f∘g</span><span>f⁻¹</span><span>√x</span><span>π</span><span>x²</span><span>(f∘g)⁻¹</span>
+    </div>
+    <div class="cover-badge">PAKET LATIHAN MATEMATIKA SMA</div>
+    <h1>Komposisi Fungsi,<br>Invers &amp; Penerapan Nyata</h1>
+    <p class="cover-sub">30 soal pilihan ganda dengan pembahasan otomatis, timer 5 menit per soal,
+      tombol +15 detik, dan laporan hasil pengerjaan lengkap di akhir sesi.</p>
+    <div class="cover-stats">
+      <div class="cstat"><b>30</b><span>Soal</span></div>
+      <div class="cstat"><b>05:00</b><span>Timer / soal</span></div>
+      <div class="cstat"><b>+15s</b><span>Waktu tambahan</span></div>
+    </div>
+    <button type="button" id="btn-start" class="btn primary big" data-action="start">🚀 Mulai Mengerjakan</button>
+    <p class="cover-hint">Tingkat kesulitan: Mudah · Sedang · Sulit</p>
+  </section>
+
+  <!-- ================= SLIDE 2 : MATERI 1 ================= -->
+  <section class="slide">
+    <div class="card">
+      <div class="mat-no">Review Materi · 1 dari 3</div>
+      <h2>🔁 Komposisi Fungsi</h2>
+      <div class="formula-box">(f ∘ g)(x) = f(g(x))
+        <small>"g dikerjakan lebih dulu, lalu hasilnya disubstitusikan ke f" — dibaca "f bundaran g"</small>
+      </div>
+      <ul class="points">
+        <li><b>Kerjakan dari dalam ke luar.</b> Untuk menghitung (f ∘ g)(a) = f(g(a)): substitusikan a ke g lebih dulu, baru hasilnya ke f.</li>
+        <li><b>Urutan berpengaruh!</b> Secara umum (f ∘ g)(x) ≠ (g ∘ f)(x).</li>
+        <li><b>Tiga fungsi:</b> (h ∘ g ∘ f)(x) = h(g(f(x))) — kerjakan bertahap dari yang paling dalam.</li>
+        <li><b>Daerah asal alami:</b> x harus membuat g(x) terdefinisi dan f(g(x)) terdefinisi — waspadai penyebut nol.</li>
+        <li><b>Mencari fungsi luar:</b> jika (f ∘ g)(x) dan g(x) diketahui, misalkan u = g(x), lalu nyatakan f dalam u.</li>
+      </ul>
+      <div class="example"><b>Contoh:</b> f(x) = 2x + 5 dan g(x) = 3x − 1<br>
+        (f ∘ g)(x) = 2(3x − 1) + 5 = 6x − 2 + 5 = <b>6x + 3</b></div>
+      <div class="nav-row">
+        <button type="button" class="btn ghost" data-action="prev">◀ Kembali</button>
+        <button type="button" class="btn primary" data-action="next">Lanjut: Invers Fungsi ▶</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SLIDE 3 : MATERI 2 ================= -->
+  <section class="slide">
+    <div class="card">
+      <div class="mat-no">Review Materi · 2 dari 3</div>
+      <h2>🔄 Invers Fungsi</h2>
+      <div class="formula-box">Jika f(a) = b, maka f⁻¹(b) = a
+        <small>"Invers membalik arah pemetaan: dari hasil kembali ke asal"</small>
+      </div>
+      <ul class="points">
+        <li><b>3 langkah:</b> ganti f(x) = y → tukar posisi x dan y (atau langsung nyatakan x) → tulis sebagai f⁻¹(x).</li>
+        <li><b>Rumus cepat:</b> f(x) = (ax + b)/(cx + d) ⟹ f⁻¹(x) = (−dx + b)/(cx − a).</li>
+        <li><b>Invers komposisi:</b> (f ∘ g)⁻¹ = g⁻¹ ∘ f⁻¹ — urutannya terbalik!</li>
+        <li><b>Sifat saling menganulir:</b> f⁻¹(f(x)) = x dan f(f⁻¹(x)) = x.</li>
+        <li><b>Fungsi kuadrat:</b> lengkapi kuadrat sempurna, lalu pilih tanda akar (∓) sesuai pembatas domainnya.</li>
+        <li>Grafik f dan f⁻¹ merupakan pencerminan terhadap garis y = x.</li>
+      </ul>
+      <div class="example"><b>Contoh:</b> f(x) = 5x − 7<br>
+        y = 5x − 7 ⟹ x = (y + 7)/5 ⟹ f⁻¹(x) = (x + 7)/5</div>
+      <div class="nav-row">
+        <button type="button" class="btn ghost" data-action="prev">◀ Kembali</button>
+        <button type="button" class="btn primary" data-action="next">Lanjut: Penerapan Sehari-hari ▶</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SLIDE 4 : MATERI 3 ================= -->
+  <section class="slide">
+    <div class="card">
+      <div class="mat-no">Review Materi · 3 dari 3</div>
+      <h2>🌍 Fungsi dalam Kehidupan Sehari-hari</h2>
+      <div class="life-grid">
+        <div class="life"><span class="ico">🛍️</span><b>Diskon + Kupon</b>
+          <p>Diskon 20% lalu potongan tunai → komposisi H(x) = 0,8x − 15.000.</p></div>
+        <div class="life"><span class="ico">🌡️</span><b>Konversi Suhu</b>
+          <p>R = (4/5)C; inversnya C = (5/4)R mengubah Reamur → Celsius.</p></div>
+        <div class="life"><span class="ico">🏭</span><b>Rantai Produksi</b>
+          <p>Kayu → pulp → kertas: tiap mesin adalah satu fungsi yang dikomposisi.</p></div>
+        <div class="life"><span class="ico">💱</span><b>Ekspor & Kurs</b>
+          <p>Pendapatan dollar dikonversi ke rupiah melalui komposisi (K ∘ U)(x).</p></div>
+        <div class="life"><span class="ico">🌊</span><b>Gelombang Air</b>
+          <p>Jari-jari r(t) = 0,6t dan luas A(r) = πr² → (A ∘ r)(t).</p></div>
+        <div class="life"><span class="ico">💰</span><b>Gaji & Pajak</b>
+          <p>Gaji bersih = 95% × gaji kotor; inversnya menelusuri omzet penjualan.</p></div>
+      </div>
+      <div class="note">💡 <b>Kunci konsep:</b> <b>komposisi</b> menggambarkan proses berurutan,
+        sedangkan <b>invers</b> membalik proses — dari hasil akhir, dicari keadaan awalnya.</div>
+      <div class="nav-row">
+        <button type="button" class="btn ghost" data-action="prev">◀ Kembali</button>
+        <button type="button" class="btn primary" data-action="next">Mulai Soal 1 ▶</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SLIDE 5–34 : SOAL (dibangun oleh JS) ================= -->
+  <div id="quiz-mount"></div>
+
+  <!-- ================= SLIDE TERAKHIR : HASIL ================= -->
+  <section class="slide" id="results">
+    <div class="card">
+      <div class="mat-no">Laporan Akhir</div>
+      <h2>🏁 Hasil Pengerjaan Siswa</h2>
+      <div class="stat-grid">
+        <div class="stat ok"><b id="st-benar">0</b><span>Benar</span></div>
+        <div class="stat bad"><b id="st-salah">0</b><span>Salah</span></div>
+        <div class="stat"><b id="st-kosong">0</b><span>Tidak Dijawab</span></div>
+        <div class="stat pri"><b id="st-score">0</b><span>Skor (0–100)</span></div>
+        <div class="stat pri2"><b id="st-avg">—</b><span>Rata-rata Waktu</span></div>
+      </div>
+      <p class="muted" id="avg-note"></p>
+      <div id="sect-break" style="margin:14px 0 4px"></div>
+      <h3 style="margin-top:14px">🗺️ Status Per Soal</h3>
+      <div class="qgrid" id="qgrid"></div>
+      <div class="conclusion" id="conclusion"></div>
+      <div class="reflection">
+        <h3>🪞 Refleksi</h3>
+        <ul>
+          <li>Bagian materi mana yang paling saya kuasai dengan percaya diri?</li>
+          <li>Tipe soal mana yang paling sulit, dan apa penyebabnya?</li>
+          <li>Strategi apa yang akan saya gunakan ke depan (misalnya rumus cepat invers atau melengkapkan kuadrat)?</li>
+          <li>Apakah saya sudah membiasakan diri memeriksa jawaban kembali dengan substitusi?</li>
+        </ul>
+      </div>
+      <div class="thanks">
+        <h3>Thank You for Today! 🙏</h3>
+        <p>Teruslah berlatih, karena kelancaran matematika lahir dari latihan yang konsisten.
+          Sampai jumpa di sesi latihan berikutnya! ✨</p>
+        <button type="button" class="btn" data-action="restart">🔁 Ulangi Latihan</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div id="toast"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  var TOTAL_Q = 30;
+  var TOTAL_TIME = 300;          // 5 menit per soal (detik)
+  var LETTERS = ['A', 'B', 'C', 'D', 'E'];
+  var FIRST_Q = 4;               // index slide soal pertama (0=cover, 1-3=materi)
+
+  /* ---------- Notasi matematika ---------- */
+  function fr(n, d) { return '<span class="fr"><span class="n">' + n + '</span><span class="d">' + d + '</span></span>'; }
+  function ov(s)    { return '<span class="ov">' + s + '</span>'; }
+
+  /* ---------- Data 30 soal (berdasarkan paket latihan) ---------- */
+  var QUESTIONS = [
+    // ===== BAGIAN I : KOMPOSISI FUNGSI =====
+    { sec:'Komposisi Fungsi', lv:'Mudah',
+      t:`Diketahui fungsi <i>f</i>(x) = 2x + 5 dan <i>g</i>(x) = 3x − 1. Rumus fungsi komposisi (<i>f</i> ∘ <i>g</i>)(x) adalah …`,
+      o:['6x + 3','6x + 7','6x − 3','5x + 4','6x + 14'], a:0,
+      d:`Definisi komposisi: (<i>f</i> ∘ <i>g</i>)(x) = <i>f</i>(<i>g</i>(x)).<br>(<i>f</i> ∘ <i>g</i>)(x) = 2(3x − 1) + 5 = 6x − 2 + 5 = <b>6x + 3</b> → <b>(A)</b>.` },
+    { sec:'Komposisi Fungsi', lv:'Mudah',
+      t:`Diketahui <i>f</i>(x) = x² − 4 dan <i>g</i>(x) = x + 3. Nilai dari (<i>g</i> ∘ <i>f</i>)(2) adalah …`,
+      o:['0','3','7','12','16'], a:1,
+      d:`Hitung bagian dalam lebih dulu: <i>f</i>(2) = 2² − 4 = 0.<br>(<i>g</i> ∘ <i>f</i>)(2) = <i>g</i>(<i>f</i>(2)) = <i>g</i>(0) = 0 + 3 = <b>3</b> → <b>(B)</b>.` },
+    { sec:'Komposisi Fungsi', lv:'Mudah',
+      t:`Jika <i>f</i>(x) = 3x − 2 dan <i>g</i>(x) = 2x² + 1, maka nilai dari (<i>f</i> ∘ <i>g</i>)(−1) adalah …`,
+      o:['5','7','9','11','13'], a:1,
+      d:`Hitung bagian dalam lebih dulu: <i>g</i>(−1) = 2(−1)² + 1 = 2(1) + 1 = 3.<br>(<i>f</i> ∘ <i>g</i>)(−1) = <i>f</i>(<i>g</i>(−1)) = <i>f</i>(3) = 3(3) − 2 = 9 − 2 = <b>7</b> → <b>(B)</b>.` },
+    { sec:'Komposisi Fungsi', lv:'Sedang',
+      t:`Diketahui fungsi <i>f</i>(x) = 4x − 1 dan (<i>f</i> ∘ <i>g</i>)(x) = 4x² + 8x + 3. Rumus fungsi <i>g</i>(x) adalah …`,
+      o:['x² + 2x + 1','x² + 2x + 2','x² + 4x + 1','x² + 2x − 1','2x² + 4x + 1'], a:0,
+      d:`(<i>f</i> ∘ <i>g</i>)(x) = <i>f</i>(<i>g</i>(x)) = 4<i>g</i>(x) − 1, sehingga:<br>4<i>g</i>(x) − 1 = 4x² + 8x + 3 ⟹ 4<i>g</i>(x) = 4x² + 8x + 4 ⟹ <i>g</i>(x) = <b>x² + 2x + 1</b> → <b>(A)</b>.` },
+    { sec:'Komposisi Fungsi', lv:'Sedang',
+      t:`Diketahui <i>g</i>(x) = 2x − 3 dan (<i>f</i> ∘ <i>g</i>)(x) = 4x² − 16x + 18. Rumus fungsi <i>f</i>(x) adalah …`,
+      o:['x² − 2x + 3','x² − 4x + 5','x² − 2x + 5','x² + 2x + 3','x² − 4x + 3'], a:2,
+      d:`Misalkan u = 2x − 3 ⟹ x = ${fr('u + 3','2')}, sehingga:<br>
+         <i>f</i>(u) = 4(${fr('u + 3','2')})² − 16(${fr('u + 3','2')}) + 18 = (u² + 6u + 9) − (8u + 24) + 18 = u² − 2u + 3.<br>
+         Jadi <i>f</i>(x) = <b>x² − 2x + 3</b> → <b>(C)</b>. <i>Periksa:</i> <i>f</i>(2x − 3) = (2x − 3)² − 2(2x − 3) + 3 = 4x² − 16x + 18 ✓` },
+    { sec:'Komposisi Fungsi', lv:'Sedang',
+      t:`Tiga buah fungsi didefinisikan sebagai <i>f</i>(x) = 2x + 1, <i>g</i>(x) = 3x − 2, dan <i>h</i>(x) = x². Rumus fungsi (<i>h</i> ∘ <i>g</i> ∘ <i>f</i>)(x) adalah …`,
+      o:['36x² + 12x + 1','36x² + 24x + 4','12x² + 6x + 1','36x² − 12x + 1','18x² + 6x − 2'], a:0,
+      d:`Tahap 1: (<i>g</i> ∘ <i>f</i>)(x) = <i>g</i>(2x + 1) = 3(2x + 1) − 2 = 6x + 1.<br>
+         Tahap 2: (<i>h</i> ∘ <i>g</i> ∘ <i>f</i>)(x) = <i>h</i>(6x + 1) = (6x + 1)² = <b>36x² + 12x + 1</b> → <b>(A)</b>.` },
+    { sec:'Komposisi Fungsi', lv:'Sedang',
+      t:`Diketahui <i>f</i>(x) = ${fr('2x + 1','x − 3')}, x ≠ 3 dan <i>g</i>(x) = x + 1. Daerah asal alami (<i>domain</i>) dari fungsi komposisi (<i>f</i> ∘ <i>g</i>)(x) adalah …`,
+      o:['{x ∈ ℝ | x ≠ 3}','{x ∈ ℝ | x ≠ 2}','{x ∈ ℝ | x ≠ −1}','{x ∈ ℝ | x ≠ −2}','{x ∈ ℝ | x ≠ 4}'], a:1,
+      d:`(<i>f</i> ∘ <i>g</i>)(x) = <i>f</i>(x + 1) = ${fr('2(x + 1) + 1','(x + 1) − 3')} = ${fr('2x + 3','x − 2')}.<br>
+         Syarat: penyebut ≠ 0 ⟹ x − 2 ≠ 0 ⟹ x ≠ <b>2</b>.<br>Jadi domainnya {x ∈ ℝ | x ≠ 2} → <b>(B)</b>.` },
+    { sec:'Komposisi Fungsi', lv:'Sulit',
+      t:`Jika <i>f</i>(x − 2) = 3x + 1 dan <i>g</i>(x) = 2x − 5, maka nilai a yang memenuhi persamaan (<i>f</i> ∘ <i>g</i>)(a) = 28 adalah …`,
+      o:['3','4','5','6','7'], a:3,
+      d:`Misalkan t = x − 2 ⟹ x = t + 2, sehingga <i>f</i>(t) = 3(t + 2) + 1 = 3t + 7, yaitu <i>f</i>(x) = 3x + 7.<br>
+         (<i>f</i> ∘ <i>g</i>)(x) = <i>f</i>(2x − 5) = 3(2x − 5) + 7 = 6x − 8.<br>
+         6a − 8 = 28 ⟹ 6a = 36 ⟹ <b>a = 6</b> → <b>(D)</b>.` },
+    { sec:'Komposisi Fungsi', lv:'Sulit',
+      t:`Diketahui fungsi <i>f</i>(x) = ${fr('x','x − 1')} untuk x ≠ 1. Didefinisikan f<sub>1</sub>(x) = <i>f</i>(x), f<sub>2</sub>(x) = (<i>f</i> ∘ <i>f</i>)(x), dan f<sub>n</sub>(x) = (<i>f</i> ∘ f<sub>n−1</sub>)(x) untuk setiap bilangan bulat n ≥ 2. Nilai dari f<sub>2027</sub>(5) adalah …`,
+      o:[fr('5','4'),'5',fr('4','5'),'−5','1'], a:0,
+      d:`Amati pola iterasinya:<br>
+         f<sub>2</sub>(x) = <i>f</i>(<i>f</i>(x)) = [x/(x − 1)] ÷ ([x/(x − 1)] − 1) = [x/(x − 1)] ÷ [1/(x − 1)] = <b>x</b> (fungsi identitas).<br>
+         Jadi f<sub>n</sub>(x) = <i>f</i>(x) jika n <b>ganjil</b>, dan f<sub>n</sub>(x) = x jika n genap. Karena 2027 ganjil:<br>
+         f<sub>2027</sub>(5) = <i>f</i>(5) = 5/(5 − 1) = ${fr('5','4')} → <b>(A)</b>.` },
+    { sec:'Komposisi Fungsi', lv:'Sulit',
+      t:`Suatu fungsi <i>f</i>(x) memenuhi persamaan 2<i>f</i>(x) + <i>f</i>(1 − x) = 3x² − 3x + 9 untuk setiap x ∈ ℝ. Nilai dari (<i>f</i> ∘ <i>f</i>)(2) adalah …`,
+      o:['5','11','19','23','31'], a:3,
+      d:`(i)&nbsp;&nbsp;2<i>f</i>(x) + <i>f</i>(1 − x) = 3x² − 3x + 9.<br>
+         Substitusi x → (1 − x); ruas kanan tidak berubah (simetris terhadap x = ½):<br>
+         (ii)&nbsp;&nbsp;2<i>f</i>(1 − x) + <i>f</i>(x) = 3x² − 3x + 9.<br>
+         2 × (i) − (ii): 3<i>f</i>(x) = 3x² − 3x + 9 ⟹ <i>f</i>(x) = x² − x + 3.<br>
+         <i>f</i>(2) = 4 − 2 + 3 = 5 dan <i>f</i>(5) = 25 − 5 + 3 = 23 ⟹ (<i>f</i> ∘ <i>f</i>)(2) = <i>f</i>(5) = <b>23</b> → <b>(D)</b>.` },
+
+    // ===== BAGIAN II : INVERS FUNGSI =====
+    { sec:'Invers Fungsi', lv:'Mudah',
+      t:`Invers dari fungsi <i>f</i>(x) = 5x − 7 adalah <i>f</i><sup>−1</sup>(x) = …`,
+      o:[fr('x + 7','5'),fr('x − 7','5'),fr('5','x + 7'),fr('x + 5','7'),'7x − 5'], a:0,
+      d:`Misalkan y = 5x − 7 ⟹ y + 7 = 5x ⟹ x = ${fr('y + 7','5')}.<br>Jadi <i>f</i><sup>−1</sup>(x) = ${fr('x + 7','5')} → <b>(A)</b>.` },
+    { sec:'Invers Fungsi', lv:'Mudah',
+      t:`Diketahui fungsi <i>f</i>(x) = ${fr('2x + 3','4x − 5')}, x ≠ ${fr('5','4')}. Invers dari fungsi <i>f</i>(x) adalah <i>f</i><sup>−1</sup>(x) = …`,
+      o:[fr('5x + 3','4x − 2')+', x ≠ '+fr('1','2'),
+         fr('5x − 3','4x + 2')+', x ≠ −'+fr('1','2'),
+         fr('4x + 5','2x − 3')+', x ≠ '+fr('3','2'),
+         fr('−5x + 3','4x − 2')+', x ≠ '+fr('1','2'),
+         fr('5x + 3','4x + 2')+', x ≠ −'+fr('1','2')], a:0,
+      d:`Rumus cepat: <i>f</i>(x) = (ax + b)/(cx + d) ⟹ <i>f</i><sup>−1</sup>(x) = ${fr('−dx + b','cx − a')}.<br>
+         Dengan a = 2, b = 3, c = 4, d = −5:<br><i>f</i><sup>−1</sup>(x) = ${fr('5x + 3','4x − 2')}, x ≠ ${fr('1','2')} → <b>(A)</b>.` },
+    { sec:'Invers Fungsi', lv:'Mudah',
+      t:`Diketahui <i>f</i>(x) = 3x + 4. Jika <i>f</i><sup>−1</sup>(k) = 5, maka nilai k adalah …`,
+      o:['11','15','19','21','23'], a:2,
+      d:`Sifat invers: <i>f</i><sup>−1</sup>(k) = 5 ⟺ <i>f</i>(5) = k.<br>k = <i>f</i>(5) = 3(5) + 4 = <b>19</b> → <b>(C)</b>.` },
+    { sec:'Invers Fungsi', lv:'Mudah',
+      t:`Diketahui <i>f</i>(x) = 2x − 1 dan <i>g</i>(x) = x + 3. Rumus untuk (<i>f</i> ∘ <i>g</i>)<sup>−1</sup>(x) adalah …`,
+      o:[fr('x − 5','2'),fr('x + 5','2'),fr('x − 2','5'),'2x + 5','2x − 5'], a:0,
+      d:`Cari komposisinya lebih dulu: (<i>f</i> ∘ <i>g</i>)(x) = <i>f</i>(x + 3) = 2(x + 3) − 1 = 2x + 5.<br>
+         Misalkan y = 2x + 5 ⟹ x = ${fr('y − 5','2')} ⟹ (<i>f</i> ∘ <i>g</i>)<sup>−1</sup>(x) = ${fr('x − 5','2')} → <b>(A)</b>.` },
+    { sec:'Invers Fungsi', lv:'Sedang',
+      t:`Diketahui fungsi <i>f</i>(x) = x² − 6x + 5 dengan domain x ≥ 3. Rumus fungsi invers <i>f</i><sup>−1</sup>(x) adalah …`,
+      o:['3 + √'+ov('x + 4')+', x ≥ −4','3 − √'+ov('x + 4')+', x ≥ −4','3 + √'+ov('x − 4')+', x ≥ 4',
+         '−3 + √'+ov('x + 4')+', x ≥ −4','6 + √'+ov('x + 4')+', x ≥ −4'], a:0,
+      d:`Kuadrat sempurna: y = x² − 6x + 5 = (x − 3)² − 4 ⟹ y + 4 = (x − 3)².<br>
+         Karena domain x ≥ 3 maka (x − 3) ≥ 0, ambil <b>positif</b>: x = 3 + √${ov('y + 4')}.<br>
+         Jadi <i>f</i><sup>−1</sup>(x) = 3 + √${ov('x + 4')}, dengan syarat x ≥ −4 → <b>(A)</b>.` },
+    { sec:'Invers Fungsi', lv:'Sedang',
+      t:`Diketahui fungsi <i>f</i>(x) = ${fr('3x − 1','x + 2')}, x ≠ −2 dan <i>g</i>(x) = 2x + 1. Nilai dari (<i>g</i> ∘ <i>f</i><sup>−1</sup>)(4) adalah …`,
+      o:['−17','−15','−9','7','11'], a:0,
+      d:`Cari <i>f</i><sup>−1</sup>(4) = k ⟺ <i>f</i>(k) = 4:<br>
+         ${fr('3k − 1','k + 2')} = 4 ⟹ 3k − 1 = 4(k + 2) = 4k + 8 ⟹ −k = 9 ⟹ k = −9.<br>
+         Maka (<i>g</i> ∘ <i>f</i><sup>−1</sup>)(4) = <i>g</i>(−9) = 2(−9) + 1 = <b>−17</b> → <b>(A)</b>.` },
+    { sec:'Invers Fungsi', lv:'Sedang',
+      t:`Diketahui <i>f</i><sup>−1</sup>(x) = ${fr('x + 1','2')} dan <i>g</i><sup>−1</sup>(x) = ${fr('2x + 3','3')}. Nilai dari (<i>f</i> ∘ <i>g</i>)<sup>−1</sup>(5) adalah …`,
+      o:['2','3','4','5','6'], a:1,
+      d:`Sifat: (<i>f</i> ∘ <i>g</i>)<sup>−1</sup>(x) = <i>g</i><sup>−1</sup>(<i>f</i><sup>−1</sup>(x)).<br>
+         <i>f</i><sup>−1</sup>(5) = ${fr('5 + 1','2')} = 3, lalu <i>g</i><sup>−1</sup>(3) = ${fr('2(3) + 3','3')} = ${fr('9','3')} = 3.<br>
+         Jadi (<i>f</i> ∘ <i>g</i>)<sup>−1</sup>(5) = <b>3</b> → <b>(B)</b>.` },
+    { sec:'Invers Fungsi', lv:'Sulit',
+      t:`Diketahui fungsi <i>f</i>( ${fr('2x + 1','x − 1')} ) = 4x − 3 untuk x ≠ 1. Nilai dari <i>f</i><sup>−1</sup>(5) adalah …`,
+      o:['2','3','4','5','7'], a:3,
+      d:`<i>f</i><sup>−1</sup>(5) = k ⟺ <i>f</i>(k) = 5. Dari aturan <i>f</i>( ${fr('2x + 1','x − 1')} ) = 4x − 3, syaratkan 4x − 3 = 5 ⟹ x = 2.<br>
+         Substitusi x = 2 ke argumen f: k = ${fr('2(2) + 1','2 − 1')} = ${fr('5','1')} = 5.<br>
+         Jadi <i>f</i>(5) = 5 ⟹ <i>f</i><sup>−1</sup>(5) = <b>5</b> → <b>(D)</b>.` },
+    { sec:'Invers Fungsi', lv:'Sulit',
+      t:`Diketahui fungsi kuadrat <i>f</i>(x) = 2x² + 8x + 3 yang didefinisikan pada interval x ≤ −2. Jika <i>f</i><sup>−1</sup>(a) = −4, maka nilai dari a dan bentuk rumus <i>f</i><sup>−1</sup>(x) berturut-turut adalah …`,
+      o:['a = 3 dan <i>f</i><sup>−1</sup>(x) = −2 − √'+ov(fr('x + 5','2')),
+         'a = 3 dan <i>f</i><sup>−1</sup>(x) = −2 + √'+ov(fr('x + 5','2')),
+         'a = −5 dan <i>f</i><sup>−1</sup>(x) = −2 − √'+ov(fr('x + 5','2')),
+         'a = 11 dan <i>f</i><sup>−1</sup>(x) = 2 − √'+ov(fr('x − 3','2')),
+         'a = 5 dan <i>f</i><sup>−1</sup>(x) = −2 − √'+ov(fr('x + 3','2'))], a:0,
+      d:`a = <i>f</i>(−4) = 2(−4)² + 8(−4) + 3 = 32 − 32 + 3 = <b>3</b>.<br>
+         Melengkapkan kuadrat: <i>f</i>(x) = 2(x + 2)² − 5 ⟹ (x + 2)² = ${fr('y + 5','2')}.
+         Karena x ≤ −2 maka x + 2 ≤ 0 (ambil akar <b>negatif</b>):<br>
+         <i>f</i><sup>−1</sup>(x) = −2 − √${ov(fr('x + 5','2'))}.<br>
+         Jadi a = 3 dan <i>f</i><sup>−1</sup>(x) = −2 − √${ov(fr('x + 5','2'))} → <b>(A)</b>.` },
+    { sec:'Invers Fungsi', lv:'Sulit',
+      t:`Diketahui fungsi pecahan <i>f</i>(x) = ${fr('ax + 5','2x − 3')}, x ≠ ${fr('3','2')}. Jika grafik fungsi invers <i>f</i><sup>−1</sup>(x) berimpit dengan grafik fungsi <i>f</i>(x) (dengan kata lain <i>f</i><sup>−1</sup>(x) = <i>f</i>(x) untuk seluruh domain yang bersesuaian), maka nilai konstanta a adalah …`,
+      o:['−3','−2','0','2','3'], a:4,
+      d:`Invers dari <i>f</i>(x) = ${fr('ax + 5','2x − 3')} adalah <i>f</i><sup>−1</sup>(x) = ${fr('3x + 5','2x − a')}.<br>
+         Syarat <i>f</i><sup>−1</sup>(x) = <i>f</i>(x) untuk semua x ⟹ (3x + 5)(2x − 3) ≡ (ax + 5)(2x − a).<br>
+         Samakan koefisien x²: 6 = 2a ⟹ <b>a = 3</b> (cocok juga dengan penyebut 2x − a = 2x − 3) → <b>(E)</b>.` },
+
+    // ===== BAGIAN III : PENERAPAN SEHARI-HARI =====
+    { sec:'Penerapan Sehari-hari', lv:'Mudah',
+      t:`Sebuah toko busana memberikan promosi berupa diskon ganda dalam rangka festival akhir tahun. Pakaian mula-mula dipotong diskon sebesar 20%, kemudian dari harga setelah diskon tersebut dipotong kupon potongan tunai langsung sebesar Rp15.000,00. Jika harga label suatu baju dinyatakan dengan x (dalam rupiah), model fungsi harga akhir H(x) adalah …`,
+      o:['H(x) = 0,2x − 15.000','H(x) = 0,8x − 15.000','H(x) = 0,8x + 15.000','H(x) = 0,2x + 15.000','H(x) = 0,75x − 15.000'], a:1,
+      d:`• Diskon 20% ⟹ <i>f</i>(x) = (1 − 0,20)x = 0,8x.<br>
+         • Kupon tunai langsung ⟹ <i>g</i>(y) = y − 15.000.<br>
+         Harga akhir = komposisi: H(x) = (<i>g</i> ∘ <i>f</i>)(x) = <i>g</i>(0,8x) = <b>0,8x − 15.000</b> → <b>(B)</b>.` },
+    { sec:'Penerapan Sehari-hari', lv:'Mudah',
+      t:`Berdasarkan model pada Soal No. 21, jika seorang pembeli memilih celana panjang dengan harga label Rp200.000,00, jumlah uang yang harus ia bayar di kasir adalah …`,
+      o:['Rp135.000,00','Rp145.000,00','Rp150.000,00','Rp160.000,00','Rp165.000,00'], a:1,
+      d:`H(200.000) = 0,8(200.000) − 15.000 = 160.000 − 15.000 = <b>Rp145.000,00</b> → <b>(B)</b>.` },
+    { sec:'Penerapan Sehari-hari', lv:'Mudah',
+      t:`Suatu perusahaan percetakan memproduksi buku melalui dua tahapan berurutan. Tahap penyuntingan naskah menghasilkan lembar cetak m mengikuti fungsi m = <i>f</i>(x) = 0,9x − 10, di mana x adalah jumlah halaman naskah mentah. Tahap pencetakan dan jilid menghasilkan total biaya (dalam ribu rupiah) mengikuti <i>g</i>(m) = 20m + 50. Jika naskah mentah terdiri atas 200 halaman, total biaya produksi adalah …`,
+      o:['Rp3.450.000,00','Rp3.500.000,00','Rp3.650.000,00','Rp3.700.000,00','Rp4.050.000,00'], a:0,
+      d:`Tahap I (penyuntingan): m = <i>f</i>(200) = 0,9(200) − 10 = 180 − 10 = 170 lembar.<br>
+         Tahap II (pencetakan): <i>g</i>(170) = 20(170) + 50 = 3.400 + 50 = 3.450 (ribu rupiah).<br>
+         Total biaya produksi = <b>Rp3.450.000,00</b> → <b>(A)</b>.` },
+    { sec:'Penerapan Sehari-hari', lv:'Mudah',
+      t:`Konversi skala suhu dari derajat Celsius (C) ke derajat Reamur (R) dinyatakan dengan R = <i>f</i>(C) = ${fr('4','5')}C. Rumus invers untuk menghitung suhu dalam Celsius jika diketahui suhu dalam Reamur adalah …`,
+      o:['C = '+fr('5','4')+'R','C = '+fr('4','5')+'R + 32','C = '+fr('5','4')+'R − 32','C = '+fr('9','4')+'R','C = '+fr('4','9')+'R'], a:0,
+      d:`R = ${fr('4','5')}C ⟹ 5R = 4C ⟹ C = ${fr('5','4')}R → <b>(A)</b>.` },
+    { sec:'Penerapan Sehari-hari', lv:'Sedang',
+      t:`Sebuah pabrik kertas memproduksi kertas menggunakan dua mesin secara berantai. Mesin I mengolah bahan baku kayu (x ton) menjadi bubur pulp (p ton) dengan rumus p = <i>f</i>(x) = 2x − 1. Selanjutnya, Mesin II mengolah bubur pulp menjadi kertas jadi (k ton) menurut rumus k = <i>g</i>(p) = p² − 3p + 4. Jika bahan kayu yang diproses tersedia sebanyak 3 ton, kertas yang dihasilkan adalah sebanyak …`,
+      o:['12 ton','14 ton','16 ton','18 ton','20 ton'], a:1,
+      d:`Mesin I: p = <i>f</i>(3) = 2(3) − 1 = 6 − 1 = 5 ton.<br>
+         Mesin II: k = <i>g</i>(5) = 5² − 3(5) + 4 = 25 − 15 + 4 = <b>14 ton</b> → <b>(B)</b>.` },
+    { sec:'Penerapan Sehari-hari', lv:'Sedang',
+      t:`Pada proses produksi pabrik kertas di Soal No. 25, jika suatu hari pabrik ditargetkan menghasilkan kertas jadi sebanyak 14 ton, maka kayu gelondongan yang harus disediakan di Mesin I adalah …`,
+      o:['2,5 ton','3 ton','3,5 ton','4 ton','5 ton'], a:1,
+      d:`Output akhir k = 14 ⟹ p² − 3p + 4 = 14 ⟹ p² − 3p − 10 = 0 ⟹ (p − 5)(p + 2) = 0 ⟹ p = 5 (p harus positif).<br>
+         Mesin I: 2x − 1 = 5 ⟹ 2x = 6 ⟹ x = <b>3 ton</b> → <b>(B)</b>.` },
+    { sec:'Penerapan Sehari-hari', lv:'Sedang',
+      t:`Penghasilan bulanan seorang pramuniaga terdiri dari gaji pokok sebesar Rp2.500.000,00 ditambah komisi penjualan yang dimodelkan oleh <i>k</i>(x) = 0,05x, dengan x menyatakan nilai total penjualan barang (dalam rupiah). Pajak penghasilan bulanan yang dikenakan adalah sebesar 5% dari total seluruh penghasilan kotor. Jika seorang pramuniaga menerima gaji bersih setelah pajak sebesar Rp3.800.000,00 pada bulan tertentu, maka omzet penjualannya (x) bulan tersebut adalah …`,
+      o:['Rp25.000.000,00','Rp30.000.000,00','Rp35.000.000,00','Rp40.000.000,00','Rp45.000.000,00'], a:1,
+      d:`Penghasilan kotor: G(x) = 2.500.000 + 0,05x. Gaji bersih = 95% × penghasilan kotor:<br>
+         0,95(2.500.000 + 0,05x) = 3.800.000<br>
+         2.500.000 + 0,05x = ${fr('3.800.000','0,95')} = 4.000.000<br>
+         0,05x = 1.500.000 ⟹ x = <b>Rp30.000.000,00</b> → <b>(B)</b>.` },
+    { sec:'Penerapan Sehari-hari', lv:'Mudah',
+      t:`Sebuah batu dijatuhkan ke danau yang tenang sehingga menimbulkan gelombang air melingkar konsentris. Jari-jari lingkaran gelombang bertambah dengan laju konstan sebesar r(t) = 0,6t meter, di mana t dalam detik. Luas daerah lingkaran gelombang dinyatakan oleh fungsi A(r) = πr². Luas gelombang air setelah 5 detik adalah …`,
+      o:['3π m²','6π m²','9π m²','12π m²','15π m²'], a:2,
+      d:`Jari-jari gelombang pada t = 5 detik: r(5) = 0,6(5) = 3 meter.<br>
+         Luas lingkaran: A = πr² = π(3)² = <b>9π m²</b> → <b>(C)</b>.` },
+    { sec:'Penerapan Sehari-hari', lv:'Sedang',
+      t:`Seorang eksportir mebel di Jepara menjual produk ke Amerika Serikat. Pendapatan penjualan dalam mata uang Dollar AS ($ USD) terhadap volume produk x unit memenuhi U(x) = 150x + 200. Keuntungan bersih perusahaan dihitung setelah dikonversi ke Rupiah (IDR) melalui fungsi kurs valas K(u) = 15.500u − 500.000, di mana u adalah jumlah $ USD. Sementara itu, total beban operasional lokal mengikuti fungsi B(x) = 325.000x + 1.100.000. Rumus fungsi keuntungan bersih total dalam Rupiah P(x) sebagai fungsi dari unit x adalah …`,
+      o:['P(x) = 2.000.000x + 1.500.000','P(x) = 2.000.000x + 2.000.000','P(x) = 2.325.000x + 2.600.000',
+         'P(x) = 1.950.000x + 1.500.000','P(x) = 2.150.000x − 500.000'], a:0,
+      d:`Pendapatan dalam Rupiah = (K ∘ U)(x) = 15.500(150x + 200) − 500.000 = 2.325.000x + 3.100.000 − 500.000 = 2.325.000x + 2.600.000.<br>
+         Keuntungan bersih P(x) = (K ∘ U)(x) − B(x) = (2.325.000x + 2.600.000) − (325.000x + 1.100.000) = <b>2.000.000x + 1.500.000</b> → <b>(A)</b>.` },
+    { sec:'Penerapan Sehari-hari', lv:'Sedang',
+      t:`Berdasarkan model pada Soal No. 29, jika eksportir tersebut menargetkan keuntungan bersih minimal sebesar Rp101.500.000,00 dalam satu kali pengiriman, berapa unit mebel minimal yang harus diproduksi dan diekspor?`,
+      o:['45 unit','48 unit','50 unit','52 unit','55 unit'], a:2,
+      d:`P(x) ≥ 101.500.000<br>2.000.000x + 1.500.000 ≥ 101.500.000<br>
+         2.000.000x ≥ 100.000.000 ⟹ x ≥ ${fr('100.000.000','2.000.000')} = 50.<br>
+         Jadi minimal <b>50 unit</b> mebel harus diproduksi dan diekspor → <b>(C)</b>.` }
+  ];
+
+  /* ---------- State global ---------- */
+  var current = 0, activeQ = -1, timerId = null, remaining = TOTAL_TIME;
+  var answers = new Array(TOTAL_Q).fill(null);
+  var checkedArr = new Array(TOTAL_Q).fill(false);
+  var resultArr = new Array(TOTAL_Q).fill(null);
+  var timeUsed = new Array(TOTAL_Q).fill(null);
+  var remainAtCheck = new Array(TOTAL_Q).fill(null);
+  var warned = new Array(TOTAL_Q).fill(false);
+  var slides = [];
+
+  /* ---------- Membangun slide soal ---------- */
+  function qSlideHTML(Q, i) {
+    var opts = '';
+    for (var j = 0; j < Q.o.length; j++) {
+      opts += '<button type="button" class="opt" data-action="opt" data-q="' + i + '" data-j="' + j + '">' +
+              '<span class="letter">' + LETTERS[j] + '</span><span class="otext">' + Q.o[j] + '</span></button>';
+    }
+    var last = (i === TOTAL_Q - 1);
+    return '<section class="slide" id="q' + i + '">' +
+      '<div class="card">' +
+        '<div class="qtop">' +
+          '<div class="qmeta"><span class="qnum">Soal ' + (i + 1) + '</span><span class="of">/ ' + TOTAL_Q + '</span>' +
+          '<span class="chip ' + Q.lv.toLowerCase() + '">' + Q.lv + '</span>' +
+          '<span class="chip section">' + Q.sec + '</span></div>' +
+          '<div class="timerwrap"><span class="timer" id="timer-' + i + '">05:00</span>' +
+          '<button type="button" class="btn ghost small btn-add15" data-action="add15" data-q="' + i + '" ' +
+          'title="Tambah 15 detik (maksimal 05:00)">⏱ +15 detik</button></div>' +
+        '</div>' +
+        '<div class="qtext">' + Q.t + '</div>' +
+        '<div class="opts">' + opts + '</div>' +
+        '<div class="qactions">' +
+          '<button type="button" class="btn ghost" data-action="prev">◀ Sebelumnya</button>' +
+          '<button type="button" class="btn primary btn-check" data-action="check" data-q="' + i + '">✔ Cek Jawaban</button>' +
+          '<button type="button" class="btn ghost" data-action="next">' + (last ? 'Lihat Hasil 🏁' : 'Berikutnya ▶') + '</button>' +
+        '</div>' +
+        '<div class="feedback"></div>' +
+        '<div class="discussion"><div class="dtitle">📖 Pembahasan</div>' + Q.d + '</div>' +
+      '</div>' +
+    '</section>';
+  }
+
+  function buildQuiz() {
+    var html = '';
+    for (var i = 0; i < TOTAL_Q; i++) html += qSlideHTML(QUESTIONS[i], i);
+    document.getElementById('quiz-mount').innerHTML = html;
+    slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  }
+
+  /* ---------- Navigasi slide ---------- */
+  function showSlide(i) {
+    if (i < 0 || i >= slides.length) return;
+    var prevQ = current - FIRST_Q;
+    if (prevQ >= 0 && prevQ < TOTAL_Q && !checkedArr[prevQ]) stopTimer();
+    slides[current].classList.remove('active');
+    current = i;
+    slides[current].classList.add('active');
+
+    var q = current - FIRST_Q;
+    if (q >= 0 && q < TOTAL_Q) {
+      activeQ = q;
+      if (checkedArr[q]) {                    // soal sudah dikerjakan → waktu berhenti
+        stopTimer();
+        remaining = (remainAtCheck[q] != null) ? remainAtCheck[q] : 0;
+        renderTimer();
+      } else {                                // membuka nomor baru → timer di-reset ke 5:00
+        remaining = TOTAL_TIME;
+        renderTimer();
+        startTimer();
+      }
+    } else {
+      stopTimer();
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    updateProgress();
+  }
+
+  function updateProgress() {
+    var pct = slides.length > 1 ? (current / (slides.length - 1)) * 100 : 0;
+    document.getElementById('progress-fill').style.width = pct + '%';
+  }
+
+  /* ---------- Timer ---------- */
+  function stopTimer() { if (timerId) { clearInterval(timerId); timerId = null; } }
+
+  function renderTimer() {
+    var el = document.getElementById('timer-' + activeQ);
+    if (!el) return;
+    var m = Math.floor(remaining / 60), s = remaining % 60;
+    el.textContent = (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+    el.classList.toggle('warn',   remaining <= 60 && remaining > 15);
+    el.classList.toggle('danger', remaining <= 15);
+  }
+
+  function startTimer() {
+    stopTimer();
+    timerId = setInterval(function () {
+      remaining--;
+      if (remaining <= 0) { remaining = 0; renderTimer(); onTimeout(activeQ); return; }
+      renderTimer();
+    }, 1000);
+  }
+
+  function onTimeout(q) {
+    if (!checkedArr[q]) {
+      showToast('⏰ Waktu habis untuk Soal ' + (q + 1) + '!');
+      grade(q, true);
+    }
+  }
+
+  /* ---------- Pemeriksaan jawaban & pembahasan ---------- */
+  function fmtDur(s) {
+    s = Math.round(s);
+    if (s < 60) return s + ' detik';
+    return Math.floor(s / 60) + ' menit ' + (s % 60) + ' detik';
+  }
+  function fmtClock(sec) {
+    var s = Math.round(sec), m = Math.floor(s / 60); s = s % 60;
+    return (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+  }
+
+  function grade(q, timeout) {
+    if (checkedArr[q]) return;
+    stopTimer();                              // waktu berhenti saat tombol cek ditekan
+    var used = timeout ? TOTAL_TIME : Math.max(0, Math.min(TOTAL_TIME, TOTAL_TIME - remaining));
+    timeUsed[q] = used;
+    remainAtCheck[q] = timeout ? 0 : remaining;
+    checkedArr[q] = true;
+
+    var Q = QUESTIONS[q], sel = answers[q];
+    var ok = (sel !== null && sel === Q.a);
+    resultArr[q] = ok;
+
+    var wrap = document.getElementById('q' + q);
+    var opts = wrap.querySelectorAll('.opt');
+    for (var j = 0; j < opts.length; j++) {
+      opts[j].disabled = true;
+      opts[j].classList.remove('selected');
+      if (j === Q.a) opts[j].classList.add('correct');
+      else if (j === sel) opts[j].classList.add('wrong');
+      else opts[j].classList.add('dim');
+    }
+    wrap.querySelector('.btn-check').disabled = true;
+    var add = wrap.querySelector('.btn-add15');
+    if (add) add.disabled = true;
+
+    var fb = wrap.querySelector('.feedback');
+    fb.classList.remove('ok', 'bad', 'timeout');
+    if (timeout && sel === null) {
+      fb.classList.add('timeout');
+      fb.innerHTML = '⏰ <b>Waktu habis!</b> Kamu tidak sempat memeriksa jawaban. Jawaban benar: <b>(' + LETTERS[Q.a] + ')</b>. Waktu: ' + fmtDur(used) + '.';
+    } else if (ok) {
+      fb.classList.add('ok');
+      fb.innerHTML = '✅ <b>Benar!</b> Waktu pengerjaan: ' + fmtDur(used) + '.';
+    } else {
+      fb.classList.add('bad');
+      fb.innerHTML = '❌ <b>Belum tepat.</b> Jawaban benar: <b>(' + LETTERS[Q.a] + ')</b>. Waktu pengerjaan: ' + fmtDur(used) + '.';
+    }
+    wrap.querySelector('.discussion').classList.add('show');
+    wrap.querySelector('.discussion').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  /* ---------- Slide hasil ---------- */
+  function buildResults() {
+    var i, j;
+    var benar = 0, salah = 0;
+    for (i = 0; i < TOTAL_Q; i++) {
+      if (resultArr[i] === true) benar++;
+      else if (resultArr[i] === false) salah++;
+    }
+    var kosong = TOTAL_Q - benar - salah;
+    var score = Math.round((benar / TOTAL_Q) * 100);
+    var totalT = 0, n = 0;
+    for (i = 0; i < TOTAL_Q; i++) if (timeUsed[i] != null) { totalT += timeUsed[i]; n++; }
+    var avg = n ? totalT / n : null;
+
+    document.getElementById('st-benar').textContent = benar;
+    document.getElementById('st-salah').textContent = salah;
+    document.getElementById('st-kosong').textContent = kosong;
+    document.getElementById('st-score').textContent = score;
+    document.getElementById('st-avg').textContent = (avg == null) ? '—' : fmtClock(avg);
+    document.getElementById('avg-note').textContent = n
+      ? 'Rata-rata waktu dihitung dari ' + n + ' soal yang diperiksa (per soal).'
+      : 'Belum ada soal yang diperiksa.';
+
+    var secs = [
+      { name: 'Komposisi Fungsi',        from: 0,  to: 9  },
+      { name: 'Invers Fungsi',           from: 10, to: 19 },
+      { name: 'Penerapan Sehari-hari',   from: 20, to: 29 }
+    ];
+    var counts = [], sh = '';
+    for (i = 0; i < secs.length; i++) {
+      var c = 0;
+      for (j = secs[i].from; j <= secs[i].to; j++) if (resultArr[j] === true) c++;
+      counts.push(c);
+      sh += '<div class="srow"><span class="name">' + secs[i].name + '</span>' +
+            '<span class="bar"><i style="width:' + (c * 10) + '%"></i></span>' +
+            '<span class="val">' + c + '/' + (secs[i].to - secs[i].from + 1) + '</span></div>';
+    }
+    document.getElementById('sect-break').innerHTML = '<h3>📊 Penguasaan per Bagian Materi</h3>' + sh;
+
+    var gh = '';
+    for (i = 0; i < TOTAL_Q; i++) {
+      var cls = (resultArr[i] === true) ? 'ok' : (resultArr[i] === false) ? 'bad' : 'net';
+      var st  = (resultArr[i] === true) ? 'Benar' : (resultArr[i] === false) ? 'Salah' : 'Tidak dijawab';
+      var tip = 'Soal ' + (i + 1) + ': ' + st + (timeUsed[i] != null ? ' · ' + fmtDur(timeUsed[i]) : '');
+      gh += '<div class="cell ' + cls + '" title="' + tip + '">' + (i + 1) + '</div>';
+    }
+    document.getElementById('qgrid').innerHTML = gh;
+
+    var lowIdx = 0;
+    for (i = 1; i < counts.length; i++) if (counts[i] < counts[lowIdx]) lowIdx = i;
+    var lowC = counts[lowIdx], lowName = secs[lowIdx].name;
+
+    var emo, msg;
+    if (score >= 85)      { emo = '🏆'; msg = 'Luar biasa! Kamu menguasai konsep komposisi, invers, dan penerapan fungsi dengan sangat baik. Pertahankan ketelitian dan kecepatanmu.'; }
+    else if (score >= 70) { emo = '🌟'; msg = 'Bagus! Konsep dasar sudah kamu pahami. Perkuat lagi bagian yang masih salah agar hasilnya semakin stabil.'; }
+    else if (score >= 50) { emo = '📖'; msg = 'Cukup baik. Kamu sudah di jalur yang benar, tetapi perlu berlatih ulang pembahasan soal-soal yang keliru.'; }
+    else                  { emo = '💪'; msg = 'Terus semangat! Pelajari kembali review materi, lalu ulangi latihan ini sambil membaca setiap langkah pembahasannya.'; }
+
+    var concl = '<h3>' + emo + ' Kesimpulan</h3>' + msg;
+    if (kosong > 0) concl += ' Ada <b>' + kosong + '</b> soal yang tidak diperiksa dan dihitung sebagai salah.';
+    if (lowC >= 10) concl += ' Semua bagian materi dikuasai secara merata — hebat! 👏';
+    else concl += ' Bagian dengan hasil terendah: <b>' + lowName + '</b> (' + lowC + '/10 benar) — prioritaskan untuk mempelajarinya kembali.';
+    document.getElementById('conclusion').innerHTML = concl;
+  }
+
+  /* ---------- Reset semua ---------- */
+  function resetAll() {
+    for (var i = 0; i < TOTAL_Q; i++) {
+      answers[i] = null; checkedArr[i] = false; resultArr[i] = null;
+      timeUsed[i] = null; remainAtCheck[i] = null; warned[i] = false;
+      var wrap = document.getElementById('q' + i);
+      var opts = wrap.querySelectorAll('.opt');
+      for (var j = 0; j < opts.length; j++) {
+        opts[j].disabled = false;
+        opts[j].classList.remove('selected', 'correct', 'wrong', 'dim');
+      }
+      wrap.querySelector('.btn-check').disabled = false;
+      var add = wrap.querySelector('.btn-add15');
+      if (add) add.disabled = false;
+      var fb = wrap.querySelector('.feedback');
+      fb.className = 'feedback'; fb.innerHTML = '';
+      wrap.querySelector('.discussion').classList.remove('show');
+      var tm = document.getElementById('timer-' + i);
+      tm.textContent = '05:00'; tm.classList.remove('warn', 'danger');
+    }
+    stopTimer();
+    showSlide(0);
+  }
+
+  /* ---------- Toast ---------- */
+  var toastTimer = null;
+  function showToast(msg) {
+    var el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { el.classList.remove('show'); }, 2400);
+  }
+
+  /* ============================================================
+     SATU event listener untuk SEMUA tombol (event delegation) —
+     inilah perbaikan agar tombol "Mulai" selalu berfungsi.
+     ============================================================ */
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest('[data-action]');
+    if (!t) return;
+    var act = t.getAttribute('data-action');
+
+    if (act === 'start') {                       // tombol MULAI
+      showSlide(1);
+    }
+    else if (act === 'prev') {
+      showSlide(current - 1);
+    }
+    else if (act === 'next') {
+      var leavingQ = current - FIRST_Q;
+      if (leavingQ >= 0 && leavingQ < TOTAL_Q && !checkedArr[leavingQ] && !warned[leavingQ]) {
+        warned[leavingQ] = true;
+        showToast('⚠ Soal ' + (leavingQ + 1) + ' belum dicek — akan dihitung tidak dijawab.');
+      }
+      if (current === FIRST_Q + TOTAL_Q - 1) buildResults();
+      showSlide(current + 1);
+    }
+    else if (act === 'opt') {
+      var q = parseInt(t.getAttribute('data-q'), 10);
+      if (checkedArr[q]) return;
+      answers[q] = parseInt(t.getAttribute('data-j'), 10);
+      var wrap = document.getElementById('q' + q);
+      var opts = wrap.querySelectorAll('.opt');
+      for (var k = 0; k < opts.length; k++) opts[k].classList.remove('selected');
+      t.classList.add('selected');
+    }
+    else if (act === 'check') {
+      var qc = parseInt(t.getAttribute('data-q'), 10);
+      if (checkedArr[qc]) return;
+      if (answers[qc] === null) { showToast('⚠ Pilih salah satu jawaban terlebih dahulu!'); return; }
+      grade(qc, false);
+    }
+    else if (act === 'add15') {
+      var qa = parseInt(t.getAttribute('data-q'), 10);
+      if (checkedArr[qa] || qa !== activeQ) return;
+      remaining = Math.min(TOTAL_TIME, remaining + 15);
+      renderTimer();
+      var el = document.getElementById('timer-' + qa);
+      el.classList.remove('pulse'); void el.offsetWidth; el.classList.add('pulse');
+      showToast('⏱ +15 detik ditambahkan');
+    }
+    else if (act === 'restart') {
+      resetAll();
+    }
+  });
+
+  /* ---------- Inisialisasi ---------- */
+  buildQuiz();
+  updateProgress();
+})();
+</script>
+</body>
+</html>
