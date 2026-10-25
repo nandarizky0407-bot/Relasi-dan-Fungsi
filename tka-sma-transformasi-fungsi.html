@@ -1,0 +1,1935 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Transformasi Fungsi — Persiapan TKA SMA | Slide Interaktif</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#a21caf;--primary-2:#d946ef;--primary-soft:#fdf4ff;--primary-line:#f0abfc;
+  --accent:#d97706;--accent-soft:#fffbeb;
+  --ink:#4a1942;--muted:#9c7a94;--line:#f3e3ef;
+  --ok:#16a34a;--ok-bg:#f0fdf4;--bad:#dc2626;--bad-bg:#fef2f2;--warn:#b45309;
+  --card:#fff;--radius:18px;
+  --shadow:0 12px 32px rgba(162,28,175,.10),0 2px 8px rgba(74,25,66,.06);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:'Poppins',ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;background:#fdf9fc;color:var(--ink);overflow:hidden}
+body::before{content:"";position:fixed;inset:0;z-index:-1;background:
+ radial-gradient(680px 420px at 8% -6%,rgba(162,28,175,.12),transparent 60%),
+ radial-gradient(620px 420px at 100% 0%,rgba(217,119,6,.10),transparent 55%),
+ radial-gradient(720px 520px at 50% 115%,rgba(217,70,239,.10),transparent 60%)}
+button{font-family:inherit;color:inherit}
+h1,h2,h3,h4{line-height:1.25}
+sup{line-height:0}
+
+/* ---------- TOP BAR ---------- */
+.topbar{position:fixed;top:0;left:0;right:0;height:56px;z-index:60;display:flex;align-items:center;gap:16px;padding:0 18px;background:rgba(255,255,255,.82);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;white-space:nowrap}
+.logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;display:grid;place-items:center;font-size:.85rem;font-weight:800;box-shadow:0 4px 10px rgba(162,28,175,.3)}
+.brand small{display:block;color:var(--muted);font-weight:600;font-size:.68rem;letter-spacing:.06em;text-transform:uppercase}
+.progress{flex:1;height:6px;background:#f7e0f0;border-radius:99px;overflow:hidden}
+.progress>div{height:100%;width:0;background:linear-gradient(90deg,var(--primary),var(--primary-2),var(--accent));border-radius:99px;transition:width .45s ease}
+.topchip{background:var(--primary-soft);border:1px solid var(--primary-line);color:var(--primary);font-weight:700;font-size:.76rem;padding:6px 14px;border-radius:99px;white-space:nowrap}
+
+/* ---------- BOTTOM BAR ---------- */
+.bottombar{position:fixed;left:0;right:0;bottom:0;height:64px;z-index:60;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:0 18px;background:rgba(255,255,255,.85);backdrop-filter:blur(10px);border-top:1px solid var(--line)}
+.bb-left,.bb-right{display:flex;align-items:center;gap:10px}
+.iconbtn{width:40px;height:40px;border-radius:12px;border:1.4px solid var(--line);background:#fff;cursor:pointer;display:grid;place-items:center;transition:.18s}
+.iconbtn:hover{border-color:var(--primary);color:var(--primary)}
+.navbtn{width:44px;height:44px;border-radius:13px;border:none;background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;cursor:pointer;display:grid;place-items:center;transition:.2s;box-shadow:0 6px 14px rgba(162,28,175,.25)}
+.navbtn:hover{transform:translateY(-1px)}
+.navbtn:disabled{opacity:.4;cursor:default;transform:none;box-shadow:none}
+.counter{font-weight:700;color:var(--muted);font-size:.88rem;min-width:62px;text-align:center}
+.dots{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.dot{width:9px;height:9px;border-radius:50%;background:#f0c9ea;border:none;cursor:pointer;transition:.2s;padding:0}
+.dot.on{background:var(--primary);transform:scale(1.3)}
+.dot:hover{background:var(--primary-2)}
+
+/* ---------- SLIDES ---------- */
+.deck{position:fixed;inset:0}
+.slide{position:absolute;inset:56px 0 64px;opacity:0;visibility:hidden;transform:translateY(26px);transition:opacity .45s ease,transform .45s ease,visibility .45s;overflow:hidden}
+.slide.active{opacity:1;visibility:visible;transform:none}
+.slide-inner{width:min(1120px,94%);margin:0 auto;height:100%;display:flex;flex-direction:column;min-height:0}
+.slide-body{flex:1;min-height:0;overflow-y:auto;padding:14px 6px 42px}
+.slide-body::-webkit-scrollbar{width:10px}
+.slide-body::-webkit-scrollbar-thumb{background:#ecc9e4;border-radius:99px;border:3px solid transparent;background-clip:content-box}
+.titlebar{padding:6px 0 10px}
+.kicker{display:inline-flex;align-items:center;gap:8px;background:var(--primary-soft);color:var(--primary);font-weight:700;font-size:.74rem;letter-spacing:.09em;text-transform:uppercase;padding:6px 14px;border-radius:99px;border:1px solid var(--primary-line)}
+.slide-title{font-size:clamp(1.5rem,3vw,2.1rem);font-weight:800;letter-spacing:-.01em;margin-top:10px}
+.slide-sub{color:var(--muted);margin-top:6px;font-size:.95rem;line-height:1.65;max-width:78ch}
+
+/* ---------- COVER ---------- */
+.slide.cover .slide-body{display:flex;align-items:center;justify-content:center}
+.cover-box{position:relative;z-index:2;text-align:center;max-width:880px;margin:0 auto;padding:20px 0}
+.cover-title{font-size:clamp(2.4rem,5.6vw,4.1rem);font-weight:800;line-height:1.08;letter-spacing:-.02em;margin-top:16px}
+.cover-title .grad{background:linear-gradient(90deg,var(--primary),#be185d 45%,var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent}
+.cover-sub{color:var(--muted);font-size:1.02rem;line-height:1.75;margin:18px auto 0;max-width:66ch}
+.cover-chips{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:24px}
+.chip{background:#fff;border:1px solid var(--line);border-radius:99px;padding:8px 16px;font-weight:600;font-size:.84rem;box-shadow:0 2px 6px rgba(74,25,66,.05)}
+.chip.link{cursor:pointer;border-color:var(--primary-line);color:var(--primary)}
+.chip.link:hover{background:var(--primary-soft)}
+.cover-actions{margin-top:28px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.cover-foot{margin-top:24px;color:var(--muted);font-size:.8rem}
+.float-sym{position:absolute;font-weight:800;color:rgba(162,28,175,.11);font-size:2.2rem;animation:floaty 7s ease-in-out infinite;user-select:none;pointer-events:none;z-index:1}
+@keyframes floaty{0%,100%{transform:translateY(0) rotate(-6deg)}50%{transform:translateY(-20px) rotate(7deg)}}
+
+/* ---------- BUTTONS ---------- */
+.btn{display:inline-flex;align-items:center;gap:8px;border:none;cursor:pointer;font-weight:700;font-size:.92rem;padding:12px 22px;border-radius:14px;transition:.2s;border:1.6px solid transparent}
+.btn-primary{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;box-shadow:0 8px 20px rgba(162,28,175,.28)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(162,28,175,.34)}
+.btn-ghost{background:#fff;color:var(--primary);border-color:var(--primary-line)}
+.btn-ghost:hover{background:var(--primary-soft)}
+.btn-check{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;border:none;border-radius:12px;padding:10px 20px;font-weight:700;font-size:.88rem;cursor:pointer;transition:.2s;box-shadow:0 6px 16px rgba(162,28,175,.25)}
+.btn-check:hover{transform:translateY(-1px)}
+.btn-check:disabled{opacity:.5;cursor:default;transform:none;box-shadow:none}
+.stepbtn{background:var(--primary-soft);color:var(--primary);border:1px solid var(--primary-line);border-radius:10px;padding:8px 14px;font-weight:700;font-size:.84rem;cursor:pointer;transition:.18s}
+.stepbtn:hover{background:#fbe8ff}
+.stepbtn:disabled{opacity:.45;cursor:default}
+
+/* ---------- CARDS & CONTENT ---------- */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 22px}
+.card h3{font-size:1.05rem;margin-bottom:8px;display:flex;align-items:center;gap:9px}
+.h3dot{width:10px;height:10px;border-radius:3px;background:linear-gradient(135deg,var(--primary),var(--accent));display:inline-block;flex:none}
+.card p{font-size:.93rem;line-height:1.68;color:#54244a}
+.formula{background:linear-gradient(135deg,#fdf4ff,#fffbeb);border:1.4px dashed var(--primary-line);border-radius:14px;padding:14px 18px;font-size:1rem;line-height:1.9}
+.formula b{color:var(--primary)}
+.formula .big{font-size:1.3rem;font-weight:800;color:var(--primary)}
+.note{background:var(--accent-soft);border:1px solid #fde68a;border-radius:14px;padding:14px 17px;font-size:.92rem;line-height:1.68;margin-top:16px}
+.note b{color:var(--accent)}
+.danger{background:var(--bad-bg);border:1px solid #fecaca;border-radius:14px;padding:14px 17px;font-size:.92rem;line-height:1.68;margin-top:16px}
+.danger b{color:var(--bad)}
+.mathline{font-size:1.06rem;font-weight:600;line-height:2.05;margin:4px 0}
+.mtable{width:100%;border-collapse:collapse;margin-top:12px;font-size:.9rem}
+.mtable th,.mtable td{border:1px solid var(--line);padding:8px 10px;text-align:center}
+.mtable th{background:var(--primary-soft);color:#86198f;font-weight:700}
+.mtable td:first-child{font-weight:700;text-align:left;background:#fffdfb}
+.mcap{font-size:.78rem;color:var(--muted);margin-top:6px}
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:-0.6em;line-height:1.18;margin:0 3px;font-weight:700}
+.frac>span{display:block;padding:0 6px;font-size:.9em}
+.frac>span:last-child{border-top:1.7px solid currentColor}
+.instruksi{display:flex;gap:14px;align-items:center;background:linear-gradient(135deg,#fdf4ff,#f0fdf4);border:1px solid var(--primary-line);border-radius:14px;padding:14px 17px;font-size:.9rem;line-height:1.6;margin-top:16px;flex-wrap:wrap}
+.topic-chip{display:inline-flex;align-items:center;gap:8px;background:var(--accent-soft);border:1px solid #fde68a;color:var(--warn);border-radius:99px;padding:7px 15px;font-weight:700;font-size:.84rem;white-space:nowrap}
+.topic-chip.blue{background:var(--primary-soft);border-color:var(--primary-line);color:var(--primary)}
+
+/* ---------- PETA MATERI ---------- */
+.peta-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;margin-top:16px}
+.peta-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;cursor:pointer;transition:.2s;box-shadow:0 2px 8px rgba(74,25,66,.05);display:flex;gap:12px;align-items:flex-start}
+.peta-card:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:var(--primary-line)}
+.peta-num{width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;display:grid;place-items:center;font-weight:800;font-size:.85rem;flex:none}
+.peta-card h4{font-size:.97rem}
+.peta-card p{font-size:.8rem;color:var(--muted);margin-top:4px;line-height:1.55}
+
+/* ---------- DEMO INTERAKTIF ---------- */
+.demo-box{background:linear-gradient(135deg,#fff8fd,#fffdf3);border:1.4px dashed var(--primary-line);border-radius:16px;padding:16px;margin-top:16px}
+.demo-tag{font-weight:800;font-size:.78rem;color:var(--primary);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.demo-bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:10px 0 4px}
+.chips-row{display:flex;gap:9px;flex-wrap:wrap;margin:8px 0}
+.gbtn{border:1.6px solid var(--line);background:#fff;border-radius:11px;padding:8px 15px;font-weight:700;cursor:pointer;font-size:.85rem;transition:.16s;color:var(--ink)}
+.gbtn:hover{border-color:var(--primary);color:var(--primary)}
+.gbtn.on{border-color:var(--primary);background:var(--primary-soft);color:var(--primary)}
+.readout{background:#fff;border:1px solid var(--line);border-radius:12px;padding:11px 15px;font-size:.9rem;line-height:1.65;margin-top:12px}
+.prob{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 15px;font-size:.92rem;line-height:1.66;margin:10px 0}
+.slrow{display:flex;align-items:center;gap:12px;margin:8px 0}
+.slrow label{flex:0 0 240px;font-size:.86rem;font-weight:600;color:#54244a}
+.slrow input[type=range]{flex:1;accent-color:var(--primary)}
+.slval{flex:0 0 56px;text-align:center;font-weight:800;color:var(--primary)}
+.cbrow{display:flex;align-items:center;gap:8px;font-size:.88rem;font-weight:600;margin-top:8px;color:#54244a}
+.cbrow input{accent-color:var(--primary);width:16px;height:16px}
+.steps .step{display:flex;gap:12px;opacity:0;transform:translateY(10px);margin:12px 0;pointer-events:none}
+.steps .step.show{opacity:1;transform:none;pointer-events:auto;animation:fadeUp .4s ease}
+.steps .step.show:not(:last-child){animation:none}
+.step-n{flex:0 0 32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;display:grid;place-items:center;font-weight:800;font-size:.85rem}
+.step-b{flex:1;background:#fff;border:1px solid var(--line);border-radius:12px;padding:11px 15px}
+.step-b .st{font-weight:700;font-size:.9rem}
+.step-b .sm{font-size:1.08rem;font-weight:700;color:#86198f;margin:5px 0;line-height:1.7}
+.step-b .sd{font-size:.84rem;color:var(--muted);line-height:1.6}
+.verify{background:var(--ok-bg);border:1px solid #bbf7d0;border-radius:12px;padding:12px 16px;font-size:.9rem;line-height:1.7;margin-top:12px}
+.verify .exp-title{color:var(--ok)}
+
+/* ---------- SOAL ---------- */
+.qlist{display:grid;gap:16px;margin-top:16px}
+.qcard{background:#fff;border:1px solid var(--line);border-left:5px solid var(--primary);border-radius:16px;box-shadow:var(--shadow);padding:18px 20px;transition:border-color .3s}
+.qcard.ok{border-left-color:var(--ok)}
+.qcard.bad{border-left-color:var(--bad)}
+.qmeta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.qnum{font-weight:800;color:var(--primary);font-size:.83rem;letter-spacing:.05em;text-transform:uppercase}
+.qtype{border-radius:99px;padding:3px 12px;font-size:.73rem;font-weight:700}
+.t-pg{background:#fae8ff;color:#86198f}
+.t-bs{background:#e0f2fe;color:#0369a1}
+.t-pgk{background:#fef3c7;color:#92400e}
+.qhint{font-size:.72rem;color:var(--muted);background:#f1f5f9;border-radius:99px;padding:3px 10px;font-weight:600}
+.qtext{font-size:.99rem;line-height:1.7;margin-bottom:4px}
+.opts{display:grid;gap:10px;margin:14px 0 4px}
+.opts.locked{pointer-events:none}
+.opt{display:flex;align-items:center;gap:12px;padding:11px 14px;border:1.8px solid var(--line);border-radius:13px;cursor:pointer;transition:.16s;background:#fff;font-size:.96rem;line-height:1.55}
+.opt:hover{border-color:#e879f9;background:#fdf7ff}
+.opt.sel{border-color:var(--primary);background:var(--primary-soft)}
+.opt.correct{border-color:var(--ok);background:var(--ok-bg)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-bg)}
+.opt input{accent-color:var(--primary);width:17px;height:17px;flex:none}
+.okey{min-width:26px;height:26px;border-radius:8px;background:var(--primary-soft);color:var(--primary);font-weight:800;display:grid;place-items:center;font-size:.76rem;border:1px solid var(--primary-line)}
+.opt.correct .okey{background:var(--ok);border-color:var(--ok);color:#fff}
+.opt.wrong .okey{background:var(--bad);border-color:var(--bad);color:#fff}
+.opts.bs .opt{justify-content:center;font-weight:700;padding:13px}
+.qactions{margin-top:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.fb{display:none;margin-top:12px;padding:11px 15px;border-radius:12px;font-weight:700;font-size:.92rem}
+.fb.show{display:block}
+.fb.ok{background:var(--ok-bg);color:var(--ok);border:1px solid #bbf7d0}
+.fb.bad{background:var(--bad-bg);color:var(--bad);border:1px solid #fecaca}
+.fb.warn{background:var(--accent-soft);color:var(--warn);border:1px solid #fde68a}
+.pembahasan{display:none;margin-top:12px;background:#fffdfb;border:1.4px dashed #eec3e8;border-radius:13px;padding:14px 16px;font-size:.93rem;line-height:1.75}
+.pembahasan.show{display:block;animation:fadeUp .35s ease}
+.exp-title{font-weight:800;color:var(--primary);font-size:.76rem;letter-spacing:.09em;text-transform:uppercase;margin-bottom:6px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ---------- GRAFIK ---------- */
+.gwrap{background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px;display:flex;justify-content:center;box-shadow:var(--shadow);margin-top:12px}
+.gwrap svg{display:block;max-width:100%;height:auto}
+.gcap{font-size:.8rem;color:var(--muted);text-align:center;margin-top:8px;line-height:1.55}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:.82rem;color:var(--muted);margin-top:10px;justify-content:center}
+.legend span{display:inline-flex;align-items:center;gap:7px;font-weight:600}
+.lg-line{width:24px;height:0;border-top:3px solid;display:inline-block;border-radius:2px}
+.lg-line.dash{border-top-style:dashed}
+.okt{color:var(--ok);font-weight:800}
+.badt{color:var(--bad);font-weight:800}
+
+/* ---------- HASIL ---------- */
+.rwrap{display:grid;grid-template-columns:290px 1fr;gap:18px;margin-top:16px}
+.scorecard{text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center}
+.score-label{font-size:.76rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.score-big{font-size:3.4rem;font-weight:800;line-height:1.15;background:linear-gradient(90deg,var(--primary),#be185d);-webkit-background-clip:text;background-clip:text;color:transparent}
+.score-sub{color:var(--muted);font-size:.88rem;margin-top:8px}
+.rbtns{display:flex;flex-direction:column;gap:10px;margin-top:18px;width:100%}
+.namebox{display:flex;gap:12px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
+.namebox input{flex:1;min-width:200px;padding:11px 14px;border:1.6px solid var(--line);border-radius:12px;font-family:inherit;font-size:.95rem;outline:none;transition:.2s}
+.namebox input:focus{border-color:var(--primary)}
+.rtable-wrap{overflow-x:auto;border-radius:var(--radius)}
+.rtable{width:100%;border-collapse:collapse;background:#fff;box-shadow:var(--shadow);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;min-width:560px}
+.rtable th{background:var(--primary-soft);color:var(--primary);text-align:left;font-size:.74rem;text-transform:uppercase;letter-spacing:.07em;padding:12px 14px}
+.rtable td{padding:12px 14px;border-top:1px solid var(--line);font-size:.93rem;vertical-align:middle;line-height:1.5}
+.badge{padding:4px 12px;border-radius:99px;font-size:.75rem;font-weight:700;white-space:nowrap;display:inline-block}
+.badge.done{background:var(--ok-bg);color:var(--ok)}
+.badge.part{background:var(--accent-soft);color:var(--warn)}
+.badge.none{background:#f1f5f9;color:var(--muted)}
+.badge.focus{background:var(--primary-soft);color:var(--primary);border:1px solid var(--primary-line);font-size:.68rem;margin-top:4px}
+.rbar{height:10px;background:#f7e0f0;border-radius:99px;min-width:110px;overflow:hidden;display:inline-block;vertical-align:middle}
+.rbar i{display:block;height:100%;background:linear-gradient(90deg,var(--primary),var(--primary-2));border-radius:99px;transition:width .7s ease}
+.rpct{font-size:.8rem;color:var(--muted);font-weight:700;margin-left:8px}
+.rnote{color:var(--muted);font-size:.84rem;line-height:1.6;margin-top:12px}
+.confetti{position:fixed;top:-16px;width:9px;height:14px;z-index:300;pointer-events:none;border-radius:2px;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(112vh) rotate(680deg);opacity:.85}}
+
+/* ---------- KESIMPULAN ---------- */
+.closing{background:linear-gradient(135deg,#701a75,var(--primary));color:#fff;border:none}
+.closing h3{color:#fff}
+.closing p{color:#fae8ff}
+.closing .btn-ghost{background:#fff}
+
+/* ---------- MENU & TOAST ---------- */
+.menu{position:fixed;inset:0;z-index:120;background:rgba(74,25,66,.5);backdrop-filter:blur(5px);display:none;align-items:center;justify-content:center;padding:20px}
+.menu.open{display:flex}
+.menu-panel{background:#fff;border-radius:22px;box-shadow:0 30px 80px rgba(74,25,66,.35);width:min(600px,94vw);max-height:82vh;overflow:auto;padding:22px 20px}
+.menu-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding:0 6px}
+.menu-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;cursor:pointer;font-weight:600;font-size:.93rem}
+.menu-item:hover{background:var(--primary-soft);color:var(--primary)}
+.mi-num{width:34px;height:34px;border-radius:10px;background:var(--primary-soft);color:var(--primary);display:grid;place-items:center;font-size:.78rem;font-weight:800;flex:none;border:1px solid var(--primary-line)}
+.menu-item.cur .mi-num{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;border-color:transparent}
+.menu-item.cur{color:var(--primary)}
+.toast{position:fixed;left:50%;bottom:84px;transform:translate(-50%,20px);background:#4a1942;color:#fff;padding:12px 20px;border-radius:14px;font-weight:600;font-size:.88rem;opacity:0;pointer-events:none;transition:.35s;z-index:200;box-shadow:0 12px 30px rgba(0,0,0,.25);max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* ---------- RESPONSIVE ---------- */
+@media(max-width:900px){.grid2,.grid3{grid-template-columns:1fr}.rwrap{grid-template-columns:1fr}}
+@media(max-width:720px){
+  .dots{display:none}
+  .topchip{display:none}
+  .card{padding:16px}
+  .slide{inset:52px 0 60px}
+  .topbar{height:52px;padding:0 12px;gap:10px}
+  .bottombar{padding:0 10px;height:60px}
+  .brand small{display:none}
+  .cover-sub{font-size:.94rem}
+  .slrow label{flex:0 0 150px;font-size:.8rem}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== TOP BAR ===== -->
+<header class="topbar">
+  <div class="brand">
+    <span class="logo">T</span>
+    <span>TKA SMA<small>Matematika &middot; Transformasi Fungsi</small></span>
+  </div>
+  <div class="progress"><div id="progress"></div></div>
+  <span class="topchip">Materi Interaktif</span>
+</header>
+
+<!-- ===== BOTTOM BAR ===== -->
+<footer class="bottombar">
+  <div class="bb-left">
+    <button class="iconbtn" data-menu aria-label="Daftar slide">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+    <button class="navbtn" id="btnPrev" data-nav="prev" aria-label="Slide sebelumnya">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <span class="counter" id="counter">1 / 19</span>
+    <button class="navbtn" id="btnNext" data-nav="next" aria-label="Slide berikutnya">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+  </div>
+  <div class="dots" id="dots"></div>
+  <div class="bb-right">
+    <button class="iconbtn" data-fullscreen aria-label="Layar penuh">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+    </button>
+  </div>
+</footer>
+
+<!-- ===== MENU OVERLAY ===== -->
+<div class="menu" id="menu">
+  <div class="menu-panel">
+    <div class="menu-head">
+      <b>Daftar Slide</b>
+      <button class="iconbtn" data-menu-close aria-label="Tutup">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div id="menuList"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<main class="deck">
+<!-- ============ SLIDE 1: COVER ============ -->
+<section class="slide cover active" data-title="Cover">
+  <div class="slide-inner">
+    <div class="slide-body">
+      <span class="float-sym" style="top:10%;left:5%;animation-delay:0s">y = f(x &minus; h) + k</span>
+      <span class="float-sym" style="top:20%;right:7%;animation-delay:1.2s;font-size:2.6rem">y = &minus;f(x)</span>
+      <span class="float-sym" style="bottom:16%;left:9%;animation-delay:2.1s;font-size:1.6rem">y = k&middot;f(x)</span>
+      <span class="float-sym" style="bottom:26%;right:8%;animation-delay:.7s;font-size:1.7rem">y = f(&minus;x)</span>
+      <span class="float-sym" style="top:46%;left:3%;animation-delay:1.8s;font-size:1.7rem">y = f&#8315;&#185;(x) &hArr; cermin y = x</span>
+      <span class="float-sym" style="top:58%;right:4%;animation-delay:2.6s;font-size:1.5rem">T = (h, k)</span>
+      <span class="float-sym" style="top:6%;left:45%;animation-delay:3s;font-size:1.6rem">y = &minus;f(&minus;x)</span>
+      <span class="float-sym" style="bottom:6%;left:47%;animation-delay:1.5s;font-size:1.5rem">g(x) = a&middot;f(b(x&minus;h)) + k</span>
+      <div class="cover-box">
+        <span class="kicker">Persiapan TKA SMA &middot; Matematika</span>
+        <h1 class="cover-title">Transformasi <span class="grad">Fungsi</span></h1>
+        <p class="cover-sub">Kuasai cara grafik fungsi bergeser, bercermin, merenggang, dan berputar: definisi dan empat jenis transformasi, dilatasi vertikal dan horizontal, refleksi keempat wajahnya (termasuk refleksi y = x yang melahirkan fungsi invers), kombinasi transformasi dalam bentuk umum a&middot;f(b(x&minus;h)) + k, hingga soal HOTS kehidupan sehari-hari. Dilengkapi lab translasi, lab dilatasi, lab refleksi, dan demo kombinasi langkah-demi-langkah.</p>
+        <div class="cover-chips">
+          <span class="chip">19 Slide Materi</span>
+          <span class="chip">50 Soal Interaktif</span>
+          <span class="chip link" data-goto="3">Lab Translasi</span>
+          <span class="chip link" data-goto="6">Lab Dilatasi</span>
+          <span class="chip link" data-goto="9">Lab Refleksi</span>
+          <span class="chip link" data-goto="11">Demo Kombinasi</span>
+        </div>
+        <div class="cover-actions">
+          <button class="btn btn-primary" data-goto="1">Mulai Belajar
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+          </button>
+          <button class="btn btn-ghost" data-menu>Daftar Slide</button>
+        </div>
+        <div class="cover-foot">Navigasi: panah kiri/kanan &middot; geser di layar sentuh &middot; tombol menu di kiri bawah</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 2: PETA MATERI ============ -->
+<section class="slide" data-title="Peta Materi">
+  <div class="slide-inner">
+    <div class="slide-body">
+      <div class="titlebar">
+        <span class="kicker">Peta Materi</span>
+        <h2 class="slide-title">Apa yang Akan Kamu Pelajari?</h2>
+        <p class="slide-sub">Alur lengkap sesuai permintaan: mulai dari definisi dan jenis-jenis transformasi fungsi, lalu memperdalam fungsi dilatasi dan fungsi refleksi, menyusun kombinasi transformasi, dan memuncak pada soal HOTS kehidupan sehari-hari. Setiap materi ditutup dengan <b>10 latihan soal interaktif</b> berpembahasan &mdash; total 50 soal. Klik kartu untuk melompat ke materinya.</p>
+      </div>
+      <div class="peta-grid">
+        <div class="peta-card" data-goto="2">
+          <span class="peta-num">1</span>
+          <div><h4>Definisi &amp; Jenis Transformasi</h4><p>Peta empat jenis (translasi, refleksi, dilatasi, rotasi), lalu translasi ditelaah mendalam: rumus y = f(x&minus;h) + k, aturan MINUS kanan, plus lab geser grafik interaktif.</p></div>
+        </div>
+        <div class="peta-card" data-goto="5">
+          <span class="peta-num">2</span>
+          <div><h4>Fungsi Dilatasi</h4><p>Dilatasi vertikal y = k&middot;f(x) dan horizontal y = f(x/k): mengapa efeknya terasa "terbalik", titik potong mana yang kekal, dan lab faktor skala langsung.</p></div>
+        </div>
+        <div class="peta-card" data-goto="8">
+          <span class="peta-num">3</span>
+          <div><h4>Fungsi Refleksi</h4><p>Empat wajah cermin: sumbu X, sumbu Y, garis y = x (yang menghasilkan invers!), dan garis y = &minus;x &mdash; plus refleksi titik asal dan lab cermin interaktif.</p></div>
+        </div>
+        <div class="peta-card" data-goto="11">
+          <span class="peta-num">4</span>
+          <div><h4>Kombinasi Transformasi</h4><p>Bentuk umum g(x) = a&middot;f(b(x&minus;h)) + k, urutan transformasi yang aman, teknik pelacakan titik, dan demo langkah-demi-langkah x&sup2; menuju &minus;2(x+1)&sup2; + 3.</p></div>
+        </div>
+        <div class="peta-card" data-goto="14">
+          <span class="peta-num">5</span>
+          <div><h4>HOTS Sehari-hari</h4><p>Tarif ojek saat hujan, konversi Celsius&ndash;Fahrenheit, pengisian kolam, dan gaji hari libur &mdash; semuanya dibaca sebagai transformasi fungsi.</p></div>
+        </div>
+      </div>
+      <div class="note"><b>Alur belajar:</b> baca materi &rarr; coba lab interaktifnya &rarr; kerjakan <b>10 latihan soal</b> di akhir setiap materi &rarr; cek rekap di slide <b>Hasil Pengerjaan Siswa</b>. Semua jawabanmu tersimpan otomatis di browser.</div>
+      <div class="chips-row" style="justify-content:center">
+        <span class="chip link" data-goto="4">Latihan 1</span>
+        <span class="chip link" data-goto="7">Latihan 2</span>
+        <span class="chip link" data-goto="10">Latihan 3</span>
+        <span class="chip link" data-goto="13">Latihan 4</span>
+        <span class="chip link" data-goto="16">Latihan 5 (HOTS)</span>
+        <span class="chip link" data-goto="17">Hasil</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 3: M1 - DEFINISI & JENIS ============ -->
+<section class="slide" data-title="M1 &middot; Definisi &amp; Jenis Transformasi">
+  <div class="slide-inner">
+    <div class="slide-body">
+      <div class="titlebar">
+        <span class="kicker">Materi 1 &middot; Definisi &amp; Jenis-Jenis</span>
+        <h2 class="slide-title">Definisi dan Jenis-Jenis Transformasi Fungsi</h2>
+        <p class="slide-sub">Transformasi fungsi adalah cara "menggerakkan dan mengubah" grafik tanpa menggambar ulang titik demi titik. Empat jenis utama perlu kamu kenali wajahnya sebelum masuk ke rumus-rumusnya satu per satu.</p>
+      </div>
+      <div class="formula" style="text-align:center">
+        <span class="big">Transformasi fungsi</span> = memetakan setiap titik (x, y) pada grafik y = f(x) ke titik bayangan (x&prime;, y&prime;) menurut aturan geometri tertentu, sehingga diperoleh grafik fungsi baru.<br>
+        <small>bentuk, ketajaman, dan "karakter" kurva bisa tetap &mdash; yang berubah adalah posisi dan/atau ukurannya</small>
+      </div>
+      <div class="grid2" style="margin-top:16px">
+        <div class="card">
+          <h3><span class="h3dot"></span>1 &middot; Translasi (Pergeseran)</h3>
+          <p>Grafik <b>digeser</b> sejauh h satuan mendatar dan k satuan tegak tanpa berubah bentuk: <b>y &minus; k = f(x &minus; h)</b>, atau ditulis translasi T = (h, k). Analogi: kereta yang pindah rel &mdash; wujudnya sama persis, hanya tempatnya yang berpindah. Ini jenis yang paling sering muncul di soal dan dibahas mendalam di slide berikutnya.</p>
+        </div>
+        <div class="card">
+          <h3><span class="h3dot"></span>2 &middot; Refleksi (Pencerminan)</h3>
+          <p>Grafik dijadikan <b>bayangan cermin</b> terhadap sumbu X, sumbu Y, garis y = x, garis y = &minus;x, atau titik asal. Analogi: pantulan di kaca atau di air. Kasus istimewa yang wajib diingat: refleksi terhadap garis y = x <b>menghasilkan fungsi invers</b> f&#8315;&#185;(x) &mdash; jembatan langsung ke materi fungsi invers.</p>
+        </div>
+        <div class="card">
+          <h3><span class="h3dot"></span>3 &middot; Dilatasi (Perenggangan)</h3>
+          <p>Grafik <b>direnggangkan atau dimampatkan</b> dengan faktor skala k terhadap titik pusat (biasanya O). Analogi: zoom in/zoom out pada foto. Arahnya dua: vertikal y = k&middot;f(x) (mengalikan keluaran) dan horizontal y = f(x/k) (mengalikan masukan) &mdash; Materi 2 membahas keduanya secara tuntas.</p>
+        </div>
+        <div class="card">
+          <h3><span class="h3dot"></span>4 &middot; Rotasi (Perputaran)</h3>
+          <p>Grafik <b>diputar</b> sebesar sudut &theta; terhadap titik pusat O. Yang paling sering diuji: rotasi 180&deg; memetakan (x, y) &rarr; (&minus;x, &minus;y), sehingga y = f(x) berubah menjadi <b>y = &minus;f(&minus;x)</b> &mdash; hasilnya sama dengan refleksi terhadap titik asal.</p>
+        </div>
+      </div>
+      <div class="note"><b>Mengapa materi ini penting?</b> Dunia nyata penuh "fungsi yang berubah": harga naik 1,5 kali (dilatasi), biaya tetap bertambah (translasi), foto diperbesar (dilatasi), pantulan cermin (refleksi), dan sensor yang terlambat merekam (translasi horizontal). Menguasai transformasi berarti bisa <b>mendaur ulang satu model fungsi</b> untuk banyak situasi &mdash; tanpa membangun model dari nol.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 4: M1 - TRANSLASI & LAB ============ -->
+<section class="slide" data-title="M1 &middot; Translasi &amp; Lab Geser">
+  <div class="slide-inner">
+    <div class="slide-body">
+      <div class="titlebar">
+        <span class="kicker">Materi 1 &middot; Translasi Mendalam</span>
+        <h2 class="slide-title">Translasi: Menggeser Grafik Tanpa Mengubah Bentuknya</h2>
+        <p class="slide-sub">Translasi bekerja pada dua arah: tegak (vertikal) dan mendatar (horizontal). Kuncinya satu kalimat: <b>perubahan di luar kurung menggerakkan sumbu y, perubahan di dalam kurung menggerakkan sumbu x &mdash; dengan tanda terbalik</b>.</p>
+      </div>
+      <div class="grid2">
+        <div class="card">
+          <h3><span class="h3dot"></span>Rumus &amp; Asal-Usulnya</h3>
+          <div class="formula">
+            <b>Vertikal:</b> y = f(x) + k &nbsp;<small>(k &gt; 0 naik, k &lt; 0 turun)</small><br>
+            <b>Horizontal:</b> y = f(x &minus; h) &nbsp;<small>(h &gt; 0 kanan, h &lt; 0 kiri)</small><br>
+            <b>Gabungan:</b> y &minus; k = f(x &minus; h) &nbsp;&rarr;&nbsp; translasi T = (h, k)
+          </div>
+          <p style="margin-top:10px">Kenapa begitu? Setiap titik (a, f(a)) dipetakan ke (a + h, f(a) + k). Untuk versi horizontal: g(x) = f(x &minus; h) mencapai nilai f(a) ketika x &minus; h = a, yaitu saat x = a + h &mdash; persis "bergeser kanan sejauh h".</p>
+        </div>
+        <div class="card">
+          <h3><span class="h3dot"></span>Contoh Terpimpin</h3>
+          <p>Garis y = 2x + 1 ditranslasikan oleh T = (3, &minus;2). Tentukan persamaan bayangannya.</p>
+          <div class="formula">
+            <b>Cara 1 (substitusi):</b> x &rarr; x &minus; 3 dan y &rarr; y + 2:<br>
+            y + 2 = 2(x &minus; 3) + 1 &rarr; y = 2x &minus; 7<br>
+            <b>Cara 2 (pola cepat):</b> g(x) = f(x &minus; 3) &minus; 2 = 2(x &minus; 3) + 1 &minus; 2 = 2x &minus; 7
+          </div>
+          <p style="margin-top:10px">Dua cara, satu jawaban: <b>y = 2x &minus; 7</b>. Gradien tetap 2 &mdash; translasi memang tidak pernah mengubah bentuk.</p>
+        </div>
+      </div>
+      <div class="demo-box">
+        <div class="demo-tag">Simulasi 1 &middot; Lab Translasi Parabola</div>
+        <div class="slrow"><label>h &mdash; geser horizontal (f(x &minus; h))</label><input type="range" id="lh" min="-5" max="5" step="1" value="0"><span class="slval" id="lvh">0</span></div>
+        <div class="slrow"><label>k &mdash; geser vertikal (f(x) + k)</label><input type="range" id="lk" min="-6" max="6" step="1" value="0"><span class="slval" id="lvk">0</span></div>
+        <div class="gwrap"><svg id="transGraph" viewBox="0 0 660 440" role="img" aria-label="grafik lab translasi"></svg></div>
+        <div class="legend">
+          <span><span class="lg-line dash" style="border-color:#a8a29e"></span>y = x&sup2; (asal)</span>
+          <span><span class="lg-line" style="border-color:#a21caf"></span>y = (x&minus;h)&sup2; + k</span>
+          <span><span class="lg-line" style="border-color:#d97706"></span>puncak (h, k)</span>
+        </div>
+        <div class="readout" id="transNote">Atur slider h dan k untuk menggeser parabola.</div>
+      </div>
+      <div class="danger"><b>Jebakan tanda paling klasik:</b> y = f(x + 2) sering dijawab "geser kanan 2" &mdash; <b>salah</b>, itu geser <b>kiri</b> 2. Uji cepat: puncak x&sup2; pindah dari (0, 0) ke (&minus;2, 0) ketika bentuknya menjadi (x + 2)&sup2;. Ingat mantra: <b>MINUS kanan, PLUS kiri</b>; sementara tanda di luar fungsi jujur &mdash; plus naik, minus turun.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 5: LATIHAN 1 ============ -->
+<section class="slide" data-title="Latihan 1: Definisi &amp; Jenis">
+  <div class="slide-inner">
+    <div class="slide-body">
+      <div class="titlebar">
+        <span class="kicker">Latihan Materi 1 &middot; 10 Soal</span>
+        <h2 class="slide-title">Latihan: Definisi, Jenis Transformasi &amp; Translasi</h2>
+        <p class="slide-sub">Sepuluh soal: definisi transformasi, empat jenisnya, arah pergeseran, translasi parabola dan garis, rotasi 180&deg;, serta pelacakan titik sederhana.</p>
+      </div>
+      <div class="instruksi">
+        <div style="flex:1;min-width:220px"><b>Petunjuk:</b> untuk soal pergeseran, selalu uji dengan titik khas (misal puncak parabola) sebelum memilih jawaban. Ingat: dalam kurung tanda terbalik, di luar kurung tanda jujur!</div>
+        <span class="topic-chip" data-topic="tf-def">0/10 terjawab</span>
+      </div>
+      <div class="qlist" id="q-def"></div>
+    </div>
+  </div>
+</section>
+<!-- ============ SLIDE 6: M2 - DILATASI VERTIKAL ============ -->
+<section class="slide" data-title="M2 &middot; Dilatasi Vertikal">
+  <div class="slide-inner">
+    <div class="slide-body">
+      <div class="titlebar">
+        <span class="kicker">Materi 2 &middot; Fungsi Dilatasi (1)</span>
+        <h2 class="slide-title">Dilatasi Vertikal: y = k&middot;f(x)</h2>
+        <p class="slide-sub">Dilatasi mengubah <b>ukuran</b> grafik dengan faktor skala k terhadap titik pusat O(0, 0). Pada dilatasi vertikal, yang dikalikan adalah <b>keluaran</b> fungsinya &mdash; setiap titik (x, y) pindah ke (x, k&middot;y).</p>
+      </div>
+      <div class="grid2">
+        <div class="card">
+          <h3><span class="h3dot"></span>Deret &amp; Efek Faktor k</h3>
+          <div class="formula"><b>y = k&middot;f(x)</b> &nbsp;&rarr;&nbsp; (x, y) &rarr; (x, k&middot;y)</div>
+          <table class="mtable">
+            <thead><tr><th>Nilai k</th><th>Efek pada grafik</th></tr></thead>
+            <tbody>
+              <tr><td>k &gt; 1</td><td>direnggangkan tegak faktor k (lebih "sempit")</td></tr>
+              <tr><td>k = 1</td><td>tidak berubah</td></tr>
+              <tr><td>0 &lt; k &lt; 1</td><td>dipipihkan tegak (semakin rendah)</td></tr>
+              <tr><td>k &lt; 0</td><td>dilatasi |k| <b>+ refleksi sumbu X</b> sekaligus</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <h3><span class="h3dot"></span>Contoh Terpimpin</h3>
+          <p>f(x) = x&sup2; + 2 didilatasi vertikal dengan faktor skala 3.</p>
+          <div class="formula">
+            g(x) = 3&middot;f(x) = 3(x&sup2; + 2) = <b>3x&sup2; + 6</b><br>
+            Puncak: (0, 2) &rarr; (0, 6) &nbsp;&check;<br>
+            Titik (1, 3) &rarr; (1, 9) &nbsp;&check; (absis kekal, ordinat dikali 3)
+          </div>
+          <p style="margin-top:10px">Perhatikan: hanya "isi kurungnya" yang sama, seluruh keluaran dikalikan 3. Kesalahan umum adalah mengalikan sebagian suku saja &mdash; kalikan <b>seluruh</b> f(x).</p>
+        </div>
+      </div>
+      <div class="note"><b>Titik potong sumbu X kekal.</b> Di titik potong sumbu X berlaku y = 0, dan k&middot;0 = 0 untuk sebarang k &mdash; jadi dilatasi vertikal tidak pernah memindahkan titik potong dengan sumbu X. Yang berubah adalah titik potong sumbu Y (kecuali k = 1). Ini fakta cepat yang sering jadi soal benar-salah.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 7: M2 - DILATASI HORIZONTAL + LAB ============ -->
+<section class="slide" data-title="M2 &middot; Dilatasi Horizontal">
+  <div class="slide-inner">
+    <div class="slide-body">
+      <div class="titlebar">
+        <span class="kicker">Materi 2 &middot; Fungsi Dilatasi (2) + Lab</span>
+        <h2 class="slide-title">Dilatasi Horizontal: y = f(x/k) &mdash; Efek yang Terasa "Terbalik"</h2>
+        <p class="slide-sub">Pada dilatasi horizontal, yang dikalikan adalah <b>masukan</b> fungsinya: titik (x, y) pindah ke (k&middot;x, y), dan rumus bayangannya y = f(x/k). Di sinilah letak kejutan besarnya: k &gt; 1 justru <b>melebarkan</b> grafik, bukan memampatkan.</p>
+      </div>
+      <div class="grid2">
+        <div class="card">
+          <h3><span class="h3dot"></span>Dua Bentuk yang Setara</h3>
+          <div class="formula">
+            <b>Dilatasi horizontal faktor k:</b><br>
+            y = f(<span class="frac"><span>x</span><span>k</span></span>) &nbsp;&nbsp;(titik (x, y) &rarr; (kx, y))<br>
+            <b>Bentuk f(kx):</b> sama dengan dilatasi horizontal faktor <span class="frac"><span>1</span><span>k</span></span><br>
+            <small>k = 2 &rarr; y = f(x/2) melebar; &nbsp; f(2x) mampat faktor 2</small>
+          </div>
+          <p style="margin-top:8px">Kenapa terbalik? g(x) = f(kx) mencapai nilai f(a) saat kx = a, yaitu x = a/k: semua kejadian grafik "selesai lebih cepat" &mdash; tampak dimampatkan.</p>
+        </div>
+        <div class="card">
+          <h3><span class="h3dot"></span>Vertikal vs Horizontal</h3>
+          <table class="mtable">
+            <thead><tr><th></th><th>Vertikal k&middot;f(x)</th><th>Horizontal f(x/k)</th></tr></thead>
+            <tbody>
+              <tr><td>Dikalikan</td><td>keluaran y</td><td>masukan x</td></tr>
+              <tr><td>Titik (x, y) &rarr;</td><td>(x, ky)</td><td>(kx, y)</td></tr>
+              <tr><td>k &gt; 1</td><td>regang tegak</td><td>lebar mendatar</td></tr>
+              <tr><td>Potong sumbu X</td><td>kekal</td><td>berubah (dikali k)</td></tr>
+              <tr><td>Potong sumbu Y</td><td>berubah (dikali k)</td><td>kekal</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="demo-box">
+        <div class="demo-tag">Simulasi 2 &middot; Lab Dilatasi Parabola</div>
+        <div class="chips-row" id="dilModes">
+          <span style="font-weight:700;font-size:.85rem;color:var(--muted);align-self:center">Mode:</span>
+          <button class="gbtn on" data-dmode="vert">Vertikal: y = k&middot;x&sup2;</button>
+          <button class="gbtn" data-dmode="horz">Horizontal: y = (x/k)&sup2;</button>
+        </div>
+        <div class="slrow"><label id="dilLab">k &mdash; faktor skala vertikal</label><input type="range" id="dv" min="-3" max="3" step="0.5" value="1"><span class="slval" id="dvv">1</span></div>
+        <div class="gwrap"><svg id="dilGraph" viewBox="0 0 660 440" role="img" aria-label="grafik lab dilatasi"></svg></div>
+        <div class="legend">
+          <span><span class="lg-line dash" style="border-color:#a8a29e"></span>y = x&sup2; (asal)</span>
+          <span><span class="lg-line" style="border-color:#a21caf"></span>grafik hasil dilatasi</span>
+          <span><span class="lg-line" style="border-color:#d97706"></span>titik penanda</span>
+        </div>
+        <div class="readout" id="dilNote">Atur faktor k atau ganti mode untuk melihat efek dilatasinya.</div>
+      </div>
+      <div class="danger"><b>Dua jebakan dilatasi:</b> (1) f(2x) sering dijawab "melebar 2 kali" &mdash; salah, itu <b>memampatkan</b> mendatar faktor 2: titik (2, 4) pada x&sup2; pindah ke (1, 4). (2) Lupa bahwa dilatasi vertikal dan horizontal menghasilkan grafik yang <b>beda</b> meski sama-sama "melandai": dari f(x) = 2x + 4, dilatasi vertikal &frac12; memberi y = x + 2, tetapi dilatasi horizontal 2 memberi y = x + 4.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 8: LATIHAN 2 ============ -->
+<section class="slide" data-title="Latihan 2: Dilatasi">
+  <div class="slide-inner">
+    <div class="slide-body">
+      <div class="titlebar">
+        <span class="kicker">Latihan Materi 2 &middot; 10 Soal</span>
+        <h2 class="slide-title">Latihan: Fungsi Dilatasi</h2>
+        <p class="slide-sub">Sepuluh soal: mengenali arah dilatasi, menulis persamaan bayangan, memetakan titik, titik potong yang kekal, hingga membedakan vertikal dan horizontal.</p>
+      </div>
+      <div class="instruksi">
+        <div style="flex:1;min-width:220px"><b>Petunjuk:</b> tanyakan dulu pada dirimu: perubahan ini terjadi pada <b>keluaran</b> (vertikal) atau <b>masukan</b> (horizontal)? Lalu ingat efek terbaliknya: f(kx) memampatkan saat k &gt; 1.</div>
+        <span class="topic-chip" data-topic="tf-dil">0/10 terjawab</span>
+      </div>
+      <div class="qlist" id="q-dil"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 9: M3 - REFLEKSI SUMBU ============ -->
+<section class="slide" data-title="M3 &middot; Refleksi Sumbu X &amp; Y">
+  <div class="slide-inner">
+    <div class="slide-body">
+      <div class="titlebar">
+        <span class="kicker">Materi 3 &middot; Fungsi Refleksi (1)</span>
+        <h2 class="slide-title">Refleksi terhadap Sumbu X dan Sumbu Y</h2>
+        <p class="slide-sub">Refleksi (pencerminan) menghasilkan bayangan grafik yang simetris terhadap garis atau titik tertentu. Dua refleksi paling dasar bekerja pada "tanda": satu mengubah tanda y, satu mengubah tanda x.</p>
+      </div>
+      <div class="grid2">
+        <div class="card">
+          <h3><span class="h3dot"></span>Refleksi terhadap Sumbu X: y = &minus;f(x)</h3>
+          <p>Setiap titik (x, y) &rarr; (x, &minus;y): bagian di atas sumbu X pindah ke bawah, dan sebaliknya. Grafik "dibalik" seperti roti panggang.</p>
+          <div class="formula">
+            f(x) = x&sup2; &minus; 4x + 3 = (x&minus;2)&sup2; &minus; 1, puncak (2, &minus;1)<br>
+            Bayangan: y = &minus;f(x) = <b>&minus;x&sup2; + 4x &minus; 3</b><br>
+            Puncak baru: (2, 1) &mdash; absis kekal, ordinat berubah tanda
+          </div>
+        </div>
+        <div class="card">
+          <h3><span class="h3dot"></span>Refleksi terhadap Sumbu Y: y = f(&minus;x)</h3>
+          <p>Setiap titik (x, y) &rarr; (&minus;x, y): sisi kanan pindah ke kiri, sisi kiri pindah ke kanan &mdash; seperti cermin berdiri di sumbu Y.</p>
+          <div class="formula">
+            f(x) = x&sup2; &minus; 4x + 3, puncak (2, &minus;1)<br>
+            Bayangan: y = f(&minus;x) = (&minus;x)&sup2; &minus; 4(&minus;x) + 3 = <b>x&sup2; + 4x + 3</b><br>
+            Puncak baru: (&minus;2, &minus;1) &mdash; ordinat kekal, absis berubah tanda
+          </div>
+        </div>
+      </div>
+      <div class="danger"><b>Jangan tukar-tempatkan!</b> f(&minus;x) &ne; &minus;f(x) secara umum. Contoh: f(x) = 2x + 3 memberi f(&minus;x) = &minus;2x + 3 tetapi &minus;f(x) = &minus;2x &minus; 3 &mdash; beda 6. Yang menghubungkan keduanya hanya fungsi ganjil (seperti x&sup3;) dan fungsi genap akan kekal pada salah satunya. Kalaupun soal memberi f(&minus;x) &minus; f(x), itu tanda soal menguji sifat ganjil-genap.</div>
+      <div class="note"><b>Cara mengingat:</b> yang direfleksikan "di mana letak tanda minusnya". Minus <b>di depan f</b> (luar) = mengubah tanda y = cermin terhadap <b>sumbu X</b>. Minus <b>di dalam kurung</b> = mengubah tanda x = cermin terhadap <b>sumbu Y</b>. Persis kebalikan dari aturan translasi &mdash; di sini tanda minus bekerja apa adanya.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 10: M3 - REFLEKSI y=x, y=-x, O + LAB ============ -->
+<section class="slide" data-title="M3 &middot; Refleksi y=x, y=&minus;x &amp; Titik Asal">
+  <div class="slide-inner">
+    <div class="slide-body">
+      <div class="titlebar">
+        <span class="kicker">Materi 3 &middot; Fungsi Refleksi (2) + Lab</span>
+        <h2 class="slide-title">Refleksi Garis y = x, y = &minus;x, dan Titik Asal</h2>
+        <p class="slide-sub">Tiga refleksi lanjutan. Yang paling penting secara konseptual: refleksi terhadap garis y = x <b>menghasilkan fungsi invers</b> &mdash; grafik f dan f&#8315;&#185; adalah bayangan cermin satu sama lain.</p>
+      </div>
+      <div class="grid3">
+        <div class="card">
+          <h3><span class="h3dot"></span>Garis y = x</h3>
+          <div class="formula" style="text-align:center"><b>y = f&#8315;&#185;(x)</b></div>
+          <p style="margin-top:8px">Titik (x, y) &rarr; (y, x): peran x dan y ditukar. Syarat: f harus <b>bijektif</b> (satu-satu dan pada). Contoh: f(x) = 3x &minus; 6 &rarr; bayangannya y = (x + 6)/3.</p>
+        </div>
+        <div class="card">
+          <h3><span class="h3dot"></span>Garis y = &minus;x</h3>
+          <div class="formula" style="text-align:center"><b>y = &minus;f&#8315;&#185;(&minus;x)</b></div>
+          <p style="margin-top:8px">Titik (x, y) &rarr; (&minus;y, &minus;x). Cara cepat: refleksi y = x, lalu "putar" hasilnya dengan dua tanda minus. Bisa juga dibaca: refleksi sumbu X + sumbu Y berurutan, kemudian y = x.</p>
+        </div>
+        <div class="card">
+          <h3><span class="h3dot"></span>Titik asal O</h3>
+          <div class="formula" style="text-align:center"><b>y = &minus;f(&minus;x)</b></div>
+          <p style="margin-top:8px">Titik (x, y) &rarr; (&minus;x, &minus;y) &mdash; sama dengan rotasi 180&deg; pusat O, atau refleksi sumbu X dilanjutkan refleksi sumbu Y. Fungsi ganjil (misal x&sup3;) kekal: &minus;f(&minus;x) = x&sup3;.</p>
+        </div>
+      </div>
+      <div class="demo-box">
+        <div class="demo-tag">Simulasi 3 &middot; Lab Refleksi (basis f(x) = (x &minus; 1)&sup2;)</div>
+        <div class="chips-row" id="refModes">
+          <button class="gbtn on" data-rmode="f">f(x)</button>
+          <button class="gbtn" data-rmode="mx">&minus;f(x) &middot; sumbu X</button>
+          <button class="gbtn" data-rmode="my">f(&minus;x) &middot; sumbu Y</button>
+          <button class="gbtn" data-rmode="mo">&minus;f(&minus;x) &middot; titik O</button>
+          <button class="gbtn" data-rmode="inv">f&#8315;&#185;(x) &middot; garis y = x</button>
+        </div>
+        <div class="gwrap"><svg id="refGraph" viewBox="0 0 660 440" role="img" aria-label="grafik lab refleksi"></svg></div>
+        <div class="legend">
+          <span><span class="lg-line dash" style="border-color:#a8a29e"></span>f(x) = (x&minus;1)&sup2;</span>
+          <span><span class="lg-line" style="border-color:#a21caf"></span>bayangan refleksi</span>
+          <span><span class="lg-line dash" style="border-color:#cbd5e1"></span>garis y = x</span>
+        </div>
+        <div class="readout" id="refNote">Pilih salah satu jenis refleksi untuk melihat bayangannya.</div>
+      </div>
+      <div class="note"><b>Rangkuman cepat refleksi:</b> sumbu X &rarr; y = &minus;f(x); sumbu Y &rarr; y = f(&minus;x); garis y = x &rarr; y = f&#8315;&#185;(x); garis y = &minus;x &rarr; y = &minus;f&#8315;&#185;(&minus;x); titik O &rarr; y = &minus;f(&minus;x). Untuk lab di atas, domain f dibatasi x &ge; 1 agar refleksi y = x menghasilkan <b>fungsi</b> invers y = &radic;x + 1 &mdash; sekali lagi menunjukkan pentingnya syarat bijektif.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 11: LATIHAN 3 ============ -->
+<section class="slide" data-title="Latihan 3: Refleksi">
+  <div class="slide-inner">
+    <div class="slide-body">
+      <div class="titlebar">
+        <span class="kicker">Latihan Materi 3 &middot; 10 Soal</span>
+        <h2 class="slide-title">Latihan: Fungsi Refleksi</h2>
+        <p class="slide-sub">Sepuluh soal: mengenali jenis refleksi dari rumus, menulis persamaan bayangan, memetakan titik, refleksi garis y = x yang terhubung dengan invers, dan kasus fungsi ganjil.</p>
+      </div>
+      <div class="instruksi">
+        <div style="flex:1;min-width:220px"><b>Petunjuk:</b> perhatikan posisi tanda minus: di luar (cermin sumbu X), di dalam (cermin sumbu Y), atau keduanya (titik asal). Untuk refleksi y = x, kerjakan dengan menukar x dan y lalu menyelesaikan terhadap y.</div>
+        <span class="topic-chip" data-topic="tf-ref">0/10 terjawab</span>
+      </div>
+      <div class="qlist" id="q-ref"></div>
+    </div>
+  </div>
+</section>
+<!-- ============ SLIDE 12: M4 - KOMBINASI + DEMO ============ -->
+<section class="slide" data-title="M4 &middot; Kombinasi Transformasi">
+  <div class="slide-inner">
+    <div class="slide-body">
+      <div class="titlebar">
+        <span class="kicker">Materi 4 &middot; Kombinasi Transformasi</span>
+        <h2 class="slide-title">Kombinasi Transformasi: Membaca Bentuk Umum g(x) = a&middot;f(b(x &minus; h)) + k</h2>
+        <p class="slide-sub">Transformasi boleh dijalankan beruntun &mdash; dan urutannya <b>penting</b> (kali 2 lalu tambah 3 hasilnya beda dengan tambah 3 lalu kali 2!). Kabar baiknya, semua hasil kombinasi selalu bisa dituliskan dalam satu bentuk umum yang pembacaannya sistematis.</p>
+      </div>
+      <div class="grid2">
+        <div class="card">
+          <h3><span class="h3dot"></span>Panduan Membaca Parameter</h3>
+          <table class="mtable">
+            <thead><tr><th>Parameter</th><th>Makna</th></tr></thead>
+            <tbody>
+              <tr><td>|a|, a &gt; 0</td><td>dilatasi vertikal faktor a</td></tr>
+              <tr><td>a &lt; 0</td><td>dilatasi |a| + <b>refleksi sumbu X</b></td></tr>
+              <tr><td>b</td><td>dilatasi horizontal faktor 1/b (b &gt; 1 mampat)</td></tr>
+              <tr><td>h</td><td>geser horizontal: h &gt; 0 kanan, h &lt; 0 kiri</td></tr>
+              <tr><td>k</td><td>geser vertikal: k &gt; 0 naik, k &lt; 0 turun</td></tr>
+            </tbody>
+          </table>
+          <p style="margin-top:8px"><b>Urutan aman:</b> kerjakan dilatasi &amp; refleksi (a, b) terlebih dulu, baru translasi (h, k). Saat membaca soal, uraikan persamaan ke bentuk umum ini sebelum menyimpulkan apa pun.</p>
+        </div>
+        <div class="card">
+          <h3><span class="h3dot"></span>Mengapa Urutan Penting?</h3>
+          <p>Dari y = x&sup2;: <b>(1)</b> kali 2 lalu geser atas 3 memberi y = 2x&sup2; + 3. <b>(2)</b> geser atas 3 lalu kali 2 memberi y = 2(x&sup2; + 3) = 2x&sup2; + 6 &mdash; beda 3!</p>
+          <p style="margin-top:8px">Yang menentukan: <b>dilatasi merenggangkan segalanya dari sumbu x</b>, termasuk geseran yang sudah menempel di grafik. Karena itu aturan standarnya: <b>skala &rarr; cermin &rarr; geser</b>.</p>
+          <div class="formula" style="margin-top:10px">y = x&sup2; &rarr; y = 2x&sup2; &rarr; y = &minus;2x&sup2; &rarr; y = &minus;2(x+1)&sup2; &rarr; y = &minus;2(x+1)&sup2; + 3</div>
+        </div>
+      </div>
+      <div class="demo-box">
+        <div class="demo-tag">Simulasi 4 &middot; Demo Kombinasi Bertahap: x&sup2; menuju &minus;2(x+1)&sup2; + 3</div>
+        <div class="demo-bar">
+          <span class="topic-chip blue" id="cnt-kom">Langkah 0 / 4</span>
+          <button class="btn btn-check" data-komnext="1">Langkah Berikutnya</button>
+          <button class="stepbtn" data-komreset="1">Ulangi dari Awal</button>
+        </div>
+        <div class="gwrap"><svg id="komGraph" viewBox="0 0 660 440" role="img" aria-label="grafik demo kombinasi transformasi"></svg></div>
+        <div class="legend">
+          <span><span class="lg-line dash" style="border-color:#a8a29e"></span>y = x&sup2; (asal)</span>
+          <span><span class="lg-line" style="border-color:#e9d5ff"></span>jejak langkah sebelumnya</span>
+          <span><span class="lg-line" style="border-color:#a21caf"></span>grafik pada langkah ini</span>
+          <span><span class="lg-line" style="border-color:#d97706"></span>puncak</span>
+        </div>
+        <div class="readout" id="komNote">Klik "Langkah Berikutnya" untuk menjalankan transformasi satu per satu.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 13: M4 - PELACAKAN TITIK ============ -->
+<section class="slide" data-title="M4 &middot; Pelacakan Titik">
+  <div class="slide-inner">
+    <div class="slide-body">
+      <div class="titlebar">
+        <span class="kicker">Materi 4 &middot; Teknik Cepat</span>
+        <h2 class="slide-title">Teknik Pelacakan Titik untuk Kombinasi Transformasi</h2>
+        <p class="slide-sub">Banyak soal TKA tidak menuntut persamaan bayangan penuh &mdash; cukup "ke mana titik ini pergi?" Untuk itu ada satu rumus pelacakan yang memangkas semua langkah.</p>
+      </div>
+      <div class="formula" style="text-align:center">
+        Jika (x&#8321;, y&#8321;) terletak pada grafik f, dan g(x) = a&middot;f(b(x &minus; h)) + k,<br>
+        maka bayangannya adalah &nbsp;<span class="big">( x&#8321;/b + h , &nbsp; a&middot;y&#8321; + k )</span>
+      </div>
+      <div class="grid2" style="margin-top:16px">
+        <div class="card">
+          <h3><span class="h3dot"></span>Contoh 1 &middot; Langsung Pakai Rumus</h3>
+          <p>Titik (2, 5) pada grafik f. g(x) = 3&middot;f(2x) &minus; 1. Ke mana titik itu pergi?</p>
+          <div class="formula">
+            Dari g: a = 3, b = 2, h = 0, k = &minus;1<br>
+            absis: 2/2 + 0 = <b>1</b><br>
+            ordinat: 3&middot;5 + (&minus;1) = <b>14</b><br>
+            Bayangan: <b>(1, 14)</b>
+          </div>
+          <p style="margin-top:8px">Logikanya: dilatasi horizontal faktor &frac12; (b = 2), lalu dilatasi vertikal 3, lalu turun 1.</p>
+        </div>
+        <div class="card">
+          <h3><span class="h3dot"></span>Contoh 2 &middot; Dua Transformasi Beruntun</h3>
+          <p>Kurva y = x&sup2; &minus; 2x ditranslasikan T = (2, 3), lalu direfleksikan terhadap sumbu X. Tentukan persamaan akhir.</p>
+          <div class="formula">
+            <b>Translasi:</b> y &minus; 3 = (x&minus;2)&sup2; &minus; 2(x&minus;2)<br>
+            y = x&sup2; &minus; 6x + 11<br>
+            <b>Refleksi sumbu X:</b> kalikan &minus;1 seluruh ruas:<br>
+            y = <b>&minus;x&sup2; + 6x &minus; 11</b>
+          </div>
+          <p style="margin-top:8px">Cek puncak: awal (1, &minus;1) &rarr; translasi (3, 2) &rarr; refleksi (3, &minus;2). Cek persamaan: &minus;(3)&sup2; + 18 &minus; 11 = &minus;2 &check;</p>
+        </div>
+      </div>
+      <div class="danger"><b>Dua jebakan kombinasi:</b> (1) Jangan lupa <b>memfaktorkan</b>: f(2x &minus; 6) = f(2(x &minus; 3)) berarti mampat faktor 2 <b>lalu</b> geser kanan 3 &mdash; bukan geser kanan 6. (2) Minus di depan f hanya menjangkau f, bukan konstanta di luarnya: &minus;f(x) + 3 &ne; &minus;(f(x) + 3). Yang pertama = refleksi lalu naik 3; yang kedua = refleksi lalu turun 3.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 14: LATIHAN 4 ============ -->
+<section class="slide" data-title="Latihan 4: Kombinasi">
+  <div class="slide-inner">
+    <div class="slide-body">
+      <div class="titlebar">
+        <span class="kicker">Latihan Materi 4 &middot; 10 Soal</span>
+        <h2 class="slide-title">Latihan: Kombinasi Transformasi</h2>
+        <p class="slide-sub">Sepuluh soal: menguraikan urutan transformasi, menyusun persamaan dari rangkaian transformasi, pelacakan titik, dan urutan pengerjaan yang benar.</p>
+      </div>
+      <div class="instruksi">
+        <div style="flex:1;min-width:220px"><b>Petunjuk:</b> uraikan dulu persamaan ke bentuk a&middot;f(b(x&minus;h)) + k. Untuk soal beruntun, kerjakan satu transformasi per baris dan selalu tulis persamaan antaranya.</div>
+        <span class="topic-chip" data-topic="tf-kom">0/10 terjawab</span>
+      </div>
+      <div class="qlist" id="q-kom"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 15: M5 - HOTS PETA KONTEKS ============ -->
+<section class="slide" data-title="M5 &middot; HOTS: Membaca Dunia Nyata">
+  <div class="slide-inner">
+    <div class="slide-body">
+      <div class="titlebar">
+        <span class="kicker">Materi 5 &middot; HOTS Kehidupan Sehari-hari</span>
+        <h2 class="slide-title">Membaca Dunia Nyata sebagai Transformasi Fungsi</h2>
+        <p class="slide-sub">Soal HOTS (Higher Order Thinking Skills) menuntut analisis, evaluasi, dan penyusunan model &mdash; bukan hafalan. Strateginya satu: <b>identifikasi apa yang berubah pada situasinya</b>, lalu terjemahkan menjadi jenis transformasi.</p>
+      </div>
+      <div class="card">
+        <h3><span class="h3dot"></span>Peta Konteks &rarr; Transformasi</h3>
+        <table class="mtable">
+          <thead><tr><th>Perubahan di dunia nyata</th><th>Terjemahan matematis</th></tr></thead>
+          <tbody>
+            <tr><td>Harga naik 1,5&times;, bonus persentase, diskon berlapis &times; faktor</td><td><b>Dilatasi vertikal</b> y = k&middot;f(x)</td></tr>
+            <tr><td>Biaya tetap, ongkos kirim flat, bonus rupiah tetap</td><td><b>Translasi vertikal</b> y = f(x) + k</td></tr>
+            <tr><td>Mulai terlambat / lebih awal t&#8320; menit</td><td><b>Translasi horizontal</b> y = f(x &minus; t&#8320;)</td></tr>
+            <tr><td>Gambar/peta diperbesar atau diperkecil</td><td><b>Dilatasi</b> vertikal &amp; horizontal</td></tr>
+            <tr><td>Cermin, pantulan air, teks kaca spion</td><td><b>Refleksi</b></td></tr>
+            <tr><td>Roda berputar, jarum jam, objek diputar</td><td><b>Rotasi</b></td></tr>
+          </tbody>
+        </table>
+        <p class="mcap">Kunci membaca: apakah perubahan menempel pada <b>keluaran</b> (sumbu y &mdash; uang, tinggi, volume) atau pada <b>masukan</b> (sumbu x &mdash; waktu, jarak, jumlah unit)?</p>
+      </div>
+      <div class="grid2">
+        <div class="demo-box" style="margin-top:16px">
+          <div class="demo-tag">HOTS 1 &middot; Tarif Ojek Saat Hujan (Dilatasi Vertikal)</div>
+          <div class="prob"><b>Soal:</b> tarif ojek normal dimodelkan f(x) = 8.000 + 2.500x (x = jarak km). Saat hujan, aplikasi mengalikan <b>seluruh tarif</b> dengan 1,5. (a) Susun fungsi tarif hujan g(x). (b) Bandingkan tarif hujan untuk 10 km dengan "cara salah" f(1,5x).</div>
+          <div class="demo-bar">
+            <span class="topic-chip blue" id="cnt-st-h1">0 / 5 langkah</span>
+            <button class="stepbtn" id="next-st-h1" data-stnext="st-h1">Langkah Berikutnya</button>
+            <button class="stepbtn" data-streset="st-h1">Ulangi</button>
+          </div>
+          <div class="steps" id="st-h1"></div>
+        </div>
+        <div class="demo-box" style="margin-top:16px">
+          <div class="demo-tag">HOTS 2 &middot; Termometer Celsius&ndash;Fahrenheit (Dilatasi + Translasi)</div>
+          <div class="prob"><b>Soal:</b> konversi suhu F(C) = 1,8C + 32 dianggap "dibangun" dari fungsi identitas y = C. (a) Transformasi apa saja yang membentuknya, dan mengapa urutannya penting? (b) Bagaimana urutan proses baliknya, C = f&#8315;&#185;(F)?</div>
+          <div class="demo-bar">
+            <span class="topic-chip blue" id="cnt-st-h2">0 / 5 langkah</span>
+            <button class="stepbtn" id="next-st-h2" data-stnext="st-h2">Langkah Berikutnya</button>
+            <button class="stepbtn" data-streset="st-h2">Ulangi</button>
+          </div>
+          <div class="steps" id="st-h2"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 16: M5 - HOTS STUDI KASUS LANJUTAN ============ -->
+<section class="slide" data-title="M5 &middot; HOTS: Kolam &amp; Gaji Libur">
+  <div class="slide-inner">
+    <div class="slide-body">
+      <div class="titlebar">
+        <span class="kicker">Materi 5 &middot; HOTS Lanjutan</span>
+        <h2 class="slide-title">HOTS #3 &amp; #4: Ketika Translasi dan Dilatasi Bekerja Bersama</h2>
+        <p class="slide-sub">Dua situasi yang menggabungkan lebih dari satu transformasi sekaligus &mdash; pola soal HOTS yang paling sering muncul di ujian: satu perubahan menempel pada waktu (masukan), satu lagi pada besaran (keluaran).</p>
+      </div>
+      <div class="grid2">
+        <div class="demo-box" style="margin-top:0">
+          <div class="demo-tag">HOTS 3 &middot; Pengisian Kolam: Debit Baru + Catatan Terlambat</div>
+          <div class="prob"><b>Soal:</b> volume air kolam V(t) = 2t m&sup3; (t = menit sejak keran dibuka). Keran diganti sehingga debitnya 1,5 kali, dan pencatatan justru dimulai 10 menit <b>setelah</b> keran dibuka. (a) Susun V&#8322;(t) sebagai fungsi waktu pencatatan. (b) Berapa volume air pada t = 40 menit pencatatan?</div>
+          <div class="demo-bar">
+            <span class="topic-chip blue" id="cnt-st-h3">0 / 5 langkah</span>
+            <button class="stepbtn" id="next-st-h3" data-stnext="st-h3">Langkah Berikutnya</button>
+            <button class="stepbtn" data-streset="st-h3">Ulangi</button>
+          </div>
+          <div class="steps" id="st-h3"></div>
+        </div>
+        <div class="demo-box" style="margin-top:0">
+          <div class="demo-tag">HOTS 4 &middot; Gaji Hari Libur: Dilatasi dengan Koreksi</div>
+          <div class="prob"><b>Soal:</b> gaji karyawan f(j) = 100.000j + 3.000.000 (j = jam lembur). Pada hari libur, <b>tarif lembur digandakan</b> tetapi gaji pokok tetap. (a) Mengapa g(j) = 2&middot;f(j) salah? (b) Susun g(j) yang benar dan hitung gaji hari libur untuk j = 4.</div>
+          <div class="demo-bar">
+            <span class="topic-chip blue" id="cnt-st-h4">0 / 5 langkah</span>
+            <button class="stepbtn" id="next-st-h4" data-stnext="st-h4">Langkah Berikutnya</button>
+            <button class="stepbtn" data-streset="st-h4">Ulangi</button>
+          </div>
+          <div class="steps" id="st-h4"></div>
+        </div>
+      </div>
+      <div class="note"><b>Kilat membaca konteks:</b> "dikali" &rarr; dilatasi vertikal; "ditambah/biaya tetap" &rarr; translasi vertikal; "terlambat/mulai kemudian" &rarr; translasi horizontal ke kanan (f(x &minus; t&#8320;)); "dicermin" &rarr; refleksi; "diperbesar" &rarr; dilatasi. Dan satu pertanyaan penyelamat: <b>perubahan ini mengenai semua angka, atau hanya sebagian?</b> HOTS 4 menunjukkan apa yang terjadi jika dilatasi "kebablasan" mengenai komponen yang seharusnya kekal.</div>
+      <div class="danger"><b>Empat jebakan HOTS transformasi:</b> (1) mengira "dikali" hanya mengenai suku variabel &mdash; dilatasi vertikal mengalikan <b>seluruh</b> keluaran; (2) salah arah translasi waktu: mulai 10 menit terlambat = f(t &minus; 10), bukan f(t + 10); (3) urutan terbalik saat membaca balik: yang terakhir terjadi harus dilepas lebih dulu; (4) tidak mengecek kewajaran hasil (volume negatif? gaji libur lebih kecil dari hari biasa?).</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 17: LATIHAN 5 ============ -->
+<section class="slide" data-title="Latihan 5: HOTS Sehari-hari">
+  <div class="slide-inner">
+    <div class="slide-body">
+      <div class="titlebar">
+        <span class="kicker">Latihan Materi 5 &middot; 10 Soal</span>
+        <h2 class="slide-title">Latihan: HOTS Kehidupan Sehari-hari</h2>
+        <p class="slide-sub">Sepuluh soal bergaya HOTS: tarif hujan, konversi suhu, logo cermin, kurs dan biaya admin, air mancur, efisiensi mesin, kolam, gaji libur, konversi mata uang berantai, dan sensor roket air. Setiap soal meminta keputusan: transformasi apa yang sedang terjadi?</p>
+      </div>
+      <div class="instruksi">
+        <div style="flex:1;min-width:220px"><b>Petunjuk:</b> gunakan peta konteks &rarr; transformasi di slide sebelumnya. Tulis dulu fungsi dasarnya, kenali apa yang berubah (masukan atau keluaran), lalu susun fungsi barunya.</div>
+        <span class="topic-chip" data-topic="tf-hots">0/10 terjawab</span>
+      </div>
+      <div class="qlist" id="q-hots"></div>
+    </div>
+  </div>
+</section>
+<!-- ============ SLIDE 18: HASIL ============ -->
+<section class="slide" data-title="Hasil Pengerjaan Siswa" data-key="hasil">
+  <div class="slide-inner">
+    <div class="slide-body">
+      <div class="titlebar">
+        <span class="kicker">Evaluasi</span>
+        <h2 class="slide-title">Hasil Pengerjaan Siswa</h2>
+        <p class="slide-sub">Rekap jawaban dari 5 set latihan (50 soal): 10 soal untuk setiap materi. Tulis namamu, lalu klik Perbarui Hasil untuk melihat rekap terbaru.</p>
+      </div>
+      <div class="namebox">
+        <input type="text" id="studentName" placeholder="Tulis namamu di sini&hellip;" autocomplete="off">
+      </div>
+      <div class="rwrap">
+        <div class="card scorecard">
+          <div class="score-label">Skor Akhir</div>
+          <div class="score-big" id="scorePct">&mdash;</div>
+          <span class="badge none" id="predikat">Belum ada jawaban</span>
+          <div class="score-sub" id="scoreSub">0 dari 50 soal benar</div>
+          <div class="rbtns">
+            <button class="btn btn-ghost" data-act="refresh">Perbarui Hasil</button>
+            <button class="btn btn-ghost" data-act="reset" style="color:var(--bad);border-color:#fecaca">Ulangi Semua (Reset)</button>
+          </div>
+        </div>
+        <div class="rtable-wrap">
+          <table class="rtable">
+            <thead><tr><th>Materi</th><th>Nilai</th><th>Persentase</th><th>Status</th></tr></thead>
+            <tbody id="rtbody"></tbody>
+          </table>
+          <p class="rnote">Predikat: <b>Sangat Baik</b> &ge; 85% &middot; <b>Baik</b> &ge; 70% &middot; <b>Cukup</b> &ge; 55% &middot; di bawahnya <b>Perlu Latihan Lagi</b>. Jawaban dan nama tersimpan otomatis di browser (localStorage), jadi tetap aman saat halaman dimuat ulang.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 19: KESIMPULAN ============ -->
+<section class="slide" data-title="Kesimpulan">
+  <div class="slide-inner">
+    <div class="slide-body">
+      <div class="titlebar">
+        <span class="kicker">Penutup</span>
+        <h2 class="slide-title">Kesimpulan</h2>
+        <p class="slide-sub">Enam bekal utama dari materi Transformasi Fungsi yang harus selalu kamu ingat saat mengerjakan soal TKA.</p>
+      </div>
+      <div class="grid2">
+        <div class="card">
+          <h3><span class="h3dot"></span>Empat Jenis &amp; Translasi</h3>
+          <p>Translasi, refleksi, dilatasi, rotasi &mdash; empat cara grafik berubah. Untuk translasi: y &minus; k = f(x &minus; h) dengan T = (h, k). Mantra wajib: <b>MINUS kanan, PLUS kiri</b> di dalam kurung; di luar kurung tanda bekerja jujur (plus naik, minus turun).</p>
+        </div>
+        <div class="card">
+          <h3><span class="h3dot"></span>Dilatasi: Dalam vs Luar</h3>
+          <p>y = k&middot;f(x) = dilatasi <b>vertikal</b> faktor k (regang saat k &gt; 1). y = f(kx) = dilatasi <b>horizontal</b> faktor 1/k (mampat saat k &gt; 1) &mdash; efeknya terasa terbalik. Dilatasi vertikal menjaga titik potong sumbu X; horizontal menjaga titik potong sumbu Y.</p>
+        </div>
+        <div class="card">
+          <h3><span class="h3dot"></span>Refleksi: Empat Wajah Cermin</h3>
+          <p>Sumbu X: y = &minus;f(x). Sumbu Y: y = f(&minus;x). Titik O: y = &minus;f(&minus;x) (juga rotasi 180&deg;). Dan yang paling istimewa: garis y = x &rarr; <b>y = f&#8315;&#185;(x)</b> &mdash; refleksi inilah yang melahirkan fungsi invers, dengan syarat f bijektif.</p>
+        </div>
+        <div class="card">
+          <h3><span class="h3dot"></span>Kombinasi &amp; Urutan</h3>
+          <p>Semua kombinasi mengendap di bentuk umum <b>g(x) = a&middot;f(b(x &minus; h)) + k</b>. Urutan aman: skala &rarr; cermin &rarr; geser, karena dilatasi merenggangkan segalanya dari sumbu &mdash; termasuk geseran yang sudah menempel. Selalu faktorkan: f(2x &minus; 6) = f(2(x &minus; 3)).</p>
+        </div>
+        <div class="card">
+          <h3><span class="h3dot"></span>Pelacakan Titik</h3>
+          <p>(x&#8321;, y&#8321;) pada f berpindah ke <b>(x&#8321;/b + h, a&middot;y&#8321; + k)</b> pada g. Satu rumus ini menjawab banyak soal tanpa menyusun persamaan penuh &mdash; dan selalu bisa dicek dengan titik khas seperti puncak parabola.</p>
+        </div>
+        <div class="card">
+          <h3><span class="h3dot"></span>HOTS: Terjemahkan Konteksnya</h3>
+          <p>"Dikali" = dilatasi vertikal; "biaya tetap" = translasi vertikal; "terlambat" = translasi horizontal kanan; "cermin" = refleksi. Pertanyaan penyelamat: perubahan mengenai <b>semua</b> angka atau hanya sebagian? Di situlah jebakan HOTS bersembunyi.</p>
+        </div>
+      </div>
+      <div class="card closing" style="margin-top:16px">
+        <h3>Menggerakkan Grafik, Membaca Dunia</h3>
+        <p>Alur berpikir yang sudah kamu kuasai: mengenali empat jenis transformasi &rarr; menggeser dengan translasi &rarr; mengubah ukuran dengan dilatasi vertikal dan horizontal &rarr; mencerminkan dengan refleksi hingga melahirkan invers &rarr; merangkai semuanya dalam bentuk umum a&middot;f(b(x&minus;h)) + k &rarr; menerjemahkan situasi nyata menjadi transformasi. Selamat! Kamu telah menyelesaikan seluruh materi transformasi fungsi &mdash; termasuk 50 latihan soal berpembahasan &mdash; dan siap menghadapinya di TKA SMA.</p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:14px">
+          <button class="btn btn-primary" data-goto="17">Lihat Skor Kamu</button>
+          <button class="btn btn-ghost" data-goto="0" style="background:#fff">Ulangi Materi dari Awal</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+<script>
+(function(){
+"use strict";
+
+/* ================= DATA SOAL ================= */
+var TYPE_LABEL = {pg:'Pilihan Ganda', bs:'Benar / Salah', pgk:'PG Kompleks'};
+var LETTERS = ['A','B','C','D','E'];
+
+var QUESTIONS = [
+/* ---- SET 1: DEFINISI & JENIS + TRANSLASI ---- */
+{id:'d1', topic:'tf-def', box:'q-def', type:'pg', no:1,
+ text:'Pernyataan yang paling tepat menggambarkan <b>transformasi fungsi</b> adalah&hellip;',
+ opts:['mengganti fungsi f dengan fungsi baru yang sama sekali tidak berhubungan dengan f','memetakan setiap titik (x, y) pada grafik y = f(x) ke titik bayangan menurut aturan geometri tertentu','menghitung nilai fungsi f untuk nilai x tertentu','mencari invers dari sebuah fungsi','mengalikan semua koefisien fungsi dengan bilangan sama'], ans:[1],
+ exp:'Transformasi fungsi memetakan <b>setiap titik</b> grafik asal ke titik bayangan menurut aturan geometri (translasi, refleksi, dilatasi, atau rotasi) &mdash; bukan sekadar mengganti fungsi, menghitung nilai, atau menginverskan. Karena pemetaannya titik demi titik dan konsisten, "karakter" kurva (misalnya tetap parabola) biasanya dipertahankan; yang berubah adalah posisi dan/atau ukurannya.'},
+{id:'d2', topic:'tf-def', box:'q-def', type:'pg', no:2,
+ text:'Grafik y = f(x) menjadi y = f(x) + 4. Pernyataan yang tepat adalah grafik bergeser&hellip;',
+ opts:['4 satuan ke atas','4 satuan ke bawah','4 satuan ke kanan','4 satuan ke kiri','tidak bergeser, hanya lebih curam'], ans:[0],
+ exp:'Konstanta berada <b>di luar</b> fungsi, jadi ia menggeser sepanjang sumbu Y dengan tanda jujur: +4 berarti <b>naik 4 satuan</b>. Setiap titik (x, f(x)) pindah ke (x, f(x) + 4). Kalau tanda fungsinya minus, f(x) &minus; 4, barulah grafik turun 4.'},
+{id:'d3', topic:'tf-def', box:'q-def', type:'pg', no:3,
+ text:'Grafik y = f(x) menjadi y = f(x &minus; 6). Grafik bergeser&hellip;',
+ opts:['6 satuan ke atas','6 satuan ke kiri','6 satuan ke kanan','6 satuan ke bawah','tidak bergeser, hanya lebih lebar'], ans:[2],
+ exp:'Perubahan ada <b>di dalam kurung</b>, maka gesernya horizontal dan tandanya <b>terbalik</b>: x &minus; 6 bergeser ke <b>kanan 6</b> (mantra: MINUS kanan). Buktinya, g(x) = f(x &minus; 6) mencapai nilai f(0) ketika x &minus; 6 = 0, yaitu x = 6 &mdash; semua kejadian grafik pindah 6 satuan ke kanan.'},
+{id:'d4', topic:'tf-def', box:'q-def', type:'bs', no:4,
+ text:'Grafik y = f(x &minus; 5) diperoleh dari y = f(x) dengan pergeseran 5 satuan ke kiri.',
+ opts:['Benar','Salah'], ans:[1],
+ exp:'<b>Salah.</b> x &minus; 5 memberi pergeseran ke <b>kanan</b> 5, bukan kiri. Pergeseran kiri 5 ditulis y = f(x <b>+</b> 5). Cara mengingat: di dalam kurung tandanya dibalik (MINUS kanan, PLUS kiri), sedangkan di luar kurung tandanya jujur. Uji cepat: puncak x&sup2; pada (x &minus; 5)&sup2; adalah (5, 0) &mdash; kanan!'},
+{id:'d5', topic:'tf-def', box:'q-def', type:'pg', no:5,
+ text:'Parabola y = x&sup2; digeser sehingga puncaknya berada di titik (3, &minus;1). Persamaan bayangannya adalah&hellip;',
+ opts:['y = (x + 3)&sup2; &minus; 1','y = (x &minus; 3)&sup2; &minus; 1','y = (x &minus; 3)&sup2; + 1','y = (x + 3)&sup2; + 1','y = x&sup2; &minus; 3'], ans:[1],
+ exp:'Puncak (3, &minus;1) berarti geser <b>kanan 3</b> dan <b>turun 1</b>: y = (x &minus; 3)&sup2; + (&minus;1) = (x &minus; 3)&sup2; &minus; 1. Pilihan pertama adalah jebakan tanda: (x + 3)&sup2; punya puncak (&minus;3, &minus;1) karena geser kiri 3. Selalu tulis puncak target dulu, baru susun tanda kurungnya.'},
+{id:'d6', topic:'tf-def', box:'q-def', type:'pg', no:6,
+ text:'Transformasi dari y = f(x) menjadi y = f(x + 4) &minus; 2 adalah&hellip;',
+ opts:['geser 4 kanan dan 2 atas','geser 4 kiri dan 2 bawah','geser 4 kiri dan 2 atas','geser 4 kanan dan 2 bawah','geser 4 atas dan 2 kiri'], ans:[1],
+ exp:'Dalam kurung: x + 4 &rarr; geser <b>kiri 4</b> (tanda dalam kurung terbalik). Di luar: &minus;2 &rarr; geser <b>bawah 2</b> (tanda jujur). Secara notasi translasi: T = (&minus;4, &minus;2). Cek dengan titik: titik asal (0, f(0)) berpindah ke (&minus;4, f(0) &minus; 2) &mdash; kiri dan bawah.'},
+{id:'d7', topic:'tf-def', box:'q-def', type:'pgk', no:7,
+ text:'Pilihlah SEMUA yang termasuk jenis transformasi geometri pada fungsi.',
+ opts:['Translasi (pergeseran)','Refleksi (pencerminan)','Dilatasi (perenggangan)','Rotasi (perputaran)','Interpolasi','Substitusi'], ans:[0,1,2,3],
+ exp:'Empat jenis transformasi geometri fungsi: <b>translasi, refleksi, dilatasi, rotasi</b>. Interpolasi adalah teknik memperkirakan nilai di antara data &mdash; bukan transformasi geometri; substitusi adalah teknik berhitung aljabar. Kalau soal meminta "jenis-jenis transformasi", jawab empat itu saja.'},
+{id:'d8', topic:'tf-def', box:'q-def', type:'pg', no:8,
+ text:'Titik (x, y) dirotasi sebesar 180&deg; dengan pusat O(0, 0). Bayangannya adalah&hellip;',
+ opts:['(y, &minus;x)','(&minus;y, x)','(&minus;x, &minus;y)','(x, &minus;y)','(&minus;x, y)'], ans:[2],
+ exp:'Rotasi 180&deg; pusat O: (x, y) &rarr; <b>(&minus;x, &minus;y)</b> &mdash; setengah putaran penuh. Akibatnya untuk kurva: y = f(x) menjadi &minus;y = f(&minus;x), atau y = &minus;f(&minus;x) &mdash; persis hasil refleksi terhadap titik asal. Opsi (y, &minus;x) dan (&minus;y, x) adalah rotasi &plusmn;90&deg;.'},
+{id:'d9', topic:'tf-def', box:'q-def', type:'pg', no:9,
+ text:'Diketahui titik (2, 5) terletak pada grafik f. Jika grafik ditransformasi menjadi g(x) = f(x &minus; 3) + 2, bayangan titik tersebut adalah&hellip;',
+ opts:['(5, 7)','(&minus;1, 3)','(5, 3)','(&minus;1, 7)','(7, 5)'], ans:[0],
+ exp:'Dari g(x) = f(x &minus; 3) + 2: geser kanan 3 lalu naik 2. Absis: 2 + 3 = 5; ordinat: 5 + 2 = 7. Bayangannya <b>(5, 7)</b>. Cara verifikasi: karena f(2) = 5, maka g(5) = f(5 &minus; 3) + 2 = f(2) + 2 = 7 &mdash; cocok dengan titik (5, 7).'},
+{id:'d10', topic:'tf-def', box:'q-def', type:'pg', no:10,
+ text:'Kurva y = 2x + 1 ditranslasikan oleh T = (3, &minus;2). Persamaan bayangannya adalah&hellip;',
+ opts:['y = 2x &minus; 7','y = 2x + 7','y = 2x &minus; 5','y = 2x + 5','y = 2x + 1'], ans:[0],
+ exp:'T = (3, &minus;2) berarti x &rarr; x &minus; 3 dan y &rarr; y + 2: y + 2 = 2(x &minus; 3) + 1 &rarr; y = 2x &minus; 6 + 1 &minus; 2 = <b>2x &minus; 7</b>. Cara cepat: g(x) = f(x &minus; 3) &minus; 2 = 2(x &minus; 3) + 1 &minus; 2. Gradien tetap 2 (translasi tidak mengubah bentuk); yang bergeser adalah konstantanya: 1 &minus; 6 &minus; 2 = &minus;7.'},
+
+/* ---- SET 2: DILATASI ---- */
+{id:'dl1', topic:'tf-dil', box:'q-dil', type:'pg', no:1,
+ text:'Transformasi y = k&middot;f(x) dengan k &gt; 1 menghasilkan grafik&hellip;',
+ opts:['direnggangkan (regang) secara vertikal sebesar faktor k','dimampatkan secara vertikal sebesar faktor k','digeser ke atas sejauh k','direnggangkan secara horizontal sebesar faktor k','dicerminkan terhadap sumbu X'], ans:[0],
+ exp:'Mengalikan <b>keluaran</b> dengan k &gt; 1 membuat setiap titik (x, y) pindah ke (x, k&middot;y): semuanya lebih tinggi &rarr; grafik <b>direnggangkan vertikal</b> (terlihat lebih "sempit" pada parabola). Digeser ke atas adalah f(x) + k; renggang horizontal adalah f(x/k); cermin sumbu X adalah &minus;f(x).'},
+{id:'dl2', topic:'tf-dil', box:'q-dil', type:'pg', no:2,
+ text:'Grafik y = f(x) menjadi y = f(3x). Transformasi yang terjadi adalah&hellip;',
+ opts:['direnggangkan horizontal faktor 3','dimampatkan horizontal faktor 3','direnggangkan vertikal faktor 3','digeser ke kanan 3','dicerminkan terhadap sumbu Y'], ans:[1],
+ exp:'Perkalian di <b>dalam</b> kurung bekerja pada sumbu X dan efeknya terbalik: g(x) = f(3x) mencapai nilai f(a) saat x = a/3, jadi grafik "selesai 3&times; lebih cepat" &rarr; <b>mampat horizontal faktor 3</b> (= dilatasi horizontal faktor 1/3). Yang melebar adalah y = f(x/3). Ini jebakan favorit soal TKA!'},
+{id:'dl3', topic:'tf-dil', box:'q-dil', type:'bs', no:3,
+ text:'Pada y = &frac12;&middot;f(x), grafik menjadi lebih pipih (tertekan secara vertikal sebesar faktor 2).',
+ opts:['Benar','Salah'], ans:[0],
+ exp:'<b>Benar.</b> 0 &lt; k &lt; 1 pada y = k&middot;f(x) memipihkan grafik secara vertikal: setiap ordinat menjadi setengahnya, sehingga kurva "merunduk" &mdash; setara dengan tertekan faktor 2 (1/k). Parabola x&sup2; berubah menjadi &frac12;x&sup2; yang tampak lebih lebar, tetapi penyebabnya adalah penyusutan vertikal, bukan peregangan horizontal.'},
+{id:'dl4', topic:'tf-dil', box:'q-dil', type:'pg', no:4,
+ text:'f(x) = x&sup2; didilatasi secara vertikal dengan faktor skala 3. Persamaan bayangannya adalah&hellip;',
+ opts:['y = 3x&sup2;','y = x&sup2;/3','y = x&sup2; + 3','y = (x + 3)&sup2;','y = 9x&sup2;'], ans:[0],
+ exp:'Dilatasi vertikal: y = k&middot;f(x) = 3&middot;x&sup2; = <b>3x&sup2;</b>. Pilihan x&sup2; + 3 adalah translasi naik 3; (x + 3)&sup2; adalah translasi kiri 3; 9x&sup2; akan muncul kalau salah mengira "faktor 3" berarti mengkuadratkan (3x)&sup2; &mdash; itu justru dilatasi horizontal faktor 1/3.'},
+{id:'dl5', topic:'tf-dil', box:'q-dil', type:'pg', no:5,
+ text:'y = x&sup2; didilatasi secara horizontal dengan faktor skala &frac12;. Persamaan bayangannya adalah&hellip;',
+ opts:['y = &frac12;x&sup2;','y = 4x&sup2;','y = 2x&sup2;','y = &frac14;x&sup2;','y = x&sup2; + &frac12;'], ans:[1],
+ exp:'Dilatasi horizontal faktor k: y = f(x/k). Untuk k = &frac12;: y = f(2x) = (2x)&sup2; = <b>4x&sup2;</b>. Tampak aneh (koefisien membesar), tetapi masuk akal: faktor &frac12; memampatkan grafik ke arah sumbu Y, dan parabola yang dimampatkan memang memiliki koefisien lebih besar. Uji titik: (1, 1) &rarr; (&frac12;, 1) dan 4&middot;(&frac12;)&sup2; = 1 &check;'},
+{id:'dl6', topic:'tf-dil', box:'q-dil', type:'pg', no:6,
+ text:'Titik (4, 6) terletak pada grafik f. Setelah f didilatasi vertikal dengan faktor skala 3, bayangan titik tersebut adalah&hellip;',
+ opts:['(12, 6)','(4, 18)','(4/3, 6)','(4, 2)','(12, 18)'], ans:[1],
+ exp:'Dilatasi vertikal memetakan (x, y) &rarr; (x, k&middot;y): absis <b>kekal</b>, ordinat dikali. Maka (4, 6) &rarr; (4, 18). Opsi (12, 6) adalah kesalahan mengalikan absis (itu perilaku dilatasi horizontal); (4/3, 6) adalah dilatasi horizontal faktor 1/3.'},
+{id:'dl7', topic:'tf-dil', box:'q-dil', type:'pg', no:7,
+ text:'Titik (2, 8) terletak pada grafik f. Setelah f didilatasi horizontal dengan faktor skala 2, bayangan titik tersebut adalah&hellip;',
+ opts:['(1, 8)','(4, 8)','(2, 16)','(2, 4)','(4, 16)'], ans:[1],
+ exp:'Dilatasi horizontal faktor k memetakan (x, y) &rarr; (k&middot;x, y): absis dikali, ordinat <b>kekal</b>. Maka (2, 8) &rarr; <b>(4, 8)</b>. Konsisten dengan rumus persamaan: y = f(x/2) &mdash; titik asal (2, 8) "pindah" ke absis dua kali lipat. Opsi (2, 16) adalah dilatasi vertikal.'},
+{id:'dl8', topic:'tf-dil', box:'q-dil', type:'pg', no:8,
+ text:'y = |x| didilatasi horizontal dengan faktor skala 3. Persamaan bayangannya adalah&hellip;',
+ opts:['y = 3|x|','y = |x|/3','y = |3x|','y = |x| + 3','y = |x &minus; 3|'], ans:[1],
+ exp:'Dilatasi horizontal faktor 3: y = f(x/3) = |x/3| = <b>|x|/3</b>. Huruf V menjadi tiga kali lebih lebar (menjalar 3&times; lebih lambat). Opsi |3x| justru <b>memampatkan</b> faktor 3 (efek terbalik); 3|x| adalah dilatasi vertikal; |x &minus; 3| adalah translasi kanan 3.'},
+{id:'dl9', topic:'tf-dil', box:'q-dil', type:'pgk', no:9,
+ text:'Pilihlah SEMUA pernyataan yang BENAR tentang dilatasi fungsi.',
+ opts:['y = k&middot;f(x) dengan k &gt; 1 merenggangkan grafik secara vertikal','y = f(kx) dengan k &gt; 1 melebarkan grafik secara horizontal','dilatasi vertikal tidak mengubah titik-titik potong grafik dengan sumbu X','dilatasi horizontal faktor 2 memetakan setiap titik (x, y) ke (2x, y)','y = &frac12;&middot;f(x) menggeser grafik turun sejauh &frac12; satuan'], ans:[0,2,3],
+ exp:'<b>Benar:</b> (1) k&middot;f(x), k &gt; 1 = regang vertikal; (3) di sumbu X berlaku y = 0 dan k&middot;0 = 0, jadi titik potongnya kekal; (4) dilatasi horizontal faktor k memetakan (x, y) &rarr; (kx, y). <b>Salah:</b> (2) f(kx) justru <b>mampat</b> horizontal faktor k; (5) &frac12;&middot;f(x) memipihkan grafik secara vertikal, bukan menggeser &mdash; menggeser turun &frac12; adalah f(x) &minus; &frac12;.'},
+{id:'dl10', topic:'tf-dil', box:'q-dil', type:'pg', no:10,
+ text:'f(x) = 2x + 4 didilatasi vertikal dengan faktor skala &frac12;. Persamaan bayangannya adalah&hellip;',
+ opts:['y = x + 2','y = x + 4','y = 4x + 8','y = 2x + 2','y = x &minus; 2'], ans:[0],
+ exp:'y = &frac12;&middot;f(x) = &frac12;(2x + 4) = <b>x + 2</b> &mdash; seluruh keluaran (gradien dan konstanta) ikut dikali &frac12;. Bandingkan dengan dilatasi horizontal faktor 2: y = f(x/2) = 2(x/2) + 4 = x + 4 &mdash; hasilnya berbeda! Dua "pemipihan" yang berbeda arah memberi hasil berbeda.'},
+
+/* ---- SET 3: REFLEKSI ---- */
+{id:'rf1', topic:'tf-ref', box:'q-ref', type:'pg', no:1,
+ text:'Persamaan y = &minus;f(x) adalah hasil refleksi grafik y = f(x) terhadap&hellip;',
+ opts:['sumbu X','sumbu Y','garis y = x','titik asal O','garis y = &minus;x'], ans:[0],
+ exp:'Tanda minus berada <b>di depan f</b> (luar), sehingga mengubah tanda y: (x, y) &rarr; (x, &minus;y) &mdash; itu refleksi terhadap <b>sumbu X</b>. Bagian atas sumbu pindah ke bawah dan sebaliknya. Ingat: minus di luar = cermin sumbu X; minus di dalam kurung = cermin sumbu Y.'},
+{id:'rf2', topic:'tf-ref', box:'q-ref', type:'pg', no:2,
+ text:'Persamaan y = f(&minus;x) adalah hasil refleksi grafik y = f(x) terhadap&hellip;',
+ opts:['sumbu X','sumbu Y','garis y = x','titik asal O','garis y = &minus;x'], ans:[1],
+ exp:'Minus ada <b>di dalam kurung</b> (pada masukan x), sehingga (x, y) &rarr; (&minus;x, y): kiri bertukar dengan kanan &mdash; refleksi terhadap <b>sumbu Y</b>. Contoh cepat: f(x) = 2x + 3 menjadi f(&minus;x) = &minus;2x + 3: gradien berubah tanda, konstanta tetap &mdash; cermin vertikal di sumbu Y.'},
+{id:'rf3', topic:'tf-ref', box:'q-ref', type:'bs', no:3,
+ text:'Refleksi kurva y = f(x) terhadap garis y = x menghasilkan kurva y = f&#8315;&#185;(x), dengan syarat f bijektif.',
+ opts:['Benar','Salah'], ans:[0],
+ exp:'<b>Benar.</b> Refleksi terhadap y = x menukar peran x dan y: (x, y) &rarr; (y, x). Persamaan x = f(y) ekuivalen dengan y = f&#8315;&#185;(x). Karena itulah grafik f dan f&#8315;&#185; selalu saling bercermin terhadap garis y = x &mdash; dan syarat bijektif diperlukan agar hasilnya benar-benar fungsi (satu x satu y). Ini jembatan materi refleksi ke fungsi invers.'},
+{id:'rf4', topic:'tf-ref', box:'q-ref', type:'pg', no:4,
+ text:'f(x) = 2x + 3 direfleksikan terhadap sumbu X. Persamaan bayangannya adalah&hellip;',
+ opts:['y = &minus;2x + 3','y = 2x &minus; 3','y = &minus;2x &minus; 3','y = 2x + 3','y = &minus;2x &minus; 6'], ans:[2],
+ exp:'Refleksi sumbu X: y = &minus;f(x) = &minus;(2x + 3) = <b>&minus;2x &minus; 3</b> &mdash; minus menjangkau <b>seluruh</b> isi kurung, termasuk konstanta 3. Jebakan: y = &minus;2x + 3 adalah f(&minus;x) (refleksi sumbu Y), dan 2x &minus; 3 hanyalah mengubah tanda konstanta.'},
+{id:'rf5', topic:'tf-ref', box:'q-ref', type:'pg', no:5,
+ text:'f(x) = x&sup2; &minus; 4x direfleksikan terhadap sumbu Y. Persamaan bayangannya adalah&hellip;',
+ opts:['y = &minus;x&sup2; + 4x','y = x&sup2; + 4x','y = x&sup2; &minus; 4x','y = &minus;x&sup2; &minus; 4x','y = x&sup2; + 4x + 4'], ans:[1],
+ exp:'Refleksi sumbu Y: y = f(&minus;x) = (&minus;x)&sup2; &minus; 4(&minus;x) = x&sup2; + 4x. Perhatikan (&minus;x)&sup2; = x&sup2; (kuadrat menghapus tanda), tetapi suku &minus;4x ikut berubah tanda karena mengandung x berpangkat satu. Puncak bergeser dari (2, &minus;4) ke (&minus;2, &minus;4) &mdash; cermin vertikal.'},
+{id:'rf6', topic:'tf-ref', box:'q-ref', type:'pgk', no:6,
+ text:'Titik (3, 7) pada grafik f. Pilihlah SEMUA transformasi yang memetakan titik ini ke (&minus;3, &minus;7).',
+ opts:['refleksi terhadap sumbu X, lalu refleksi terhadap sumbu Y','refleksi terhadap titik asal O','refleksi terhadap garis y = &minus;x','rotasi 180&deg; dengan pusat O','refleksi terhadap sumbu Y, lalu refleksi terhadap sumbu X'], ans:[0,1,3,4],
+ exp:'Target (&minus;x, &minus;y) dicapai oleh: dua refleksi sumbu berurutan (dalam urutan mana pun), refleksi titik asal, dan rotasi 180&deg; &mdash; semuanya identik secara efek. Yang TIDAK: refleksi garis y = &minus;x memetakan (x, y) &rarr; (&minus;y, &minus;x) = (&minus;7, &minus;3) &mdash; tertukar posisinya! Bedakan dengan teliti.'},
+{id:'rf7', topic:'tf-ref', box:'q-ref', type:'pg', no:7,
+ text:'f(x) = x&sup3; direfleksikan terhadap titik asal O. Persamaan bayangannya adalah&hellip;',
+ opts:['y = &minus;x&sup3;','y = x&sup3;','y = x&sup3; + 3','y = &minus;x&sup3; &minus; 3','grafik x&sup3; tidak dapat direfleksikan terhadap titik asal'], ans:[1],
+ exp:'Refleksi titik asal: y = &minus;f(&minus;x) = &minus;(&minus;x)&sup3; = &minus;(&minus;x&sup3;) = <b>x&sup3;</b> &mdash; bayangannya sama dengan kurva asal! Penjelasan: x&sup3; adalah fungsi <b>ganjil</b> (f(&minus;x) = &minus;f(x)), simetris terhadap titik asal, jadi dicerminkan terhadap O pun tetap di tempat. Uji titik: (2, 8) &rarr; (&minus;2, &minus;8) dan (&minus;2)&sup3; = &minus;8 &check;'},
+{id:'rf8', topic:'tf-ref', box:'q-ref', type:'pg', no:8,
+ text:'Kurva y = f(x) direfleksikan terhadap garis y = &minus;x. Persamaan bayangannya adalah&hellip;',
+ opts:['y = f&#8315;&#185;(&minus;x)','y = &minus;f&#8315;&#185;(x)','y = &minus;f&#8315;&#185;(&minus;x)','y = f&#8315;&#185;(x)','y = &minus;f(&minus;x)'], ans:[2],
+ exp:'Refleksi y = &minus;x: (x, y) &rarr; (&minus;y, &minus;x). Substitusi ke y = f(x): &minus;x = f(&minus;y). Misalkan u = &minus;y &rarr; &minus;x = f(u) &rarr; u = f&#8315;&#185;(&minus;x) &rarr; y = &minus;f&#8315;&#185;(&minus;x). Jadi bayangannya <b>y = &minus;f&#8315;&#185;(&minus;x)</b>. Pola pengingat: garis cermin y = x memakai f&#8315;&#185; "polos"; y = &minus;x menambahkan tanda minus di luar dan di dalam.'},
+{id:'rf9', topic:'tf-ref', box:'q-ref', type:'pg', no:9,
+ text:'f(x) = 3x &minus; 6 direfleksikan terhadap garis y = x. Persamaan bayangannya adalah&hellip;',
+ opts:['<span class="frac"><span>x</span><span>3</span></span> + 2','y = &minus;3x + 6','y = 3x + 6','<span class="frac"><span>x</span><span>3</span></span> &minus; 2','<span class="frac"><span>&minus;x</span><span>3</span></span> + 2'], ans:[0],
+ exp:'Refleksi garis y = x = mencari invers: tulis y = 3x &minus; 6, tukar peran: x = 3y &minus; 6 &rarr; 3y = x + 6 &rarr; y = <b>(x + 6)/3 = x/3 + 2</b>. Cek satu titik: f(4) = 6; inversnya f&#8315;&#185;(6) = 12/3 = 4 &check; Opsi &minus;3x + 6 adalah jebakan "membalik gradien saja" &mdash; bukan cara refleksi y = x bekerja.'},
+{id:'rf10', topic:'tf-ref', box:'q-ref', type:'pg', no:10,
+ text:'Parabola y = x&sup2; &minus; 2 (puncak (0, &minus;2)) direfleksikan terhadap sumbu X. Pernyataan yang TEPAT tentang bayangannya adalah&hellip;',
+ opts:['puncaknya (0, &minus;2) dan terbuka ke atas','puncaknya (0, 2) dan terbuka ke bawah','puncaknya (2, 0) dan terbuka ke bawah','puncaknya (0, 2) dan terbuka ke atas','titik potongnya dengan sumbu X berubah posisi'], ans:[1],
+ exp:'y = &minus;f(x) = &minus;(x&sup2; &minus; 2) = &minus;x&sup2; + 2: puncak (0, &minus;2) &rarr; (0, 2) (ordinat berubah tanda) dan parabola yang tadinya terbuka atas kini <b>terbuka bawah</b>. Titik potong sumbu X justru <b>kekal</b> &mdash; pada sumbu X berlaku y = 0 dan &minus;0 = 0 &mdash; yaitu tetap di x = &plusmn;&radic;2. Persis cermin di permukaan air!'},
+
+/* ---- SET 4: KOMBINASI TRANSFORMASI ---- */
+{id:'kb1', topic:'tf-kom', box:'q-kom', type:'pg', no:1,
+ text:'Untuk mengubah y = x&sup2; menjadi g(x) = &minus;2(x &minus; 1)&sup2; + 3, rangkaian transformasi yang tepat adalah&hellip;',
+ opts:['dilatasi vertikal faktor 2 &rarr; refleksi sumbu X &rarr; geser kanan 1 &rarr; geser atas 3','geser kanan 1 &rarr; geser atas 3 &rarr; dilatasi vertikal faktor 2 &rarr; refleksi sumbu X','refleksi sumbu Y &rarr; dilatasi vertikal faktor 2 &rarr; geser kiri 1 &rarr; geser bawah 3','dilatasi horizontal faktor 2 &rarr; refleksi sumbu X &rarr; geser kiri 1 &rarr; geser atas 3','dilatasi vertikal faktor 2 &rarr; refleksi sumbu Y &rarr; geser kanan 1 &rarr; geser atas 3'], ans:[0],
+ exp:'Uraikan bentuk umum: a = &minus;2 (dilatasi 2 lalu refleksi sumbu X), h = 1 (kanan), k = 3 (atas). Urutan aman: <b>skala &rarr; cermin &rarr; geser</b>. Opsi kedua salah karena dilatasi yang dijalankan setelah geser akan ikut merenggangkan geseran itu (menghasilkan puncak lain). Cek puncak: (0,0) &rarr; 2x&sup2; &rarr; &minus;2x&sup2; &rarr; &minus;2(x&minus;1)&sup2; puncak (1,0) &rarr; +3 puncak (1,3) &check;'},
+{id:'kb2', topic:'tf-kom', box:'q-kom', type:'pgk', no:2,
+ text:'Diketahui g(x) = &frac12;&middot;f(x + 2) &minus; 5. Pilihlah SEMUA pernyataan yang BENAR tentang transformasi dari f ke g.',
+ opts:['dilatasi vertikal dengan faktor &frac12; (grafik dipipihkan)','digeser 2 satuan ke kiri','digeser 5 satuan ke bawah','digeser 2 satuan ke kanan','dicerminkan terhadap sumbu X'], ans:[0,1,2],
+ exp:'Bentuk a&middot;f(x &minus; h) + k dengan a = &frac12;, h = &minus;2, k = &minus;5: (1) a = &frac12; &rarr; dilatasi vertikal faktor &frac12; (pipih); (2) x + 2 = x &minus; (&minus;2) &rarr; h negatif = geser <b>kiri</b> 2; (3) &minus;5 &rarr; turun 5. Tidak ada refleksi karena a positif; tidak ada geser kanan karena tanda dalam kurung terbalik.'},
+{id:'kb3', topic:'tf-kom', box:'q-kom', type:'pg', no:3,
+ text:'Titik (1, 2) terletak pada grafik f. Jika g(x) = 2&middot;f(x &minus; 3) + 4, bayangan titik tersebut adalah&hellip;',
+ opts:['(4, 8)','(&minus;2, 8)','(4, 6)','(&minus;2, 0)','(4, 12)'], ans:[0],
+ exp:'Pelacakan titik: geser kanan 3 dulu (x &minus; 3), lalu dilatasi vertikal 2, lalu naik 4. Absis: 1 + 3 = 4; ordinat: 2&middot;2 + 4 = 8 &rarr; <b>(4, 8)</b>. Verifikasi: g(4) = 2&middot;f(1) + 4 = 2&middot;2 + 4 = 8 &check; Perhatikan dilatasi vertikal bekerja pada y, bukan pada geserannya.'},
+{id:'kb4', topic:'tf-kom', box:'q-kom', type:'pg', no:4,
+ text:'Kurva y = x&sup2; diubah menjadi y = &minus;x&sup2; + 6x &minus; 5. Deskripsi transformasinya adalah&hellip;',
+ opts:['refleksi terhadap sumbu X, lalu translasi (3, 4)','refleksi terhadap sumbu Y, lalu translasi (3, 4)','dilatasi vertikal faktor 2, lalu translasi (&minus;3, &minus;4)','translasi (3, 4), lalu refleksi terhadap sumbu Y','refleksi terhadap sumbu X, lalu translasi (&minus;3, &minus;4)'], ans:[0],
+ exp:'Bentuk puncak: y = &minus;x&sup2; + 6x &minus; 5 = &minus;(x&sup2; &minus; 6x + 9) + 9 &minus; 5 = &minus;(x &minus; 3)&sup2; + 4. Jadi dari x&sup2;: refleksi sumbu X (menjadi &minus;x&sup2;) lalu translasi (3, 4) (puncak (0,0) &rarr; (3,4)). Cek: &minus;(3&minus;3)&sup2; + 4 = 4 = nilai puncak &check; Refleksi sumbu Y tidak mungkin karena hanya tanda suku ganjil yang berubah.'},
+{id:'kb5', topic:'tf-kom', box:'q-kom', type:'bs', no:5,
+ text:'Persamaan y = &minus;f(x) + 3 menghasilkan kurva yang sama dengan y = &minus;(f(x) + 3).',
+ opts:['Benar','Salah'], ans:[1],
+ exp:'<b>Salah.</b> &minus;(f(x) + 3) = &minus;f(x) &minus; 3, sedangkan &minus;f(x) + 3 beda 6 satuan darinya! Tanda minus di depan f hanya menerjang f(x), bukan konstanta yang ditambahkan <b>di luar</b>. Yang benar: &minus;f(x) + 3 = refleksi sumbu X lalu naik 3; &minus;(f(x)+3) = refleksi sumbu X lalu turun 3. Urutan "menempelnya" operasi dari luar ke dalam menentukan hasil.'},
+{id:'kb6', topic:'tf-kom', box:'q-kom', type:'pg', no:6,
+ text:'Garis y = 2x + 1 direfleksikan terhadap sumbu Y, lalu hasilnya digeser 3 satuan ke atas. Persamaan akhirnya adalah&hellip;',
+ opts:['y = &minus;2x + 4','y = &minus;2x &minus; 2','y = 2x + 4','y = &minus;2x + 1','y = 2x &minus; 2'], ans:[0],
+ exp:'Refleksi sumbu Y: ganti x dengan &minus;x &rarr; y = 2(&minus;x) + 1 = &minus;2x + 1. Geser atas 3: tambahkan 3 di luar &rarr; y = &minus;2x + 4. Jebakan: jika langkah dibalik (naik 3 dulu lalu cermin), hasilnya &minus;(2x + 3) + 1 = &minus;2x &minus; 2 &mdash; berbeda! Di sini untungnya refleksi sumbu Y dan geser vertikal saling lepas, tetapi kebiasaan mengerjakan satu per satu tetap wajib.'},
+{id:'kb7', topic:'tf-kom', box:'q-kom', type:'pg', no:7,
+ text:'y = x&sup2; mengalami dilatasi vertikal faktor 2, kemudian refleksi terhadap sumbu X, kemudian translasi oleh (&minus;5, 0). Persamaan bayangan akhirnya adalah&hellip;',
+ opts:['y = &minus;2(x + 5)&sup2;','y = 2(x &minus; 5)&sup2;','y = &minus;2(x &minus; 5)&sup2;','y = &minus;&frac12;(x + 5)&sup2;','y = &minus;2x&sup2; + 5'], ans:[0],
+ exp:'Satu per satu: 2&middot;x&sup2; = 2x&sup2; &rarr; refleksi sumbu X: &minus;2x&sup2; &rarr; translasi (&minus;5, 0) = geser kiri 5: ganti x dengan x + 5 &rarr; y = <b>&minus;2(x + 5)&sup2;</b>. Puncak berpindah (0,0) &rarr; (&minus;5, 0) sesuai translasinya. Opsi x &minus; 5 adalah geser kanan 5 (tanda terbalik!); &minus;2x&sup2; + 5 salah karena geser horizontal harus masuk ke dalam kurung.'},
+{id:'kb8', topic:'tf-kom', box:'q-kom', type:'pg', no:8,
+ text:'g(x) = f(2x &minus; 6) dapat ditulis g(x) = f(2(x &minus; 3)). Artinya, transformasi dari f ke g adalah&hellip;',
+ opts:['dimampatkan horizontal faktor 2, lalu digeser 3 satuan ke kanan','digeser 3 satuan ke kanan, lalu dimampatkan horizontal faktor 2','dimampatkan horizontal faktor 2, lalu digeser 6 satuan ke kanan','digeser 6 satuan ke kanan, lalu dimampatkan horizontal faktor 2','digeser 3 satuan ke kiri, lalu direnggangkan horizontal faktor 2'], ans:[0],
+ exp:'Faktorkan dulu: 2x &minus; 6 = 2(x &minus; 3). Pembacaan yang benar: faktor 2 pada masukan = <b>mampat horizontal faktor 2</b>; (x &minus; 3) = geser kanan 3 setelahnya. Kalau dibaca "geser kanan 6" (tanpa memfaktorkan) hasil akhirnya malah f(2x &minus; 6) yang berbeda dari urutan benar: f(2(x) &minus; 6) pada x &minus; 6... uji titik: f(0) dicapai g di x = 3 &mdash; bukan 6. Memfaktorkan adalah kunci membaca transformasi bertingkat!'},
+{id:'kb9', topic:'tf-kom', box:'q-kom', type:'pg', no:9,
+ text:'y = 3x &minus; 2 didilatasi vertikal faktor 2, direfleksikan terhadap sumbu X, kemudian digeser 1 satuan ke kanan. Persamaan bayangan akhirnya adalah&hellip;',
+ opts:['y = &minus;6x + 10','y = &minus;6x &minus; 2','y = 6x &minus; 8','y = &minus;6x + 4','y = &minus;6x + 16'], ans:[0],
+ exp:'Dilatasi vertikal 2: y = 6x &minus; 4. Refleksi sumbu X: y = &minus;6x + 4. Geser kanan 1: ganti x dengan x &minus; 1 &rarr; y = &minus;6(x &minus; 1) + 4 = &minus;6x + 6 + 4 = <b>&minus;6x + 10</b>. Cek satu titik: asal (0, &minus;2) &rarr; dilatasi (0, &minus;4) &rarr; refleksi (0, 4) &rarr; kanan (1, 4); persamaan di x = 1: &minus;6 + 10 = 4 &check;'},
+{id:'kb10', topic:'tf-kom', box:'q-kom', type:'pg', no:10,
+ text:'Kurva y = x&sup2; &minus; 2x ditranslasikan oleh T = (2, 3), lalu hasilnya direfleksikan terhadap sumbu X. Persamaan bayangan akhirnya adalah&hellip;',
+ opts:['y = &minus;x&sup2; + 6x &minus; 11','y = x&sup2; &minus; 6x + 11','y = &minus;x&sup2; + 6x &minus; 5','y = &minus;x&sup2; &minus; 6x + 11','y = &minus;x&sup2; + 2x + 3'], ans:[0],
+ exp:'Translasi T = (2, 3): x &rarr; x &minus; 2, y &rarr; y &minus; 3 &rarr; y &minus; 3 = (x &minus; 2)&sup2; &minus; 2(x &minus; 2) = x&sup2; &minus; 4x + 4 &minus; 2x + 4 &rarr; y = x&sup2; &minus; 6x + 11. Refleksi sumbu X: kalikan &minus;1 seluruh ruas &rarr; y = <b>&minus;x&sup2; + 6x &minus; 11</b>. Cek puncak: (1, &minus;1) &rarr; translasi (3, 2) &rarr; refleksi (3, &minus;2); persamaan di x = 3: &minus;9 + 18 &minus; 11 = &minus;2 &check;'},
+
+/* ---- SET 5: HOTS SEHARI-HARI ---- */
+{id:'ht1', topic:'tf-hots', box:'q-hots', type:'pg', no:1,
+ text:'Tarif ojek online dimodelkan f(x) = 8.000 + 2.500x (x = jarak dalam km). Saat hujan, aplikasi mengalikan <b>seluruh tarif</b> dengan 1,5. Fungsi tarif saat hujan adalah&hellip;',
+ opts:['g(x) = 1,5&middot;f(x) = 12.000 + 3.750x (dilatasi vertikal faktor 1,5)','g(x) = f(1,5x) = 8.000 + 3.750x (dilatasi horizontal)','g(x) = f(x) + 1,5x','g(x) = 8.000 + 1,5 &middot; 2.500 + x','g(x) = 1,5 &middot; (8.000x + 2.500)'], ans:[0],
+ exp:'"Seluruh tarif dikali 1,5" = keluaran dikali = <b>dilatasi vertikal</b>: g(x) = 1,5(8.000 + 2.500x) = 12.000 + 3.750x. Jebakan f(1,5x) hanya mengalikan komponen jarak (biaya dasar tidak ikut): untuk x = 10 km, tarif hujan sebenarnya 49.500, tetapi f(15) = 8.000 + 37.500 = 45.500 &mdash; selisih 4.000 persis 1,5&times; biaya dasar yang "terlewat".'},
+{id:'ht2', topic:'tf-hots', box:'q-hots', type:'pg', no:2,
+ text:'Konversi suhu F(C) = 1,8C + 32 "dibangun" dari fungsi identitas y = C. Transformasi yang membentuknya, beserta alasan urutannya penting, adalah&hellip;',
+ opts:['dilatasi vertikal faktor 1,8, lalu translasi naik 32 &mdash; karena 1,8(C + 32) &ne; F','translasi naik 32, lalu dilatasi vertikal faktor 1,8 &mdash; urutan bebas saja','dilatasi horizontal faktor 1,8, lalu translasi kanan 32','refleksi sumbu X, lalu translasi naik 32','dilatasi vertikal faktor 32, lalu translasi naik 1,8'], ans:[0],
+ exp:'Fahrenheit = 1,8 &times; Celsius <b>lalu</b> + 32: pertama keluaran dikali 1,8 (dilatasi vertikal), baru dinaikkan 32 (translasi vertikal). Jika urutan dibalik: 1,8(C + 32) = 1,8C + 57,6 &ne; F &mdash; selisih 25,6&deg;! Urutan penting karena translasi yang sudah menempel ikut direnggangkan oleh dilatasi. Prosedur baliknya pun terbalik: kurangi 32 dulu, baru bagi 1,8.'},
+{id:'ht3', topic:'tf-hots', box:'q-hots', type:'pg', no:3,
+ text:'Pada mobil ambulans, tulisan "AMBULANCE" dicetak <b>terbalik kiri-kanan</b> agar terbaca benar oleh pengemudi di depan melalui spion. Efek visual ini secara matematis adalah&hellip;',
+ opts:['refleksi terhadap sumbu Y','refleksi terhadap sumbu X','dilatasi vertikal faktor 2','translasi horizontal','rotasi 90&deg; pusat O'], ans:[0],
+ exp:'Spion memantulkan dunia seperti cermin vertikal: sisi kiri bertukar dengan sisi kanan, atas-tetap-atas. Itu pemetaan (x, y) &rarr; (&minus;x, y) = <b>refleksi terhadap sumbu Y</b>. Kalau pantulannya di air (atas-bawah bertukar), barulah itu refleksi sumbu X. Mengetahui "cermin mana" menentukan rumus refleksinya.'},
+{id:'ht4', topic:'tf-hots', box:'q-hots', type:'pg', no:4,
+ text:'Nilai jual rupiah dari dolar dimodelkan f(x) = 16.000x (x = jumlah dolar). Bank menambahkan <b>biaya administrasi tetap</b> Rp25.000 untuk setiap transaksi. Fungsi total biaya transaksinya adalah&hellip;',
+ opts:['g(x) = 16.000x + 25.000 &mdash; translasi vertikal naik 25.000','g(x) = 16.025x &mdash; menempelkan biaya pada faktor kurs','g(x) = f(x + 25.000) &mdash; translasi horizontal','g(x) = 25.000x + 16.000 &mdash; menukar peran biaya dan kurs','g(x) = 16.000(x + 25.000) &mdash; translasi di dalam kurung'], ans:[0],
+ exp:'Biaya <b>tetap</b> tidak memperhatikan jumlah dolar &mdash; ia menempel pada total: g(x) = 16.000x + 25.000. Grafiknya garis yang sama dengan f tetapi dinaikkan 25.000 = <b>translasi vertikal</b>. Jebakan 16.025x: membuat biaya ikut membesar seiring jumlah dolar &mdash; untuk 100 dolar selisihnya 1.500.000! Bedakan "tetap" (translasi) dan "proporsional" (dilatasi).'},
+{id:'ht5', topic:'tf-hots', box:'q-hots', type:'pg', no:5,
+ text:'Lintasan air mancur taman dimodelkan y = &minus;x&sup2; + 4x (meter). Setelah direnovasi, lintasannya menjadi y = &minus;&frac12;x&sup2; + 2x + 1. Transformasi dari model lama ke baru adalah&hellip;',
+ opts:['dilatasi vertikal faktor &frac12;, lalu translasi naik 1','dilatasi vertikal faktor 2, lalu translasi turun 1','refleksi terhadap sumbu X, lalu translasi naik 1','dilatasi horizontal faktor &frac12;, lalu translasi naik 1','refleksi terhadap sumbu Y, lalu translasi naik 1'], ans:[0],
+ exp:'Bandingkan suku demi suku: &minus;&frac12;x&sup2; + 2x = &frac12;(&minus;x&sup2; + 4x) &mdash; seluruh keluaran dikali &frac12; = <b>dilatasi vertikal faktor &frac12;</b> (semburan lebih landai/lebar), lalu + 1 = <b>translasi naik 1</b> (keran dinaikkan 1 m). Interpretasi praktisnya cocok: jet lebih landai dan titik asalnya lebih tinggi. Ini contoh dua transformasi yang bekerja beruntun pada satu model fisik.'},
+{id:'ht6', topic:'tf-hots', box:'q-hots', type:'pg', no:6,
+ text:'Biaya produksi harian pabrik f(x) = 15.000x + 2.000.000 (x = unit). Mesin baru membuat output harian menjadi <b>dua kali lipat</b> dengan struktur biaya yang sama, sehingga biaya untuk memproduksi x unit kini setara dengan "setengah hari produksi". Fungsi biaya barunya adalah&hellip;',
+ opts:['g(x) = f(x/2) = 7.500x + 2.000.000 &mdash; dilatasi horizontal faktor 2','g(x) = 2&middot;f(x) = 30.000x + 4.000.000 &mdash; dilatasi vertikal faktor 2','g(x) = f(2x) = 30.000x + 2.000.000 &mdash; dilatasi horizontal faktor &frac12;','g(x) = f(x) + 2.000.000 &mdash; translasi vertikal','g(x) = f(x/2) = 30.000x + 1.000.000'], ans:[0],
+ exp:'Memproduksi x unit kini hanya butuh x/2 "hari-ekuivalen" &rarr; masukan dibagi 2: g(x) = f(x/2) = 15.000(x/2) + 2.000.000 = <b>7.500x + 2.000.000</b>. Grafik melebar horizontal faktor 2: pada setiap tingkat output, biayanya lebih murah (variabel turun setengah, tetap tetap) &mdash; itulah matematisasi efisiensi mesin. Opsi 2&middot;f(x) justru menggandakan biaya!'},
+{id:'ht7', topic:'tf-hots', box:'q-hots', type:'pg', no:7,
+ text:'Volume air kolam V(t) = 2t m&sup3; (t menit sejak keran dibuka). Keran diganti sehingga debitnya 1,5 kali, dan pencatatan dimulai 10 menit <b>setelah</b> keran dibuka. Volume pada t = 40 menit pencatatan adalah&hellip;',
+ opts:['90 m&sup3;','80 m&sup3;','120 m&sup3;','60 m&sup3;','110 m&sup3;'], ans:[0],
+ exp:'Dua transformasi: debit 1,5&times; = <b>dilatasi vertikal</b> (keluaran dikali 1,5); mulai dicatat 10 menit terlambat = <b>translasi horizontal kanan 10</b> (t &minus; 10). Gabungannya: V&#8322;(t) = 2 &middot; 1,5 &middot; (t &minus; 10) = 3(t &minus; 10). Maka V&#8322;(40) = 3(30) = <b>90 m&sup3;</b>. Bandingkan skenario lama: V(40) = 80 m&sup3; &mdash; keran baru dengan keterlambatan tetap lebih banyak 10 m&sup3;.'},
+{id:'ht8', topic:'tf-hots', box:'q-hots', type:'pg', no:8,
+ text:'Gaji karyawan f(j) = 100.000j + 3.000.000 (j = jam lembur). Pada hari libur, <b>tarif lembur digandakan</b> tetapi gaji pokok tetap. Fungsi gaji hari libur yang benar adalah&hellip;',
+ opts:['g(j) = 2&middot;f(j) &minus; 3.000.000 = 200.000j + 3.000.000','g(j) = 2&middot;f(j) = 200.000j + 6.000.000','g(j) = f(j) + 3.000.000 = 100.000j + 6.000.000','g(j) = f(j) + 2.000.000','g(j) = f(2j) + 3.000.000'], ans:[0],
+ exp:'Dobel seluruh gaji (dilatasi vertikal 2) membuat gaji pokok ikut dobel menjadi 6.000.000 &mdash; padahal yang digandakan hanya tarif lembur. Koreksinya: kurangi kembali 3.000.000 (translasi vertikal bawah): g(j) = 2(100.000j + 3.000.000) &minus; 3.000.000 = <b>200.000j + 3.000.000</b>. Untuk j = 4: gaji libur 3.800.000, bukan 11.000.000 hasil 2&middot;f(4). Dilatasi "kebablasan" harus ditambal translasi.'},
+{id:'ht9', topic:'tf-hots', box:'q-hots', type:'pg', no:9,
+ text:'Penukaran berantai: rupiah &rarr; dolar memakai y = x/16.000, lalu dolar &rarr; yen memakai y = 150x. Fungsi konversi langsung rupiah &rarr; yen dan jenis transformasinya adalah&hellip;',
+ opts:['y = (150/16.000)x &mdash; gabungan dua dilatasi vertikal berurutan (faktornya dikalikan)','y = x/16.000 + 150 &mdash; gabungan dilatasi dan translasi vertikal','y = 150x &minus; 16.000 &mdash; gabungan translasi vertikal','y = (16.000/150)x &mdash; sama saja, urutan pembagian bebas','y = 150(x + 16.000) &mdash; translasi lalu dilatasi'], ans:[0],
+ exp:'Susun komposisi: konversi kedua bekerja pada hasil yang pertama &rarr; y = 150 &middot; (x/16.000) = <b>(150/16.000)x</b>. Dua keluaran yang dikalikan berturut-turut adalah dua <b>dilatasi vertikal</b> dengan faktor hasil kalinya (150 &times; 1/16.000). Makna praktis: dua kurs berlapis melebur menjadi satu kurs efektif &mdash; sama seperti diskon berlapis pada materi komposisi.'},
+{id:'ht10', topic:'tf-hots', box:'q-hots', type:'pgk', no:10,
+ text:'Tinggi roket air h(t) = &minus;5t&sup2; + 20t (meter). Sensor baru menampilkan model h&#8322;(t) = &minus;2,5t&sup2; + 10t + 2. Pilihlah SEMUA pernyataan yang BENAR tentang transformasi dari h ke h&#8322;.',
+ opts:['dilatasi vertikal faktor &frac12;, lalu translasi naik 2','translasi naik 2, lalu dilatasi vertikal faktor &frac12; &mdash; hasilnya sama saja','dilatasi vertikal faktor &frac12;, lalu refleksi terhadap sumbu X','mengalikan seluruh koefisien t&sup2; dan t dengan &frac12;, kemudian menambah konstanta 2','refleksi terhadap sumbu Y, lalu translasi naik 2'], ans:[0,3],
+ exp:'h&#8322;(t) = &frac12;(&minus;5t&sup2; + 20t) + 2 = dilatasi vertikal faktor &frac12; lalu naik 2 &mdash; pernyataan pertama dan keempat benar (keduanya kalimat yang sama). <b>Salah:</b> urutan dibalik memberi &frac12;(&minus;5t&sup2; + 20t + 2) = &minus;2,5t&sup2; + 10t + 1 (konstantanya 1, bukan 2) &mdash; bukti urutan penting; refleksi sumbu X mengubah tanda parabola; refleksi sumbu Y tidak mengubah suku kuadrat seperti ini.'}
+];
+
+/* ================= TOPIK & STATE ================= */
+var TOPICS = [
+  {id:'tf-def',  label:'Definisi &amp; Jenis Transformasi', tag:'Latihan Materi 1'},
+  {id:'tf-dil',  label:'Fungsi Dilatasi',                    tag:'Latihan Materi 2'},
+  {id:'tf-ref',  label:'Fungsi Refleksi',                    tag:'Latihan Materi 3'},
+  {id:'tf-kom',  label:'Kombinasi Transformasi',             tag:'Latihan Materi 4'},
+  {id:'tf-hots', label:'HOTS Sehari-hari',                   tag:'Latihan Materi 5'}
+];
+
+var QMAP = {};
+QUESTIONS.forEach(function(q){ QMAP[q.id] = q; });
+
+var KEY = 'tkaTransformasiFungsi_v1';
+var state = { name:'', answers:{} };
+
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
+function load(){
+  try{
+    var raw = localStorage.getItem(KEY);
+    if(raw){
+      var d = JSON.parse(raw);
+      if(d && typeof d === 'object'){
+        state.name = (typeof d.name === 'string') ? d.name : '';
+        state.answers = (d.answers && typeof d.answers === 'object') ? d.answers : {};
+      }
+    }
+  }catch(e){}
+}
+function sameSet(sel, ans){
+  if(sel.length !== ans.length) return false;
+  return ans.every(function(a){ return sel.indexOf(a) !== -1; });
+}
+function $(s){ return document.querySelector(s); }
+function $all(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); }
+
+/* ================= DATA LANGKAH (HOTS) ================= */
+var STEP_SETS = {
+hot1: {
+  steps:[
+    {t:'Langkah 1 &mdash; Identifikasi fungsi dasar dan perubahannya', m:'f(x) = 8.000 + 2.500x, lalu "seluruh tarif dikali 1,5"', d:'Kata kuncinya "seluruh": perubahan mengenai keluaran (rupiah), bukan masukan (km). Itu tanda dilatasi vertikal.'},
+    {t:'Langkah 2 &mdash; Terjemahkan menjadi transformasi', m:'g(x) = 1,5&middot;f(x) &nbsp;(dilatasi vertikal faktor 1,5)', d:'Mengalikan keluaran = kalikan seluruh ekspresi f, bukan hanya suku yang mengandung x.'},
+    {t:'Langkah 3 &mdash; Susun fungsi tarif hujan', m:'g(x) = 1,5(8.000 + 2.500x) = 12.000 + 3.750x', d:'Biaya dasar ikut naik menjadi 12.000 dan tarif per km menjadi 3.750. Grafiknya garis sama yang lebih curam dan lebih tinggi.'},
+    {t:'Langkah 4 &mdash; Bandingkan dengan cara salah f(1,5x)', m:'f(1,5x) = 8.000 + 3.750x &nbsp;(biaya dasar tidak ikut!)', d:'f(1,5x) hanya mengalikan komponen jarak = dilatasi horizontal. Untuk x = 10: tarif hujan benar g(10) = 49.500, tetapi f(15) = 45.500 &mdash; selisih 4.000 persis 1,5&times; biaya dasar yang "terlewat".'},
+    {t:'Langkah 5 &mdash; Simpulkan &amp; maknai', m:'Untuk 10 km saat hujan: bayar Rp49.500', d:'Pelajaran besar: "dikali" pada harga seluruhnya = dilatasi vertikal; kalau hanya satu komponen yang berubah, jangan buru-buru memakai k&middot;f(x) &mdash; periksa dulu apa yang benar-benar dikali.'}
+  ]
+},
+hot2: {
+  steps:[
+    {t:'Langkah 1 &mdash; Tetapkan fungsi awalnya', m:'y = C &nbsp;(fungsi identitas: garis miring 45&deg;)', d:'Menganggap Celsius sebagai "fungsi identitas" membuat kita bisa melihat Fahrenheit sebagai hasil transformasinya.'},
+    {t:'Langkah 2 &mdash; Uraikan F(C) = 1,8C + 32', m:'keluaran dikali 1,8, lalu dinaikkan 32', d:'Pertama: dilatasi vertikal faktor 1,8 (skala Fahrenheit lebih "panjang"). Kedua: translasi vertikal naik 32 (nol Fahrenheit berbeda dari nol Celsius).'},
+    {t:'Langkah 3 &mdash; Buktikan urutan penting', m:'1,8(C + 32) = 1,8C + 57,6 &ne; F(C)', d:'Jika translasi dikerjakan dulu, angka 32 ikut direnggangkan oleh faktor 1,8 &mdash; selisihnya 25,6&deg;! Urutan skala &rarr; geser bukan formalitas.'},
+    {t:'Langkah 4 &mdash; Verifikasi maju', m:'C = 100 &rarr; F = 1,8(100) + 32 = 212', d:'Titik lebur air 100&deg;C = 212&deg;F &check; Dan 0&deg;C = 32&deg;F menunjukkan translasi +32 bekerja pada potong sumbu Y.'},
+    {t:'Langkah 5 &mdash; Baca balik (prosedur invers)', m:'C = (F &minus; 32)/1,8 &mdash; lepas translasi dulu, baru lepas dilatasi', d:'Membaca balik selalu urutannya terbalik: yang terakhir menempel harus dilepas pertama. Contoh: F = 68 &rarr; (68 &minus; 32)/1,8 = 20&deg;C. Konversi suhu adalah dilatasi + translasi yang dirajut dengan urutan yang benar.'}
+  ]
+},
+hot3: {
+  steps:[
+    {t:'Langkah 1 &mdash; Model dasar', m:'V(t) = 2t &nbsp;(m&sup3;, t menit sejak keran dibuka)', d:'Garis lurus: setiap menit menambah 2 m&sup3;. Grafiknya melewati titik asal.'},
+    {t:'Langkah 2 &mdash; Terjemahkan perubahan pertama', m:'debit 1,5&times; &rarr; keluaran dikali 1,5 (dilatasi vertikal)', d:'"Keran lebih deras" mempercepat kenaikan volume: grafik menjadi lebih curam. Fungsi sementara: V&#8321;(t) = 3t.'},
+    {t:'Langkah 3 &mdash; Terjemahkan perubahan kedua', m:'pencatatan mulai 10 menit terlambat &rarr; ganti t dengan (t &minus; 10)', d:'Waktu pencatatan t = 0 sebenarnya adalah menit ke-10 sejak keran dibuka. Geseran waktu = translasi horizontal: grafik bergeser kanan 10 (mantra: MINUS kanan).'},
+    {t:'Langkah 4 &mdash; Gabungkan keduanya', m:'V&#8322;(t) = 3(t &minus; 10) &nbsp;=&nbsp; 3t &minus; 30', d:'Dilatasi vertikal 1,5 dan translasi horizontal 10 bekerja pada "sumbu berbeda", jadi keduanya tampak jelas: lebih curam dan bergeser kanan.'},
+    {t:'Langkah 5 &mdash; Hitung &amp; interpretasi', m:'V&#8322;(40) = 3(40 &minus; 10) = 90 m&sup3;', d:'Bandingkan skenario lama: V(40) = 80 m&sup3;. Keran baru yang tercatat terlambat tetap mengumpulkan 10 m&sup3; lebih banyak. Perhatikan V&#8322;(t) = 0 pada t = 10 &mdash; itu momen pencatatan dimulai, bukan kolom kosong!'}
+  ]
+},
+hot4: {
+  steps:[
+    {t:'Langkah 1 &mdash; Model dasar', m:'f(j) = 100.000j + 3.000.000', d:'Struktur gaji: tarif lembur per jam (100.000 &times; j) ditambah gaji pokok tetap 3.000.000. Grafiknya garis dengan potong sumbu Y = 3.000.000.'},
+    {t:'Langkah 2 &mdash; Kenali apa yang berubah', m:'"tarif lembur digandakan, gaji pokok tetap"', d:'Hanya koefisien j yang berubah: 100.000 &rarr; 200.000. Konstanta 3.000.000 tidak boleh tersentuh.'},
+    {t:'Langkah 3 &mdash; Tunjukkan mengapa 2&middot;f(j) salah', m:'2&middot;f(j) = 200.000j + 6.000.000 &nbsp;(pokok ikut dobel!)', d:'Dilatasi vertikal murni mengalikan SEMUA keluaran &mdash; termasuk komponen tetap. Untuk j = 0 (tidak lembur), 2&middot;f(0) = 6.000.000: absurd, gaji pokok mendadak dua kali.'},
+    {t:'Langkah 4 &mdash; Susun fungsi yang benar', m:'g(j) = 2&middot;f(j) &minus; 3.000.000 = 200.000j + 3.000.000', d:'Trik "dilatasi + koreksi": gandakan semuanya, lalu kembalikan bagian tetap dengan translasi vertikal bawah 3.000.000. Hasilnya hanya koefisien j yang berubah.'},
+    {t:'Langkah 5 &mdash; Hitung &amp; simpulkan', m:'g(4) = 200.000(4) + 3.000.000 = 3.800.000', d:'Bandingkan hari biasa f(4) = 3.400.000: tambahan 400.000 persis satu tarif ekstra. Pelajaran HOTS: sebelum memakai k&middot;f(x), tanyakan "apakah SEMUA komponen berubah?" &mdash; jika tidak, tambahkan koreksi translasi.'}
+  ]
+}
+};
+
+var stState = {};
+function stInit(cont, key){ stState[cont] = {key:key, shown:0}; stRender(cont); }
+function stRender(cont){
+  var ui = stState[cont], data = STEP_SETS[ui.key];
+  var box = document.getElementById(cont);
+  if(!box) return;
+  var html = '';
+  data.steps.forEach(function(s, i){
+    if(i >= ui.shown) return;
+    html += '<div class="step show"><span class="step-n">' + (i + 1) + '</span><div class="step-b">' +
+      '<div class="st">' + s.t + '</div>' +
+      (s.m ? '<div class="sm">' + s.m + '</div>' : '') +
+      (s.d ? '<div class="sd">' + s.d + '</div>' : '') +
+      '</div></div>';
+  });
+  if(ui.shown >= data.steps.length && data.v){
+    html += '<div class="verify show"><div class="exp-title">Verifikasi / Catatan</div>' + data.v + '</div>';
+  }
+  box.innerHTML = html;
+  var cnt = document.getElementById('cnt-' + cont);
+  if(cnt) cnt.textContent = ui.shown + ' / ' + data.steps.length + ' langkah';
+  var nb = document.getElementById('next-' + cont);
+  if(nb) nb.disabled = (ui.shown >= data.steps.length);
+}
+function nextStep(cont){
+  var ui = stState[cont], data = STEP_SETS[ui.key];
+  if(ui.shown < data.steps.length){ ui.shown++; stRender(cont); }
+}
+function resetStep(cont){ stState[cont].shown = 0; stRender(cont); }
+function pickStep(cont, key){ stInit(cont, key); }
+
+/* ================= SVG LAB HELPERS ================= */
+function GX(v){ return 100 + (v + 8) * 33; }
+function GY(v){ return 22 + (10 - v) * 19.8; }
+function buildAxes(svgId, dynId, showYX){
+  var svg = document.getElementById(svgId);
+  if(!svg) return false;
+  var s = '', x, y;
+  for(x = -8; x <= 8; x += 2){
+    s += '<line x1="' + GX(x) + '" y1="' + GY(-10) + '" x2="' + GX(x) + '" y2="' + GY(10) + '" stroke="#f6e6f2" stroke-width="1"/>';
+  }
+  for(y = -10; y <= 10; y += 2){
+    s += '<line x1="' + GX(-8) + '" y1="' + GY(y) + '" x2="' + GX(8) + '" y2="' + GY(y) + '" stroke="#f6e6f2" stroke-width="1"/>';
+  }
+  s += '<line x1="' + GX(-8) + '" y1="' + GY(0) + '" x2="' + GX(8) + '" y2="' + GY(0) + '" stroke="#b091a6" stroke-width="1.7"/>';
+  s += '<line x1="' + GX(0) + '" y1="' + GY(-10) + '" x2="' + GX(0) + '" y2="' + GY(10) + '" stroke="#b091a6" stroke-width="1.7"/>';
+  for(x = -8; x <= 8; x += 2){
+    if(x !== 0) s += '<text x="' + GX(x) + '" y="' + (GY(0) + 16) + '" font-size="11" fill="#a6869c" text-anchor="middle">' + x + '</text>';
+  }
+  for(y = -8; y <= 8; y += 4){
+    if(y !== 0) s += '<text x="' + (GX(0) - 8) + '" y="' + (GY(y) + 4) + '" font-size="11" fill="#a6869c" text-anchor="end">' + y + '</text>';
+  }
+  s += '<text x="' + (GX(8) - 2) + '" y="' + (GY(0) + 16) + '" font-size="12" font-weight="700" fill="#a6869c">x</text>';
+  s += '<text x="' + (GX(0) + 8) + '" y="' + (GY(10) + 10) + '" font-size="12" font-weight="700" fill="#a6869c">y</text>';
+  if(showYX){
+    s += '<line x1="' + GX(-8) + '" y1="' + GY(-8) + '" x2="' + GX(8) + '" y2="' + GY(8) + '" stroke="#cbd5e1" stroke-width="1.8" stroke-dasharray="2 4"/>';
+    s += '<text x="' + GX(6.2) + '" y="' + (GY(6.2) - 8) + '" font-size="11.5" font-weight="700" fill="#94a3b8" font-style="italic">y = x</text>';
+  }
+  s += '<g id="' + dynId + '"></g>';
+  svg.innerHTML = s;
+  return true;
+}
+function curveSVG(fn, color, dash, width){
+  var pts = '', x, y;
+  for(x = -8; x <= 8.001; x += 0.05){
+    y = fn(x);
+    if(!isFinite(y) || y < -10.6 || y > 10.6){ continue; }
+    pts += GX(x).toFixed(1) + ',' + GY(y).toFixed(1) + ' ';
+  }
+  if(!pts) return '';
+  return '<polyline points="' + pts.trim() + '" fill="none" stroke="' + color + '" stroke-width="' + (width || 2.8) + '"' + (dash ? ' stroke-dasharray="' + dash + '"' : '') + ' stroke-linecap="round"/>';
+}
+function fmtnum(v){
+  var s = (Math.round(v * 100) / 100).toString();
+  return s.replace('.', ',');
+}
+function sgn(v){
+  if(v === 0) return '';
+  return v > 0 ? ' + ' + fmtnum(v) : ' \u2212 ' + fmtnum(-v);
+}
+function coefC(c){
+  if(c === 1) return '';
+  if(c === -1) return '\u2212';
+  return fmtnum(c);
+}
+function peakDot(px, py){
+  return '<circle cx="' + GX(px) + '" cy="' + GY(py) + '" r="5" fill="#d97706" stroke="#fff" stroke-width="2"/>' +
+    '<text x="' + (GX(px) + 9) + '" y="' + (GY(py) - 9) + '" font-size="11.5" font-weight="700" fill="#b45309">(' + px + ', ' + py + ')</text>';
+}
+
+/* ================= LAB 1: TRANSLASI ================= */
+function initTrans(){
+  if(!buildAxes('transGraph', 'transDyn', false)) return;
+  drawTrans();
+}
+function drawTrans(){
+  var h = parseFloat(document.getElementById('lh').value);
+  var k = parseFloat(document.getElementById('lk').value);
+  var g = document.getElementById('transDyn');
+  if(!g) return;
+  var s = curveSVG(function(x){ return x * x; }, '#a8a29e', '8 6', 2.4);
+  s += curveSVG(function(x){ return (x - h) * (x - h) + k; }, '#a21caf', '', 3.1);
+  s += peakDot(h, k);
+  g.innerHTML = s;
+  var ih = h === 0 ? 'x\u00B2' : '(x ' + (h > 0 ? '\u2212 ' : '+ ') + Math.abs(h) + ')\u00B2';
+  var eq = 'g(x) = ' + ih + sgn(k);
+  var desc = [];
+  if(h > 0) desc.push('geser <b>kanan</b> ' + h);
+  else if(h < 0) desc.push('geser <b>kiri</b> ' + (-h));
+  else desc.push('tanpa geser horizontal');
+  if(k > 0) desc.push('naik ' + k);
+  else if(k < 0) desc.push('turun ' + (-k));
+  else desc.push('tanpa geser vertikal');
+  var note = document.getElementById('transNote');
+  if(note) note.innerHTML = '<b>' + eq + '</b><br>Interpretasi: ' + desc.join('; ') + ' &mdash; bentuk parabola tidak berubah, hanya posisinya (translasi T = (' + h + ', ' + k + ')).';
+}
+
+/* ================= LAB 2: DILATASI ================= */
+var dilMode = 'vert';
+function initDil(){
+  if(!buildAxes('dilGraph', 'dilDyn', false)) return;
+  drawDil();
+}
+function drawDil(){
+  var k = parseFloat(document.getElementById('dv').value);
+  var g = document.getElementById('dilDyn');
+  if(!g) return;
+  var s = curveSVG(function(x){ return x * x; }, '#a8a29e', '8 6', 2.4);
+  var note = document.getElementById('dilNote');
+  var eq, html;
+  if(dilMode === 'vert'){
+    s += curveSVG(function(x){ return k * x * x; }, '#a21caf', '', 3.1);
+    if(k !== 1) s += peakDot(0, 0);
+    eq = 'g(x) = ' + (k === 0 ? '0' : coefC(k) + 'x\u00B2');
+    html = '<b>' + eq + '</b><br>Interpretasi: ';
+    if(k === 0) html += 'faktor 0 &rarr; grafik rata di y = 0 (semua titik dipipihkan total).';
+    else if(k === 1) html += 'k = 1 &rarr; grafik tidak berubah.';
+    else if(k > 1) html += 'direnggangkan <b>vertikal</b> faktor ' + fmtnum(k) + ' (lebih sempit).';
+    else if(k > 0) html += 'dipipihkan vertikal faktor ' + fmtnum(k) + ' (setara tertekan faktor ' + fmtnum(1 / k) + ').';
+    else html += 'dilatasi faktor ' + fmtnum(-k) + ' <b>+ refleksi sumbu X</b> (k negatif).';
+    html += ' Titik potong sumbu X tetap di x = 0.';
+  } else {
+    if(k === 0){
+      eq = 'g(x) = f(x/0) &mdash; tak terdefinisi';
+      html = '<b>' + eq + '</b><br>Faktor skala 0 tidak boleh untuk dilatasi horizontal. Pilih k lain.';
+    } else {
+      s += curveSVG(function(x){ return (x / k) * (x / k); }, '#a21caf', '', 3.1);
+      s += peakDot(k, 1);
+      var k2 = k * k;
+      eq = 'g(x) = ' + (k2 === 1 ? '' : fmtnum(1 / k2)) + 'x\u00B2' + (k === 1 ? ' &nbsp;&nbsp;(= f(x))' : ' &nbsp;&nbsp;(= f(x/' + fmtnum(k) + '))');
+      html = '<b>' + eq + '</b><br>Interpretasi: ';
+      if(k === 1) html += 'k = 1 &rarr; grafik tidak berubah.';
+      else if(k > 1) html += 'melebar <b>horizontal</b> faktor ' + fmtnum(k) + ' (efek terbalik: k besar justru melebar).';
+      else if(k > 0 && k < 1) html += 'memampatkan horizontal faktor ' + fmtnum(1 / k) + '.';
+      else html += '|k| sama dengan ' + fmtnum(Math.abs(k)) + '; karena x&sup2; fungsi genap, tanda negatif k tidak tampak pada grafik.';
+      html += ' Titik penanda: (1, 1) pada kurva asal &rarr; (' + fmtnum(k) + ', 1). Titik potong sumbu Y tetap di (0, 0).';
+    }
+  }
+  g.innerHTML = s;
+  if(note) note.innerHTML = html;
+}
+
+/* ================= LAB 3: REFLEKSI ================= */
+var refMode = 'f';
+var REFSET = {
+  f:   {fn:function(x){ return (x - 1) * (x - 1); },
+        eq:'y = f(x) = (x \u2212 1)\u00B2',
+        d:'Kurva asal sebagai pembanding (puncak (1, 0), domain dibatasi x \u2265 1 agar bisa diinverskan).'},
+  mx:  {fn:function(x){ return -(x - 1) * (x - 1); },
+        eq:'y = \u2212f(x) = \u2212(x \u2212 1)\u00B2',
+        d:'Refleksi sumbu X: setiap y berubah tanda. Puncak (1, 0) kekal, parabola terbalik ke bawah.'},
+  my:  {fn:function(x){ return (-x - 1) * (-x - 1); },
+        eq:'y = f(\u2212x) = (x + 1)\u00B2',
+        d:'Refleksi sumbu Y: setiap x berubah tanda. Puncak pindah dari (1, 0) ke (\u22121, 0).'},
+  mo:  {fn:function(x){ return -(-x - 1) * (-x - 1); },
+        eq:'y = \u2212f(\u2212x) = \u2212(x + 1)\u00B2',
+        d:'Refleksi titik asal O (= rotasi 180&deg;): puncak (1, 0) &rarr; (\u22121, 0) dan parabola terbalik.'},
+  inv: {fn:function(x){ return x < 0 ? NaN : Math.sqrt(x) + 1; },
+        eq:'y = f\u207B\u00B9(x) = \u221Ax + 1 &nbsp;(x \u2265 0)',
+        d:'Refleksi garis y = x = fungsi INVERS: cabang kanan parabola menjadi kurva akar. Syarat bijektif: karena itu f dibatasi domain x \u2265 1.'}
+};
+function initRef(){
+  if(!buildAxes('refGraph', 'refDyn', true)) return;
+  drawRef();
+}
+function drawRef(){
+  var m = REFSET[refMode];
+  var g = document.getElementById('refDyn');
+  if(!g) return;
+  var s = curveSVG(function(x){ return (x - 1) * (x - 1); }, '#a8a29e', '8 6', 2.4);
+  s += curveSVG(m.fn, '#a21caf', refMode === 'f' ? '8 6' : '', 3.1);
+  if(refMode === 'mx') s += peakDot(1, 0);
+  if(refMode === 'my') s += peakDot(-1, 0);
+  if(refMode === 'mo') s += peakDot(-1, 0);
+  g.innerHTML = s;
+  var note = document.getElementById('refNote');
+  if(note) note.innerHTML = '<b>' + m.eq + '</b><br>' + m.d;
+}
+
+/* ================= DEMO 4: KOMBINASI BERTAHAP ================= */
+var KOMSTEPS = [
+  {fn:function(x){ return x * x; },
+   eq:'y = x\u00B2',
+   d:'Grafik awal: parabola dengan puncak (0, 0).'},
+  {fn:function(x){ return 2 * x * x; },
+   eq:'y = 2x\u00B2',
+   d:'Dilatasi vertikal faktor 2: setiap titik (x, y) \u2192 (x, 2y); parabola tampak lebih "sempit".'},
+  {fn:function(x){ return -2 * x * x; },
+   eq:'y = \u22122x\u00B2',
+   d:'Refleksi terhadap sumbu X: tanda semua y dibalik; parabola kini terbuka ke bawah.'},
+  {fn:function(x){ return -2 * (x + 1) * (x + 1); },
+   eq:'y = \u22122(x + 1)\u00B2',
+   d:'Translasi horizontal: geser <b>kiri</b> 1 (tanda PLUS di dalam kurung = kiri); puncak (0, 0) \u2192 (\u22121, 0).'},
+  {fn:function(x){ return -2 * (x + 1) * (x + 1) + 3; },
+   eq:'y = \u22122(x + 1)\u00B2 + 3',
+   d:'Translasi vertikal: naik 3; puncak (\u22121, 0) \u2192 (\u22121, 3). Selesai &mdash; sesuai bentuk umum a\u00B7f(x\u2212h)+k dengan a = \u22122, h = \u22121, k = 3.'}
+];
+var KOMPEAKS = [[0, 0], [0, 0], [0, 0], [-1, 0], [-1, 3]];
+var komIdx = 0;
+function initKom(){
+  if(!buildAxes('komGraph', 'komDyn', false)) return;
+  drawKom();
+}
+function drawKom(){
+  var g = document.getElementById('komDyn');
+  if(!g) return;
+  var s = curveSVG(function(x){ return x * x; }, '#a8a29e', '8 6', 2.2);
+  for(var i = 1; i < komIdx; i++){
+    s += curveSVG(KOMSTEPS[i].fn, '#e9d5ff', '', 1.7);
+  }
+  s += curveSVG(KOMSTEPS[komIdx].fn, '#a21caf', '', 3.1);
+  var pk = KOMPEAKS[komIdx];
+  s += peakDot(pk[0], pk[1]);
+  g.innerHTML = s;
+  var cnt = document.getElementById('cnt-kom');
+  if(cnt) cnt.textContent = 'Langkah ' + komIdx + ' / 4';
+  var note = document.getElementById('komNote');
+  if(note) note.innerHTML = '<b>' + KOMSTEPS[komIdx].eq + '</b><br>' + KOMSTEPS[komIdx].d;
+  var nb = document.querySelector('[data-komnext]');
+  if(nb) nb.disabled = (komIdx >= KOMSTEPS.length - 1);
+}
+function komNext(){ if(komIdx < KOMSTEPS.length - 1){ komIdx++; drawKom(); } }
+function komReset(){ komIdx = 0; drawKom(); }
+
+/* ================= RENDER SOAL ================= */
+function renderQ(q){
+  var art = document.createElement('article');
+  art.className = 'qcard';
+  art.id = 'qc-' + q.id;
+
+  var meta = '<div class="qmeta"><span class="qnum">Soal ' + q.no + '</span>' +
+    '<span class="qtype t-' + q.type + '">' + TYPE_LABEL[q.type] + '</span>' +
+    (q.type === 'pgk' ? '<span class="qhint">centang semua yang benar</span>' : '') +
+    '</div>';
+
+  var input = (q.type === 'pgk') ? 'checkbox' : 'radio';
+  var optsHtml = '<div class="opts' + (q.type === 'bs' ? ' bs' : '') + '" data-role="opts">';
+  q.opts.forEach(function(o, i){
+    var key = (q.type === 'bs') ? '' : '<span class="okey">' + LETTERS[i] + '</span>';
+    optsHtml += '<label class="opt"><input type="' + input + '" name="' + q.id + '" value="' + i + '">' + key + '<span>' + o + '</span></label>';
+  });
+  optsHtml += '</div>';
+
+  art.innerHTML = meta +
+    '<div class="qtext">' + q.text + '</div>' +
+    optsHtml +
+    '<div class="qactions"><button class="btn-check" data-check="' + q.id + '">Cek Jawaban</button></div>' +
+    '<div class="fb" data-role="fb"></div>' +
+    '<div class="pembahasan" data-role="exp"><div class="exp-title">Pembahasan</div>' + q.exp + '</div>';
+  return art;
+}
+
+function buildAll(){
+  QUESTIONS.forEach(function(q){
+    var box = document.getElementById(q.box);
+    if(box) box.appendChild(renderQ(q));
+  });
+}
+
+/* ================= CEK JAWABAN ================= */
+function paintResult(card, q, correct, sel){
+  card.classList.add(correct ? 'ok' : 'bad');
+  card.querySelectorAll('.opt').forEach(function(el, i){
+    var isC = q.ans.indexOf(i) !== -1;
+    var isSel = sel.indexOf(i) !== -1;
+    el.classList.remove('sel');
+    el.classList.toggle('correct', isC);
+    el.classList.toggle('wrong', isSel && !isC);
+    var inp = el.querySelector('input');
+    if(inp) inp.disabled = true;
+  });
+  var optsBox = card.querySelector('[data-role="opts"]');
+  if(optsBox) optsBox.classList.add('locked');
+  var fb = card.querySelector('[data-role="fb"]');
+  fb.className = 'fb show ' + (correct ? 'ok' : 'bad');
+  fb.textContent = correct ? 'Tepat sekali! Jawabanmu benar.' : 'Belum tepat. Jawaban yang benar ditandai warna hijau.';
+  card.querySelector('[data-role="exp"]').classList.add('show');
+  var b = card.querySelector('.btn-check');
+  if(b) b.disabled = true;
+}
+
+function check(qid){
+  var q = QMAP[qid];
+  var card = document.getElementById('qc-' + qid);
+  if(!q || !card || state.answers[qid] && state.answers[qid].done) return;
+  var fb = card.querySelector('[data-role="fb"]');
+  var sel = $all('#qc-' + qid + ' input:checked').map(function(i){ return +i.value; });
+  if(sel.length === 0){
+    fb.className = 'fb show warn';
+    fb.textContent = 'Pilih jawaban terlebih dahulu, lalu klik Cek Jawaban.';
+    return;
+  }
+  var correct = sameSet(sel, q.ans);
+  paintResult(card, q, correct, sel);
+  state.answers[qid] = { sel: sel, done: true, correct: correct };
+  save();
+  updateChips();
+  if(Object.keys(state.answers).length === QUESTIONS.length){
+    toast('Semua ' + QUESTIONS.length + ' soal selesai! Buka slide "Hasil Pengerjaan Siswa" untuk melihat skormu.');
+  }
+}
+
+function restore(){
+  Object.keys(state.answers).forEach(function(qid){
+    var a = state.answers[qid];
+    var q = QMAP[qid];
+    if(!q || !a || !a.done) return;
+    var card = document.getElementById('qc-' + qid);
+    if(!card) return;
+    a.sel.forEach(function(v){
+      var inp = card.querySelector('input[name="' + qid + '"][value="' + v + '"]');
+      if(inp) inp.checked = true;
+    });
+    paintResult(card, q, !!a.correct, a.sel);
+  });
+}
+
+function resetAll(){
+  if(!confirm('Hapus semua jawaban dan ulangi latihan dari awal?')) return;
+  state.answers = {};
+  save();
+  QUESTIONS.forEach(function(q){
+    var card = document.getElementById('qc-' + q.id);
+    if(!card) return;
+    card.classList.remove('ok','bad');
+    card.querySelectorAll('input').forEach(function(i){ i.checked = false; i.disabled = false; });
+    card.querySelectorAll('.opt').forEach(function(o){ o.classList.remove('correct','wrong','sel'); });
+    var ob = card.querySelector('[data-role="opts"]');
+    if(ob) ob.classList.remove('locked');
+    var fb = card.querySelector('[data-role="fb"]');
+    fb.className = 'fb'; fb.textContent = '';
+    card.querySelector('[data-role="exp"]').classList.remove('show');
+    var b = card.querySelector('.btn-check');
+    if(b) b.disabled = false;
+  });
+  updateChips();
+  renderResults();
+  toast('Semua latihan direset. Selamat mencoba lagi!');
+}
+
+/* ================= CHIP PROGRES & HASIL ================= */
+function updateChips(){
+  $all('[data-topic]').forEach(function(ch){
+    var t = ch.getAttribute('data-topic');
+    var qs = QUESTIONS.filter(function(q){ return q.topic === t; });
+    var done = qs.filter(function(q){
+      return state.answers[q.id] && state.answers[q.id].done;
+    }).length;
+    ch.textContent = done + '/' + qs.length + ' terjawab';
+  });
+}
+
+function renderResults(){
+  var nameEl = $('#studentName');
+  if(nameEl) nameEl.value = state.name;
+  var tbody = $('#rtbody');
+  if(!tbody) return;
+  tbody.innerHTML = '';
+  var allCorrect = 0;
+  TOPICS.forEach(function(t){
+    var qs = QUESTIONS.filter(function(q){ return q.topic === t.id; });
+    var done = qs.filter(function(q){ return state.answers[q.id] && state.answers[q.id].done; }).length;
+    var correct = qs.filter(function(q){ return state.answers[q.id] && state.answers[q.id].correct; }).length;
+    allCorrect += correct;
+    var pct = Math.round(correct / qs.length * 100);
+    var badge;
+    if(done === 0) badge = '<span class="badge none">Belum dikerjakan</span>';
+    else if(done < qs.length) badge = '<span class="badge part">' + (qs.length - done) + ' soal belum</span>';
+    else badge = '<span class="badge done">Selesai</span>';
+    var tr = document.createElement('tr');
+    tr.innerHTML = '<td><b>' + t.label + '</b><br><span class="badge focus">' + t.tag + '</span></td>' +
+      '<td>' + correct + ' / ' + qs.length + '</td>' +
+      '<td><span class="rbar"><i style="width:' + pct + '%"></i></span><span class="rpct">' + pct + '%</span></td>' +
+      '<td>' + badge + '</td>';
+    tbody.appendChild(tr);
+  });
+
+  var answered = Object.keys(state.answers).filter(function(k){
+    return state.answers[k] && state.answers[k].done;
+  }).length;
+  var pctAll = Math.round(allCorrect / QUESTIONS.length * 100);
+  var scorePct = $('#scorePct'), predEl = $('#predikat'), subEl = $('#scoreSub');
+
+  if(answered === 0){
+    scorePct.textContent = '\u2014';
+    predEl.className = 'badge none';
+    predEl.textContent = 'Belum ada jawaban';
+    subEl.textContent = '0 dari ' + QUESTIONS.length + ' soal benar';
+    return;
+  }
+  scorePct.textContent = pctAll + '%';
+  subEl.textContent = allCorrect + ' dari ' + QUESTIONS.length + ' soal benar' +
+    (answered < QUESTIONS.length ? ' (' + (QUESTIONS.length - answered) + ' belum dijawab)' : '');
+  var pred;
+  if(pctAll >= 85) pred = ['Sangat Baik', 'done'];
+  else if(pctAll >= 70) pred = ['Baik', 'done'];
+  else if(pctAll >= 55) pred = ['Cukup', 'part'];
+  else pred = ['Perlu Latihan Lagi', 'part'];
+  predEl.className = 'badge ' + pred[1];
+  predEl.textContent = 'Predikat: ' + pred[0];
+  if(answered === QUESTIONS.length && pctAll >= 70) confetti();
+}
+
+function confetti(){
+  var colors = ['#a21caf','#d946ef','#d97706','#f59e0b','#be185d','#fbbf24'];
+  for(var i = 0; i < 70; i++){
+    var d = document.createElement('div');
+    d.className = 'confetti';
+    d.style.left = Math.random() * 100 + 'vw';
+    d.style.background = colors[i % colors.length];
+    d.style.animationDelay = (Math.random() * 1.2) + 's';
+    d.style.animationDuration = (2.6 + Math.random() * 1.8) + 's';
+    document.body.appendChild(d);
+    (function(el){ setTimeout(function(){ el.remove(); }, 5400); })(d);
+  }
+}
+
+/* ================= NAVIGASI SLIDE ================= */
+var slides = $all('.slide');
+var cur = 0;
+
+function updateChrome(){
+  $('#progress').style.width = ((cur + 1) / slides.length * 100) + '%';
+  $('#counter').textContent = (cur + 1) + ' / ' + slides.length;
+  $all('.dot').forEach(function(d, i){ d.classList.toggle('on', i === cur); });
+  $all('#menuList .menu-item').forEach(function(m, i){ m.classList.toggle('cur', i === cur); });
+  var p = $('#btnPrev'), n = $('#btnNext');
+  if(p) p.disabled = (cur === 0);
+  if(n) n.disabled = (cur === slides.length - 1);
+}
+
+function goTo(i){
+  i = Math.max(0, Math.min(slides.length - 1, i));
+  if(i === cur){ updateChrome(); return; }
+  slides[cur].classList.remove('active');
+  cur = i;
+  slides[cur].classList.add('active');
+  var body = slides[cur].querySelector('.slide-body');
+  if(body) body.scrollTop = 0;
+  updateChrome();
+  if(slides[cur].getAttribute('data-key') === 'hasil') renderResults();
+}
+
+function buildDots(){
+  var wrap = $('#dots');
+  slides.forEach(function(s, i){
+    var b = document.createElement('button');
+    b.className = 'dot';
+    b.setAttribute('data-i', i);
+    b.setAttribute('aria-label', 'Slide ' + (i + 1));
+    wrap.appendChild(b);
+  });
+}
+
+function buildMenu(){
+  var ml = $('#menuList');
+  slides.forEach(function(s, i){
+    var d = document.createElement('div');
+    d.className = 'menu-item';
+    d.setAttribute('data-goto', i);
+    d.innerHTML = '<span class="mi-num">' + String(i + 1).padStart(2, '0') + '</span><span>' +
+      (s.getAttribute('data-title') || 'Slide ' + (i + 1)) + '</span>';
+    ml.appendChild(d);
+  });
+}
+
+/* ================= MENU, TOAST, LAINNYA ================= */
+var menuEl = document.getElementById('menu');
+function openMenu(){ menuEl.classList.add('open'); }
+function closeMenu(){ menuEl.classList.remove('open'); }
+
+var toastTimer = null;
+function toast(msg){
+  var t = $('#toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 3400);
+}
+
+function toggleFS(){
+  if(document.fullscreenElement){
+    if(document.exitFullscreen) document.exitFullscreen();
+  } else if(document.documentElement.requestFullscreen){
+    document.documentElement.requestFullscreen();
+  }
+}
+
+/* ================= EVENT DELEGASI ================= */
+document.addEventListener('click', function(e){
+  var el = e.target;
+
+  var chk = el.closest('[data-check]');
+  if(chk){ check(chk.getAttribute('data-check')); return; }
+
+  var sn = el.closest('[data-stnext]');
+  if(sn){ nextStep(sn.getAttribute('data-stnext')); return; }
+
+  var sr = el.closest('[data-streset]');
+  if(sr){ resetStep(sr.getAttribute('data-streset')); return; }
+
+  var dm = el.closest('[data-dmode]');
+  if(dm){
+    dilMode = dm.getAttribute('data-dmode');
+    $all('[data-dmode]').forEach(function(b){ b.classList.remove('on'); });
+    dm.classList.add('on');
+    var lb = document.getElementById('dilLab');
+    if(lb) lb.textContent = dilMode === 'vert' ? 'k \u2014 faktor skala vertikal' : 'k \u2014 faktor skala horizontal';
+    drawDil();
+    return;
+  }
+
+  var rm = el.closest('[data-rmode]');
+  if(rm){
+    refMode = rm.getAttribute('data-rmode');
+    $all('[data-rmode]').forEach(function(b){ b.classList.remove('on'); });
+    rm.classList.add('on');
+    drawRef();
+    return;
+  }
+
+  var kn = el.closest('[data-komnext]');
+  if(kn){ komNext(); return; }
+
+  var kr = el.closest('[data-komreset]');
+  if(kr){ komReset(); return; }
+
+  var act = el.closest('[data-act]');
+  if(act){
+    var a = act.getAttribute('data-act');
+    if(a === 'reset') resetAll();
+    else if(a === 'refresh') renderResults();
+    return;
+  }
+
+  var go = el.closest('[data-goto]');
+  if(go){ closeMenu(); goTo(+go.getAttribute('data-goto')); return; }
+
+  if(el.closest('[data-menu]')){ openMenu(); return; }
+  if(el.closest('[data-menu-close]')){ closeMenu(); return; }
+  if(el.classList.contains('menu')){ closeMenu(); return; }
+
+  if(el.closest('[data-fullscreen]')){ toggleFS(); return; }
+
+  var nav = el.closest('[data-nav]');
+  if(nav){
+    if(nav.getAttribute('data-nav') === 'next') goTo(cur + 1);
+    else goTo(cur - 1);
+    return;
+  }
+
+  var dot = el.closest('.dot');
+  if(dot){ goTo(+dot.getAttribute('data-i')); return; }
+});
+
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape'){ closeMenu(); return; }
+  var tag = document.activeElement ? document.activeElement.tagName : '';
+  if(tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+  if(e.key === 'ArrowRight' || e.key === 'PageDown') goTo(cur + 1);
+  else if(e.key === 'ArrowLeft' || e.key === 'PageUp') goTo(cur - 1);
+  else if(e.key === 'Home') goTo(0);
+  else if(e.key === 'End') goTo(slides.length - 1);
+});
+
+var tx = 0, ty = 0;
+document.addEventListener('touchstart', function(e){
+  tx = e.touches[0].clientX;
+  ty = e.touches[0].clientY;
+}, {passive:true});
+document.addEventListener('touchend', function(e){
+  var dx = e.changedTouches[0].clientX - tx;
+  var dy = e.changedTouches[0].clientY - ty;
+  if(Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.4){
+    if(dx < 0) goTo(cur + 1); else goTo(cur - 1);
+  }
+}, {passive:true});
+
+/* ================= INISIALISASI ================= */
+function init(){
+  load();
+  buildAll();
+  restore();
+  stInit('st-h1', 'hot1');
+  stInit('st-h2', 'hot2');
+  stInit('st-h3', 'hot3');
+  stInit('st-h4', 'hot4');
+  initTrans();
+  initDil();
+  initRef();
+  initKom();
+  buildDots();
+  buildMenu();
+  updateChips();
+  updateChrome();
+  ['lh','lk'].forEach(function(id){
+    var el = document.getElementById(id);
+    if(el) el.addEventListener('input', function(){
+      document.getElementById('lvh').textContent = document.getElementById('lh').value;
+      document.getElementById('lvk').textContent = document.getElementById('lk').value;
+      drawTrans();
+    });
+  });
+  var dv = document.getElementById('dv');
+  if(dv) dv.addEventListener('input', function(){
+    document.getElementById('dvv').textContent = dv.value;
+    drawDil();
+  });
+  var nameEl = $('#studentName');
+  if(nameEl) nameEl.addEventListener('input', function(e){
+    state.name = e.target.value;
+    save();
+  });
+}
+init();
+})();
+</script>
+</body>
+</html>
